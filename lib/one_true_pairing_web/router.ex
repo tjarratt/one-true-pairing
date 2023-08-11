@@ -18,7 +18,7 @@ defmodule OneTruePairingWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-    live "/pairing", PairLive, :index
+    live "/pairing", Live.PairView, :index
   end
 
   # Other scopes may use custom stacks.
