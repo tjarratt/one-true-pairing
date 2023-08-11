@@ -33,4 +33,9 @@ defmodule OneTruePairingWeb.Live.PairView do
     </div>
     """
   end
+
+  def handle_info({:repositioned, params}, socket) do
+    IO.inspect(params, label: "==========>")
+    {:noreply, socket}
+  end
 end

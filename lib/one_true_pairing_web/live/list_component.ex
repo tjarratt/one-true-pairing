@@ -9,15 +9,20 @@ defmodule OneTruePairingWeb.Live.ListComponent do
           <%= @list_name %>
           <.simple_form for={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
             <.input field={@form[:name]} type="text" />
-              <.button class="align-middle ml-2 mt-2">
-                <.icon name="hero-plus" />
-              </.button>
+            <.button class="align-middle ml-2 mt-2">
+              <.icon name="hero-plus" />
+            </.button>
           </.simple_form>
         </.header>
 
         <div id={"#{@id}-items"} phx-hook="Sortable" data-list_id={@id} test_role="list">
-          <div :for={item <- @list} id={"#{@id}-#{item.id}"} class="..." data-id={item.id}>
-            <div class="flex">
+          <div
+            :for={item <- @list}
+            id={"#{@id}-#{item.id}"}
+            class="drag-item:focus-within:ring-0 drag-item:focus-within:ring-offset-0 drag-ghost:bg-zinc-300 drag-ghost:border-0 drag-ghost:ring-0"
+            data-id={item.id}
+          >
+            <div class="flex drag-ghost:opacity-0">
               <button type="button" class="w-10">
                 <.icon name="hero-check-circle" class={css_for_hero_check(item)} />
               </button>
@@ -40,8 +45,7 @@ defmodule OneTruePairingWeb.Live.ListComponent do
   end
 
   def handle_event("reposition", params, socket) do
-    # TOOD: handle the repositioning logic with our list
-    IO.inspect(params, label: "Component Reposition event ahoy")
+    send(self(), {:repositioned, params})
 
     {:noreply, socket}
   end
