@@ -49,6 +49,7 @@ defmodule OneTruePairing.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
+      {:html_query, "~> 1.1.1", only: :test},
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
       {:plug_cowboy, "~> 2.5"}
     ]
