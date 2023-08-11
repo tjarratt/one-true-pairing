@@ -51,7 +51,8 @@ defmodule OneTruePairing.MixProject do
       {:jason, "~> 1.2"},
       {:html_query, "~> 1.1.1", only: :test},
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:markdown_formatter, "~> 0.5", only: [:dev, :test], runtime: false}
     ]
   end
 

@@ -1,6 +1,20 @@
 [
-  import_deps: [:ecto, :ecto_sql, :phoenix],
-  subdirectories: ["priv/*/migrations"],
-  plugins: [Phoenix.LiveView.HTMLFormatter],
-  inputs: ["*.{heex,ex,exs}", "{config,lib,test}/**/*.{heex,ex,exs}", "priv/*/seeds.exs"]
+  import_deps: [:ecto, :phoenix, :phoenix_html, :phoenix_live_view],
+  inputs: [
+    "*.{ex,exs}",
+    "priv/*/seeds.exs"
+  ],
+  line_length: 120,
+  locals_without_parens: [
+    assert_that: :*,
+    flunk: :*,
+    live_component: :*,
+    live_redirect: :*,
+    on_mount: :*
+  ],
+  markdown: [
+    line_length: 120
+  ],
+  plugins: [Phoenix.LiveView.HTMLFormatter, MarkdownFormatter],
+  subdirectories: ["priv/*/migrations"]
 ]
