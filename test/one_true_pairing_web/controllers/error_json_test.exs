@@ -2,7 +2,9 @@ defmodule OneTruePairingWeb.ErrorJSONTest do
   use OneTruePairingWeb.ConnCase, async: true
 
   test "renders 404" do
-    assert OneTruePairingWeb.ErrorJSON.render("404.json", %{}) == %{errors: %{detail: "Not Found"}}
+    assert OneTruePairingWeb.ErrorJSON.render("404.json", %{}) == %{
+             errors: %{detail: "Not Found"}
+           }
   end
 
   test "renders 500" do
