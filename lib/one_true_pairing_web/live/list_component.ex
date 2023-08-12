@@ -8,7 +8,6 @@ defmodule OneTruePairingWeb.Live.ListComponent do
         <.header>
           <%= @list_name %>
           <.simple_form for={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
-            <.input field={@form[:name]} type="text" />
             <.button class="align-middle ml-2 mt-2">
               <.icon name="hero-plus" />
             </.button>
