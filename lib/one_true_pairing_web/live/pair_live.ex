@@ -11,12 +11,18 @@ defmodule OneTruePairingWeb.Live.PairView do
       %{name: "Carol", id: 3, position: 3, status: :in_progress}
     ]
 
-    form = to_form(Projects.change_project(%Project{}))
+    form1 = to_form(Projects.change_project(%Project{}))
+    form2 = to_form(Projects.change_project(%Project{}))
+    form3 = to_form(Projects.change_project(%Project{}))
 
     {:ok,
      socket
      |> assign(pairing_list: list)
-     |> assign(form: form)}
+     |> assign(tracks: %{sso: %{people: [%{name: "Tim", id: 1, position: 1, status: :complete}], name: "sso"}, filters: %{people: [], name: "filters"}})
+     |> assign(form1: form1)
+     |> assign(form2: form2)
+     |> assign(form3: form3)
+    }
   end
 
   def render(assigns) do
@@ -28,7 +34,26 @@ defmodule OneTruePairingWeb.Live.PairView do
         module={OneTruePairingWeb.Live.ListComponent}
         list={@pairing_list}
         list_name="Folks"
-        form={@form}
+        form={@form1}
+        group="pairing"
+      />
+
+      <.live_component
+        id="2"
+        module={OneTruePairingWeb.Live.ListComponent}
+        list={@tracks[:sso][:people]}
+        list_name={@tracks[:sso][:name]}
+        form={@form2}
+        group="pairing"
+      />
+
+      <.live_component
+        id="3"
+        module={OneTruePairingWeb.Live.ListComponent}
+        list={@tracks[:filters][:people]}
+        list_name={@tracks[:filters][:name]}
+        form={@form3}
+        group="pairing"
       />
     </div>
     """

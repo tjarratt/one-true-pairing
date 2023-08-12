@@ -27,18 +27,21 @@ import Sortable from "../vendor/sortable"
 // SortableListComponent Ahoy hoy
 let Hooks = {};
 Hooks.Sortable = {
+
 	mounted() {
+		const group = this.el.dataset.group ? this.el.dataset.group : undefined;
 		let sorter = new Sortable(this.el, {
+			group: group,
 			animation: 150,
 			delay: 100,
 			dragClass: "drag-item",
 			ghostClass: "drag-ghost",
 			forceFallback: true,
 			onEnd: e => {
-				let params = {old: e.oldIndex, new: e.newIndex, ...e.item.dataset};
+				let params = {old: e.oldIndex, new: e.newIndex, to: e.to.dataset, ...e.item.dataset};
 				this.pushEventTo(this.el, "reposition", params);
 			},
-		})
+		});
 	}
 };
 
