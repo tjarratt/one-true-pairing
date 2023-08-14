@@ -15,6 +15,8 @@ defmodule OneTruePairingWeb.ConnCase do
   this option is not recommended for other databases.
   """
 
+  @basic_auth_password Application.compile_env!(:one_true_pairing, :basic_auth_password)
+
   use ExUnit.CaseTemplate
 
   using do
@@ -33,6 +35,10 @@ defmodule OneTruePairingWeb.ConnCase do
 
   setup tags do
     OneTruePairing.DataCase.setup_sandbox(tags)
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+
+    {:ok,
+     conn:
+       Phoenix.ConnTest.build_conn()
+       |> Plug.Conn.put_req_header("authorization", "Basic " <> Base.encode64("pivot:#{@basic_auth_password}"))}
   end
 end

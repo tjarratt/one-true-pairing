@@ -69,6 +69,8 @@ jobs:
       run: mix deps.get
     - name: Run tests
       run: MIX_ENV=test mix test
+      env:
+        BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
 
   deploy:
     name: Deploy App
@@ -79,5 +81,6 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only
         env:
+          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 

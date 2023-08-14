@@ -1,4 +1,6 @@
 defmodule OneTruePairingWeb.Router do
+  import Plug.BasicAuth
+
   use OneTruePairingWeb, :router
 
   pipeline :browser do
@@ -14,8 +16,14 @@ defmodule OneTruePairingWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug(:basic_auth,
+      username: "pivot",
+      password: Application.compile_env!(:one_true_pairing, :basic_auth_password))
+  end
+
   scope "/", OneTruePairingWeb do
-    pipe_through :browser
+    pipe_through [:browser, :auth]
 
     get "/", PageController, :home
     live "/pairing", Live.PairView, :index

@@ -8,7 +8,8 @@
 import Config
 
 config :one_true_pairing,
-  ecto_repos: [OneTruePairing.Repo]
+  ecto_repos: [OneTruePairing.Repo],
+  basic_auth_password: System.fetch_env!("BASIC_AUTH_PASSWORD")
 
 # Configures the endpoint
 config :one_true_pairing, OneTruePairingWeb.Endpoint,
