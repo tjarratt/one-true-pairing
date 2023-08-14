@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+set -e
+
+flyctl deploy --remote-only --build-arg BASIC_AUTH_PASSWORD=$BASIC_AUTH_PASSWORD
