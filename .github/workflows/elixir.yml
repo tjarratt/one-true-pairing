@@ -37,6 +37,8 @@ jobs:
       with:
         elixir-version: '1.15.2' # [Required] Define the Elixir version
         otp-version: '26.0'      # [Required] Define the Erlang/OTP version
+      env:
+        BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
     # caching for deps/ directory
     - name: Restore dependencies cache
       uses: actions/cache@v3
@@ -50,6 +52,7 @@ jobs:
       uses: actions/cache@v3
       env:
         cache-name: cache-compiled-build
+        BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
       with:
         path: _build
         key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
@@ -65,6 +68,8 @@ jobs:
       shell: sh
     - name: Install dependencies
       run: mix deps.get
+      env:
+        BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
     - name: Run tests
       run: MIX_ENV=test mix test
       env:
@@ -75,10 +80,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only
-        env:
-          BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+    - uses: actions/checkout@v3
+    - uses: superfly/flyctl-actions/setup-flyctl@master
+    - run: flyctl deploy --remote-only --build-arg BASIC_AUTH_PASSWORD=$BASIC_AUTH_PASSWORD
+      env:
+        BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+        FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 

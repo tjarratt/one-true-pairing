@@ -31,6 +31,9 @@ WORKDIR /app
 RUN mix local.hex --force && \
     mix local.rebar --force
 
+# pipe through basic auth password for build phase
+ENV BASIC_AUTH_PASSWORD=$BASIC_AUTH_PASSWORD
+
 # set build ENV
 ENV MIX_ENV="prod"
 
