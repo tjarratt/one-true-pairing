@@ -20,6 +20,18 @@ jobs:
     name: Build and test
     runs-on: ubuntu-latest
 
+    services:
+      db:
+        image: postgres:12
+        ports: ['5432:5432']
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health_interval 10s
+          --health_timeout 5s
+          --health_retries 5
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Elixir
@@ -27,13 +39,33 @@ jobs:
       with:
         elixir-version: '1.15.2' # [Required] Define the Elixir version
         otp-version: '26.0'      # [Required] Define the Erlang/OTP version
+    # caching for deps/ directory
     - name: Restore dependencies cache
       uses: actions/cache@v3
       with:
         path: deps
         key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
         restore-keys: ${{ runner.os }}-mix-
+    # caching for _build directory
+    - name: Restore build cache
+      id: cache-build
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-compiled-build
+      with:
+        path: _build
+        key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-mix-${{ env.cache-name }}-
+          ${{ runner.os }}-mix
+    # bust the cache for incremental builds (apparently a cause of bugs)
+    - name:
+      if: github.run_attempt != 1
+      run: |
+        mix deps.clean --all
+        mix clean
+      shell: sh
     - name: Install dependencies
       run: mix deps.get
     - name: Run tests
-      run: mix test
+      run: MIX_ENV=test mix test
