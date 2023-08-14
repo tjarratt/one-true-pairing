@@ -3,7 +3,7 @@ defmodule OneTruePairingWeb.Live.ListComponent do
 
   def render(assigns) do
     ~H"""
-    <div class="bg-gray-100 py-4 rounded-lg" test_role={@test_role}>
+    <div class="bg-gray-100 py-4 rounded-lg" test-role={@test_role}>
       <div class="space-y-5 mx-auto max-w-7xl px-4 space-y-4">
         <.header>
           <%= @list_name %>
@@ -14,7 +14,7 @@ defmodule OneTruePairingWeb.Live.ListComponent do
           </.simple_form>
         </.header>
 
-        <div id={"#{@id}-items"} phx-hook="Sortable" data-list_id={@id} test_role="list" data-group={@group}>
+        <div id={"#{@id}-items"} phx-hook="Sortable" data-list_id={@id} test-role="list" data-group={@group}>
           <div
             :for={item <- @list}
             id={"#{@id}-#{item.id}"}

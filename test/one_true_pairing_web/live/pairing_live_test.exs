@@ -20,4 +20,12 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     assert list =~ "Alice"
     assert list =~ "Carol"
   end
+
+  test "it renders a place to assign people to a track of work", %{conn: conn} do
+    {:ok, _view, html} = live(conn, ~p"/pairing")
+
+    list = html |> HtmlQuery.find!(test_role: "track-sso") |> HtmlQuery.text()
+
+    assert list =~ "Tim"
+  end
 end
