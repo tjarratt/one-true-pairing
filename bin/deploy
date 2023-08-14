@@ -2,4 +2,4 @@
 
 set -e
 
-flyctl deploy --remote-only --build-arg BASIC_AUTH_PASSWORD=$BASIC_AUTH_PASSWORD
+flyctl deploy --remote-only --build-secret BASIC_AUTH_PASSWORD=$BASIC_AUTH_PASSWORD
