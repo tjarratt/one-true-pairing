@@ -31,9 +31,6 @@ WORKDIR /app
 RUN mix local.hex --force && \
     mix local.rebar --force
 
-# pipe through basic auth password for build phase
-ENV BASIC_AUTH_PASSWORD ${BASIC_AUTH_PASSWORD}
-
 # set build ENV
 ENV MIX_ENV="prod"
 
@@ -46,7 +43,8 @@ RUN mkdir config
 # to ensure any relevant config change will trigger the dependencies
 # to be re-compiled.
 COPY config/config.exs config/${MIX_ENV}.exs config/
-RUN mix deps.compile
+RUN --mount=type=secret,id=BASIC_AUTH_PASSWORD \
+    BASIC_AUTH_PASSWORD="$(cat /run/secrets/BASIC_AUTH_PASSWORD)" mix deps.compile
 
 COPY priv priv
 
@@ -55,16 +53,19 @@ COPY lib lib
 COPY assets assets
 
 # compile assets
-RUN mix assets.deploy
+RUN --mount=type=secret,id=BASIC_AUTH_PASSWORD \
+    BASIC_AUTH_PASSWORD="$(cat /run/secrets/BASIC_AUTH_PASSWORD)" mix assets.deploy
 
 # Compile the release
-RUN mix compile
+RUN --mount=type=secret,id=BASIC_AUTH_PASSWORD \
+    BASIC_AUTH_PASSWORD="$(cat /run/secrets/BASIC_AUTH_PASSWORD)" mix compile
 
 # Changes to config/runtime.exs don't require recompiling the code
 COPY config/runtime.exs config/
 
 COPY rel rel
-RUN mix release
+RUN --mount=type=secret,id=BASIC_AUTH_PASSWORD \
+    BASIC_AUTH_PASSWORD="$(cat /run/secrets/BASIC_AUTH_PASSWORD)" mix release
 
 # start a new build stage so that the final image will only contain
 # the compiled release and other runtime necessities
