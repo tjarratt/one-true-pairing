@@ -35,3 +35,4 @@ one_true_pairing-*.tar
 npm-debug.log
 /assets/node_modules/
 
+.envrc
