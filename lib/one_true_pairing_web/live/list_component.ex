@@ -3,7 +3,7 @@ defmodule OneTruePairingWeb.Live.ListComponent do
 
   def render(assigns) do
     ~H"""
-    <div class="bg-gray-100 py-4 rounded-lg">
+    <div class="bg-gray-100 py-4 rounded-lg" test_role={@test_role}>
       <div class="space-y-5 mx-auto max-w-7xl px-4 space-y-4">
         <.header>
           <%= @list_name %>

@@ -36,6 +36,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         list_name="Folks"
         form={@form1}
         group="pairing"
+        test_role="people"
       />
 
       <.live_component
@@ -45,6 +46,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         list_name={@tracks[:sso][:name]}
         form={@form2}
         group="pairing"
+        test_role="track-sso"
       />
 
       <.live_component
@@ -54,6 +56,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         list_name={@tracks[:filters][:name]}
         form={@form3}
         group="pairing"
+        test_role="track-filters"
       />
     </div>
     """
