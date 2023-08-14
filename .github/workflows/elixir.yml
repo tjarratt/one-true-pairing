@@ -69,3 +69,15 @@ jobs:
       run: mix deps.get
     - name: Run tests
       run: MIX_ENV=test mix test
+
+  deploy:
+    name: Deploy App
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
