@@ -5,11 +5,13 @@ defmodule OneTruePairingWeb.Live.PairView do
   alias OneTruePairing.Projects.Project
 
   def mount(_params, _session, socket) do
-    list = [
-      %{name: "Alice", id: 1, position: 1, status: :in_progress},
-      %{name: "Bob", id: 2, position: 2, status: :in_progress},
-      %{name: "Carol", id: 3, position: 3, status: :in_progress}
+    people = [
+      %{name: "Konstantinos", id: 1, position: 1, status: :in_progress},
+      %{name: "Freja", id: 2, position: 2, status: :in_progress},
+      %{name: "Jon", id: 3, position: 3, status: :in_progress},
+      %{name: "Andrew", id: 4, position: 4, status: :in_progress}
     ]
+    tracks = %{sso: %{people: [%{name: "Tim", id: 5, position: 1, status: :in_progress}], name: "sso"}, filters: %{people: [], name: "filters"}}
 
     form1 = to_form(Projects.change_project(%Project{}))
     form2 = to_form(Projects.change_project(%Project{}))
@@ -17,8 +19,8 @@ defmodule OneTruePairingWeb.Live.PairView do
 
     {:ok,
      socket
-     |> assign(pairing_list: list)
-     |> assign(tracks: %{sso: %{people: [%{name: "Tim", id: 1, position: 1, status: :complete}], name: "sso"}, filters: %{people: [], name: "filters"}})
+     |> assign(pairing_list: people)
+     |> assign(tracks: tracks)
      |> assign(form1: form1)
      |> assign(form2: form2)
      |> assign(form3: form3)

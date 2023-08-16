@@ -16,9 +16,10 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
     list = html |> HtmlQuery.find!("#pairing_list") |> HtmlQuery.text()
 
-    assert list =~ "Bob"
-    assert list =~ "Alice"
-    assert list =~ "Carol"
+    assert list =~ "Konstantinos"
+    assert list =~ "Freja"
+    assert list =~ "Andrew"
+    assert list =~ "Jon"
   end
 
   test "it renders a place to assign people to a track of work", %{conn: conn} do
