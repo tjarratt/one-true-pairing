@@ -1,12 +1,12 @@
 defmodule OneTruePairingWeb.Live.ExampleView do
   use OneTruePairingWeb, :live_view
 
-  import Phoenix.HTML.Form, only: [select: 3]
+  import Phoenix.HTML.Form, only: [select: 4]
 
   def mount(_params, _session, socket) do
     {:ok, socket 
       |> assign(:message, "What does your banana look like ?")
-      |> assign(:ripeness, ["(make a selection)", "green", "yellow", "brown", "purple"])}
+      |> assign(:ripeness, ["green", "yellow", "brown", "purple"])}
   end
 
   def render(assigns) do
@@ -14,7 +14,7 @@ defmodule OneTruePairingWeb.Live.ExampleView do
     <h1><%= @message %></h1>
 
     <.form :let={f} for={to_form(%{})} phx-change="choose_ripeness">
-      <%= select(f, :ripeness, @ripeness) %>
+      <%= select(f, :ripeness, @ripeness, prompt: @message) %>
     </.form>
     """
   end

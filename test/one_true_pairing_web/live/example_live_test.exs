@@ -20,7 +20,7 @@ defmodule OneTruePairingWeb.ExampleLiveTest do
 
     options = html |> HtmlQuery.all("option") |> Enum.map(fn opt -> HtmlQuery.attr(opt, "value") end)
 
-    assert options == ["(make a selection)", "green", "yellow", "brown", "purple"]
+    assert options == ["", "green", "yellow", "brown", "purple"]
   end
 
   describe "when the user picks their desired ripeness" do
