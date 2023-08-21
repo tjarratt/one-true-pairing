@@ -27,6 +27,7 @@ defmodule OneTruePairingWeb.Router do
 
     get "/", PageController, :home
     live "/pairing", Live.PairView, :index
+    live "/example", Live.ExampleView, :index
   end
 
   # Other scopes may use custom stacks.
