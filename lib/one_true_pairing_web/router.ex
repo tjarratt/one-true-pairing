@@ -19,13 +19,16 @@ defmodule OneTruePairingWeb.Router do
   pipeline :auth do
     plug(:basic_auth,
       username: "pivot",
-      password: Application.compile_env!(:one_true_pairing, :basic_auth_password))
+      password: Application.compile_env!(:one_true_pairing, :basic_auth_password)
+    )
   end
 
   scope "/", OneTruePairingWeb do
     pipe_through [:browser, :auth]
 
     get "/", PageController, :home
+    resources "/projects", ProjectController
+
     live "/pairing", Live.PairView, :index
     live "/example", Live.ExampleView, :index
   end

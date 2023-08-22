@@ -4,9 +4,10 @@ defmodule OneTruePairingWeb.Live.ExampleView do
   import Phoenix.HTML.Form, only: [select: 4]
 
   def mount(_params, _session, socket) do
-    {:ok, socket 
-      |> assign(:message, "What does your banana look like ?")
-      |> assign(:ripeness, ["green", "yellow", "brown", "purple"])}
+    {:ok,
+     socket
+     |> assign(:message, "What does your banana look like ?")
+     |> assign(:ripeness, ["green", "yellow", "brown", "purple"])}
   end
 
   def render(assigns) do

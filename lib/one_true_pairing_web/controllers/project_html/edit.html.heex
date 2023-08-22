@@ -1,0 +1,7 @@
+<.header>
+  Edit Project <%= @project.id %>
+</.header>
+
+<.project_form changeset={@changeset} action={~p"/projects/#{@project}"} />
+
+<.back navigate={~p"/projects"}>Back to projects</.back>

@@ -11,7 +11,11 @@ defmodule OneTruePairingWeb.Live.PairView do
       %{name: "Jon", id: 3, position: 3, status: :in_progress},
       %{name: "Andrew", id: 4, position: 4, status: :in_progress}
     ]
-    tracks = %{sso: %{people: [%{name: "Tim", id: 5, position: 1, status: :in_progress}], name: "sso"}, filters: %{people: [], name: "filters"}}
+
+    tracks = %{
+      sso: %{people: [%{name: "Tim", id: 5, position: 1, status: :in_progress}], name: "sso"},
+      filters: %{people: [], name: "filters"}
+    }
 
     form1 = to_form(Projects.change_project(%Project{}))
     form2 = to_form(Projects.change_project(%Project{}))
@@ -23,8 +27,7 @@ defmodule OneTruePairingWeb.Live.PairView do
      |> assign(tracks: tracks)
      |> assign(form1: form1)
      |> assign(form2: form2)
-     |> assign(form3: form3)
-    }
+     |> assign(form3: form3)}
   end
 
   def render(assigns) do

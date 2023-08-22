@@ -27,13 +27,14 @@ defmodule BasicAuthContractTest do
   end
 
   defp assert_basic_auth!(module, conn) do
-    path = module
-    |> Module.split()
-    |> List.last()
-    |> Macro.underscore()
-    |> fn name -> name <> "_path" end.()
-    |> String.to_atom()
-    |> fn atom -> apply(Router.Helpers, atom, [conn, :index]) end.()
+    path =
+      module
+      |> Module.split()
+      |> List.last()
+      |> Macro.underscore()
+      |> (fn name -> name <> "_path" end).()
+      |> String.to_atom()
+      |> (fn atom -> apply(Router.Helpers, atom, [conn, :index]) end).()
 
     conn = delete_req_header(conn, "authorization") |> get(path)
 
