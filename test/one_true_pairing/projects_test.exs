@@ -14,6 +14,14 @@ defmodule OneTruePairing.ProjectsTest do
       assert Enum.member?(people, "Jon")
       assert Enum.member?(people, "Konstantinos")
     end
+
+    test "getting tracks for a project" do
+      tracks = Projects.tracks_for(project: "nrg") |> Enum.sort
+
+      assert Enum.member?(tracks, "Inland")
+      assert Enum.member?(tracks, "Emissions Calculations")
+      assert Enum.member?(tracks, "Energy Bank")
+    end
   end
 
   describe "projects" do

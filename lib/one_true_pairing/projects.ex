@@ -12,6 +12,10 @@ defmodule OneTruePairing.Projects do
     ~w(Sarah Andrew Konstantinos Jon Freja Tim)
   end
 
+  def tracks_for(project: "nrg") do
+    ["Inland", "Energy Bank", "Emissions Calculations"]
+  end
+
   @doc """
   Returns the list of projects.
 

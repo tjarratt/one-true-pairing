@@ -27,8 +27,10 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   test "it renders a place to assign people to a track of work", %{conn: conn} do
     {:ok, _view, html} = live(conn, ~p"/pairing")
 
-    list = html |> HtmlQuery.find!(test_role: "track-sso") |> HtmlQuery.text()
+    list = html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
 
-    assert list
+    assert Enum.member?(list, "Inland")
+    assert Enum.member?(list, "Emissions Calculations")
+    assert Enum.member?(list, "Energy Bank")
   end
 end

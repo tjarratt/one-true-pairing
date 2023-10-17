@@ -5,10 +5,7 @@ defmodule OneTruePairingWeb.Live.PairView do
   alias OneTruePairing.Projects.Project
 
   def mount(_params, _session, socket) do
-    tracks = %{
-      sso: %{people: [], name: "sso"},
-      filters: %{people: [], name: "filters"}
-    }
+    tracks = fetch_tracks()
 
     form1 = to_form(Projects.change_project(%Project{}))
     form2 = to_form(Projects.change_project(%Project{}))
@@ -21,6 +18,12 @@ defmodule OneTruePairingWeb.Live.PairView do
      |> assign(form1: form1)
      |> assign(form2: form2)
      |> assign(form3: form3)}
+  end
+
+  defp fetch_tracks() do
+    Projects.tracks_for(project: "nrg") |>
+      Enum.map(fn track -> {track, %{people: [], name: track}} end) |>
+      Enum.reduce(%{}, fn {key, value}, acc -> Map.put(acc, key, value) end)
   end
 
   defp fetch_people() do
@@ -43,25 +46,19 @@ defmodule OneTruePairingWeb.Live.PairView do
         test_role="people"
       />
 
-      <.live_component
-        id="2"
-        module={OneTruePairingWeb.Live.ListComponent}
-        list={@tracks[:sso][:people]}
-        list_name={@tracks[:sso][:name]}
-        form={@form2}
-        group="pairing"
-        test_role="track-sso"
-      />
+      <%= for track <- Map.keys(@tracks) do %>
 
-      <.live_component
-        id="3"
-        module={OneTruePairingWeb.Live.ListComponent}
-        list={@tracks[:filters][:people]}
-        list_name={@tracks[:filters][:name]}
-        form={@form3}
-        group="pairing"
-        test_role="track-filters"
-      />
+       <.live_component
+          id={track}
+          module={OneTruePairingWeb.Live.ListComponent}
+          list={@tracks[track][:people]}
+          list_name={@tracks[track][:name]}
+          form={@form2}
+          group="pairing"
+          test_role="track-of-work"
+        />
+
+      <% end %>
     </div>
     """
   end
