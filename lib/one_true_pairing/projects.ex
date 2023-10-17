@@ -8,6 +8,10 @@ defmodule OneTruePairing.Projects do
 
   alias OneTruePairing.Projects.Project
 
+  def people_for(project: "nrg") do
+    ~w(Sarah Andrew Konstantinos Jon Freja Tim)
+  end
+
   @doc """
   Returns the list of projects.
 

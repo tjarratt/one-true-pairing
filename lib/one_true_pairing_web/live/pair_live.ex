@@ -5,15 +5,6 @@ defmodule OneTruePairingWeb.Live.PairView do
   alias OneTruePairing.Projects.Project
 
   def mount(_params, _session, socket) do
-    people = [
-      %{name: "Konstantinos", id: 1, position: 1},
-      %{name: "Freja", id: 2, position: 2},
-      %{name: "Jon", id: 3, position: 3},
-      %{name: "Andrew", id: 4, position: 4},
-      %{name: "Tim", id: 5, position: 5},
-      %{name: "Sarah", id: 6, position: 6}
-    ]
-
     tracks = %{
       sso: %{people: [], name: "sso"},
       filters: %{people: [], name: "filters"}
@@ -25,11 +16,17 @@ defmodule OneTruePairingWeb.Live.PairView do
 
     {:ok,
      socket
-     |> assign(pairing_list: people)
+     |> assign(pairing_list: fetch_people())
      |> assign(tracks: tracks)
      |> assign(form1: form1)
      |> assign(form2: form2)
      |> assign(form3: form3)}
+  end
+
+  defp fetch_people() do
+    Projects.people_for(project: "nrg") |>
+      Enum.with_index |>
+      Enum.map(fn {name, idx} -> %{name: name, id: idx, position: idx} end)
   end
 
   def render(assigns) do

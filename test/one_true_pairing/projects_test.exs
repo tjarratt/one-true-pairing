@@ -3,6 +3,19 @@ defmodule OneTruePairing.ProjectsTest do
 
   alias OneTruePairing.Projects
 
+  describe "stuff that isn't crud" do
+    test "getting the people for a given project" do
+      people = Projects.people_for(project: "nrg") |> Enum.sort
+
+      assert Enum.member?(people, "Tim")
+      assert Enum.member?(people, "Andrew")
+      assert Enum.member?(people, "Sarah")
+      assert Enum.member?(people, "Freja")
+      assert Enum.member?(people, "Jon")
+      assert Enum.member?(people, "Konstantinos")
+    end
+  end
+
   describe "projects" do
     alias OneTruePairing.Projects.Project
 
