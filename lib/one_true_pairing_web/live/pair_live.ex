@@ -6,14 +6,16 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   def mount(_params, _session, socket) do
     people = [
-      %{name: "Konstantinos", id: 1, position: 1, status: :in_progress},
-      %{name: "Freja", id: 2, position: 2, status: :in_progress},
-      %{name: "Jon", id: 3, position: 3, status: :in_progress},
-      %{name: "Andrew", id: 4, position: 4, status: :in_progress}
+      %{name: "Konstantinos", id: 1, position: 1},
+      %{name: "Freja", id: 2, position: 2},
+      %{name: "Jon", id: 3, position: 3},
+      %{name: "Andrew", id: 4, position: 4},
+      %{name: "Tim", id: 5, position: 5},
+      %{name: "Sarah", id: 6, position: 6}
     ]
 
     tracks = %{
-      sso: %{people: [%{name: "Tim", id: 5, position: 1, status: :in_progress}], name: "sso"},
+      sso: %{people: [], name: "sso"},
       filters: %{people: [], name: "filters"}
     }
 

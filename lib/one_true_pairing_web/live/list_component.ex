@@ -23,7 +23,7 @@ defmodule OneTruePairingWeb.Live.ListComponent do
           >
             <div class="flex drag-ghost:opacity-0">
               <button type="button" class="w-10">
-                <.icon name="hero-check-circle" class={css_for_hero_check(item)} />
+                <.icon name="hero-check-circle" class="w-7 h-7 bg-gray-300" />
               </button>
               <div class="flex-auto block text-sm leading-6 text-zinc-900">
                 <%= item.name %>
@@ -48,12 +48,5 @@ defmodule OneTruePairingWeb.Live.ListComponent do
 
     {:noreply, socket}
   end
-
-  defp css_for_hero_check(item) do
-    if item.status == :completed do
-      "w-7 h-7 bg-green-600"
-    else
-      "w-7 h-7 bg-gray-300"
-    end
-  end
 end
+
