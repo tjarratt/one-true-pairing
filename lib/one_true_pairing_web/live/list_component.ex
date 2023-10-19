@@ -6,8 +6,8 @@ defmodule OneTruePairingWeb.Live.ListComponent do
     <div class="bg-gray-100 py-4 rounded-lg" test-role={@test_role}>
       <div class="space-y-5 mx-auto max-w-7xl px-4 space-y-4">
         <.header>
-          <%= @list_name %>
           <.simple_form for={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
+            <.input type="text" test-role="track-name" name={"track-named-#{@list_name}"} value={ @list_name } />
             <.button class="align-middle ml-2 mt-2">
               <.icon name="hero-plus" />
             </.button>
@@ -44,8 +44,13 @@ defmodule OneTruePairingWeb.Live.ListComponent do
   end
 
   def handle_event("reposition", params, socket) do
-    send(self(), {:repositioned, params})
+    IO.inspect(params, label: "reposition =========>")
 
+    {:noreply, socket}
+  end
+
+  def handle_event("validate", params, socket) do
+    IO.inspect(params, label: "validate ===========>")
     {:noreply, socket}
   end
 end
