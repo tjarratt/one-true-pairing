@@ -16,11 +16,11 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
     list = html |> HtmlQuery.find!("#pairing_list") |> HtmlQuery.text()
 
-    assert list =~ "Konstantinos"
-    assert list =~ "Freja"
-    assert list =~ "Andrew"
-    assert list =~ "Jon"
     assert list =~ "Sarah"
+    assert list =~ "Andrew"
+    assert list =~ "Konstantinos"
+    assert list =~ "Jon"
+    assert list =~ "Freja"
     assert list =~ "Tim"
   end
 
@@ -39,6 +39,27 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   end
 
   test "randomising pairs", %{conn: conn} do
-    {:ok, _view, html} = live(conn, ~p"/pairing")
+    {:ok, view, _html} = live(conn, ~p"/pairing")
+
+    html =
+      view
+      |> element("button", "Randomize pairs")
+      |> render_click()
+
+    [first_pair, second_pair, third_pair] =
+      html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
+
+    assert first_pair =~ "Sarah"
+    assert first_pair =~ "Andrew"
+
+    assert second_pair =~ "Konstantinos"
+    assert second_pair =~ "Jon"
+
+    assert third_pair =~ "Freja"
+    assert third_pair =~ "Tim"
+
+    unpaired_folks = html |> HtmlQuery.find!(test_role: "unpaired") |> HtmlQuery.text()
+
+    assert unpaired_folks == ""
   end
 end

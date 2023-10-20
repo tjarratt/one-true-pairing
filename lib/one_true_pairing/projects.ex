@@ -16,6 +16,13 @@ defmodule OneTruePairing.Projects do
     ["Inland", "Energy Bank", "Emissions Calculations"]
   end
 
+  def assign_pairs(folks) do
+    remaining = []
+    assigned = folks |> Enum.chunk_every(2)
+
+    {remaining, assigned}
+  end
+
   @doc """
   Returns the list of projects.
 

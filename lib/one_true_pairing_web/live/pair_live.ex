@@ -20,21 +20,14 @@ defmodule OneTruePairingWeb.Live.PairView do
      |> assign(form3: form3)}
   end
 
-  defp fetch_tracks() do
-    Projects.tracks_for(project: "nrg")
-    |> Enum.map(fn track -> {track, %{people: [], name: track}} end)
-    |> Enum.reduce(%{}, fn {key, value}, acc -> Map.put(acc, key, value) end)
-  end
-
-  defp fetch_people() do
-    Projects.people_for(project: "nrg")
-    |> Enum.with_index()
-    |> Enum.map(fn {name, idx} -> %{name: name, id: idx, position: idx} end)
-  end
-
   def render(assigns) do
     ~H"""
     <h2>Let's pair today</h2>
+
+    <div>
+      <button phx-click="randomize_pairs">Randomize pairs</button>
+    </div>
+
     <div id="pairing_list" class="grid sm:grid-cols-1 md:grid-cols-3 gap-2">
       <.live_component
         id="1"
@@ -43,7 +36,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         list_name="Folks"
         form={@form1}
         group="pairing"
-        test_role="people"
+        test_role="unpaired"
       />
 
       <%= for track <- Map.keys(@tracks) do %>
@@ -64,5 +57,36 @@ defmodule OneTruePairingWeb.Live.PairView do
   def handle_info({:repositioned, params}, socket) do
     IO.inspect(params, label: "==========>")
     {:noreply, socket}
+  end
+
+  def handle_event("randomize_pairs", _params, socket) do
+    folks = socket.assigns.pairing_list
+    {unpaired, pairings} = Projects.assign_pairs(folks)
+    new_tracks = place_in_tracks(pairings)
+
+    {:noreply,
+     socket
+     |> assign(tracks: new_tracks)
+     |> assign(pairing_list: unpaired)}
+  end
+
+  defp fetch_tracks() do
+    Projects.tracks_for(project: "nrg")
+    |> Enum.map(fn track -> {track, %{people: [], name: track}} end)
+    |> Enum.reduce(%{}, fn {key, value}, acc -> Map.put(acc, key, value) end)
+  end
+
+  defp fetch_people() do
+    Projects.people_for(project: "nrg")
+    |> Enum.with_index()
+    |> Enum.map(fn {name, idx} -> %{name: name, id: idx, position: idx} end)
+  end
+
+  defp place_in_tracks(pairings) do
+    tracks = fetch_tracks()
+
+    Enum.zip(pairings, tracks)
+    |> Enum.map(fn {pair, {name, track_info}} -> {name, %{track_info | people: pair}} end)
+    |> Enum.reduce(%{}, fn {key, value}, acc -> Map.put(acc, key, value) end)
   end
 end
