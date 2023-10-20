@@ -6,6 +6,7 @@ defmodule OneTruePairing.Projects do
   import Ecto.Query, warn: false
   alias OneTruePairing.Repo
 
+  alias OneTruePairing.Pairing
   alias OneTruePairing.Projects.Project
 
   def people_for(project: "nrg") do
@@ -16,9 +17,11 @@ defmodule OneTruePairing.Projects do
     ["Inland", "Energy Bank", "Emissions Calculations"]
   end
 
+  @shuffler Application.compile_env(:one_true_pairing, :shuffler)
+
   def assign_pairs(folks) do
     remaining = []
-    assigned = folks |> Enum.chunk_every(2)
+    assigned = Pairing.decide_pairs(folks, @shuffler)
 
     {remaining, assigned}
   end

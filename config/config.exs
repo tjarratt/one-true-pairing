@@ -30,6 +30,10 @@ config :one_true_pairing, OneTruePairingWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :one_true_pairing, OneTruePairing.Mailer, adapter: Swoosh.Adapters.Local
 
+# Configure our pair shuffling algorithm
+# Should be overridden by test to reduce randomness
+config :one_true_pairing, shuffler: &OneTruePairing.Pairing.shuffle/1
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
