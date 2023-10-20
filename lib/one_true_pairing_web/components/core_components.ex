@@ -280,6 +280,7 @@ defmodule OneTruePairingWeb.CoreComponents do
 
   attr :rest, :global, include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
                 multiple pattern placeholder readonly required rows size step)
+  attr :test_role, :string, default: ""
 
   slot :inner_block
 
@@ -410,6 +411,7 @@ defmodule OneTruePairingWeb.CoreComponents do
   Renders a header with title.
   """
   attr :class, :string, default: nil
+  attr :test_role, :string, default: ""
 
   slot :inner_block, required: true
   slot :subtitle

@@ -11,7 +11,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     assert header =~ "Let's pair today"
   end
 
-  test "it renders the list of people to pair up", %{conn: conn} do
+  test "it renders the list of people available to pair", %{conn: conn} do
     {:ok, _view, html} = live(conn, ~p"/pairing")
 
     list = html |> HtmlQuery.find!("#pairing_list") |> HtmlQuery.text()
@@ -24,14 +24,21 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     assert list =~ "Tim"
   end
 
-  test "it renders a place to assign people to a track of work", %{conn: conn} do
+  test "it renders the tracks of work", %{conn: conn} do
     {:ok, _view, html} = live(conn, ~p"/pairing")
 
-    list = html |> HtmlQuery.all(test_role: "track-of-work") |> 
-    Enum.map(fn elem -> HtmlQuery.find!(elem, test_role: "track-name") end) |> Enum.map(fn elem -> HtmlQuery.attr(elem, "value") end)
+    list =
+      html
+      |> HtmlQuery.all(test_role: "track-of-work")
+      |> Enum.map(fn elem -> HtmlQuery.find!(elem, test_role: "track-name") end)
+      |> Enum.map(fn elem -> HtmlQuery.attr(elem, "value") end)
 
     assert Enum.member?(list, "Inland")
     assert Enum.member?(list, "Emissions Calculations")
     assert Enum.member?(list, "Energy Bank")
+  end
+
+  test "randomising pairs", %{conn: conn} do
+    {:ok, _view, html} = live(conn, ~p"/pairing")
   end
 end

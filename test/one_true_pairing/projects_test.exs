@@ -5,7 +5,7 @@ defmodule OneTruePairing.ProjectsTest do
 
   describe "stuff that isn't crud" do
     test "getting the people for a given project" do
-      people = Projects.people_for(project: "nrg") |> Enum.sort
+      people = Projects.people_for(project: "nrg") |> Enum.sort()
 
       assert Enum.member?(people, "Tim")
       assert Enum.member?(people, "Andrew")
@@ -16,7 +16,7 @@ defmodule OneTruePairing.ProjectsTest do
     end
 
     test "getting tracks for a project" do
-      tracks = Projects.tracks_for(project: "nrg") |> Enum.sort
+      tracks = Projects.tracks_for(project: "nrg") |> Enum.sort()
 
       assert Enum.member?(tracks, "Inland")
       assert Enum.member?(tracks, "Emissions Calculations")

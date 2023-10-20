@@ -2,7 +2,8 @@
   import_deps: [:ecto, :phoenix, :phoenix_html, :phoenix_live_view],
   inputs: [
     "*.{ex,exs}",
-    "priv/*/seeds.exs"
+    "priv/*/seeds.exs",
+    "{config,lib,test}/**/*.{ex,exs,heex}"
   ],
   line_length: 120,
   locals_without_parens: [

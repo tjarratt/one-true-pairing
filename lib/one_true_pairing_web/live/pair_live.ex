@@ -21,15 +21,15 @@ defmodule OneTruePairingWeb.Live.PairView do
   end
 
   defp fetch_tracks() do
-    Projects.tracks_for(project: "nrg") |>
-      Enum.map(fn track -> {track, %{people: [], name: track}} end) |>
-      Enum.reduce(%{}, fn {key, value}, acc -> Map.put(acc, key, value) end)
+    Projects.tracks_for(project: "nrg")
+    |> Enum.map(fn track -> {track, %{people: [], name: track}} end)
+    |> Enum.reduce(%{}, fn {key, value}, acc -> Map.put(acc, key, value) end)
   end
 
   defp fetch_people() do
-    Projects.people_for(project: "nrg") |>
-      Enum.with_index |>
-      Enum.map(fn {name, idx} -> %{name: name, id: idx, position: idx} end)
+    Projects.people_for(project: "nrg")
+    |> Enum.with_index()
+    |> Enum.map(fn {name, idx} -> %{name: name, id: idx, position: idx} end)
   end
 
   def render(assigns) do
@@ -47,8 +47,7 @@ defmodule OneTruePairingWeb.Live.PairView do
       />
 
       <%= for track <- Map.keys(@tracks) do %>
-
-       <.live_component
+        <.live_component
           id={track}
           module={OneTruePairingWeb.Live.ListComponent}
           list={@tracks[track][:people]}
@@ -57,7 +56,6 @@ defmodule OneTruePairingWeb.Live.PairView do
           group="pairing"
           test_role="track-of-work"
         />
-
       <% end %>
     </div>
     """
