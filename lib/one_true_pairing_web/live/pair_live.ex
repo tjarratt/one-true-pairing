@@ -22,10 +22,12 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   def render(assigns) do
     ~H"""
-    <h2>Let's pair today</h2>
+    <.header>Let's pair today</.header>
 
     <div>
-      <button phx-click="randomize_pairs">Randomize pairs</button>
+      <.button phx-click="randomize_pairs" class="my-4">
+        Randomize pairs
+      </.button>
     </div>
 
     <div id="pairing_list" class="grid sm:grid-cols-1 md:grid-cols-3 gap-2">
