@@ -62,4 +62,33 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
     assert unpaired_folks == ""
   end
+
+  test "resetting pairs", %{conn: conn} do
+    {:ok, view, _html} = live(conn, ~p"/pairing")
+
+    view
+    |> element("button", "Randomize pairs")
+    |> render_click()
+
+    html =
+      view
+      |> element("button", "Reset pairs")
+      |> render_click()
+
+    list = html |> HtmlQuery.find!("#pairing_list") |> HtmlQuery.text()
+
+    assert list =~ "Sarah"
+    assert list =~ "Andrew"
+    assert list =~ "Konstantinos"
+    assert list =~ "Jon"
+    assert list =~ "Freja"
+    assert list =~ "Tim"
+
+    [first_pair, second_pair, third_pair] =
+      html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
+
+    assert first_pair == ""
+    assert second_pair == ""
+    assert third_pair == ""
+  end
 end

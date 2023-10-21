@@ -24,9 +24,12 @@ defmodule OneTruePairingWeb.Live.PairView do
     ~H"""
     <.header>Let's pair today</.header>
 
-    <div>
-      <.button phx-click="randomize_pairs" class="my-4">
+    <div class="my-4">
+      <.button phx-click="randomize_pairs">
         Randomize pairs
+      </.button>
+      <.button phx-click="reset_pairs">
+        Reset pairs
       </.button>
     </div>
 
@@ -70,6 +73,13 @@ defmodule OneTruePairingWeb.Live.PairView do
      socket
      |> assign(tracks: new_tracks)
      |> assign(pairing_list: unpaired)}
+  end
+
+  def handle_event("reset_pairs", _params, socket) do
+    {:noreply,
+     socket
+     |> assign(pairing_list: fetch_people())
+     |> assign(tracks: fetch_tracks())}
   end
 
   defp fetch_tracks() do

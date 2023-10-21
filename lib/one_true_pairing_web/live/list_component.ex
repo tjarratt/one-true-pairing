@@ -7,7 +7,13 @@ defmodule OneTruePairingWeb.Live.ListComponent do
       <div class="space-y-5 mx-auto px-4 space-y-4">
         <header>
           <.simple_form for={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
-            <.input type="text" test-role="track-name" name={"track-named-#{@list_name}"} value={@list_name} class="text-2xl"/>
+            <.input
+              type="text"
+              test-role="track-name"
+              name={"track-named-#{@list_name}"}
+              value={@list_name}
+              class="text-2xl"
+            />
           </.simple_form>
         </header>
 
