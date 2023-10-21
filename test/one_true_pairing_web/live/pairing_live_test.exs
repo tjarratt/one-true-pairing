@@ -6,7 +6,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   test "it has a title", %{conn: conn} do
     {:ok, _view, html} = live(conn, ~p"/pairing")
 
-    header = html |> HtmlQuery.find("h2") |> HtmlQuery.text()
+    header = html |> HtmlQuery.find("h1") |> HtmlQuery.text()
 
     assert header =~ "Let's pair today"
   end

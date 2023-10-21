@@ -5,11 +5,11 @@ defmodule OneTruePairingWeb.Live.ListComponent do
     ~H"""
     <div class="bg-gray-100 py-4 rounded-lg" test-role={@test_role}>
       <div class="space-y-5 mx-auto px-4 space-y-4">
-        <.header>
+        <header>
           <.simple_form for={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
             <.input type="text" test-role="track-name" name={"track-named-#{@list_name}"} value={@list_name} class="text-2xl"/>
           </.simple_form>
-        </.header>
+        </header>
 
         <div id={"#{@id}-items"} phx-hook="Sortable" data-list_id={@id} test-role="list" data-group={@group}>
           <div
