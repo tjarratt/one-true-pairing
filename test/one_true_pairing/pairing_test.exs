@@ -3,9 +3,11 @@ defmodule OneTruePairing.PairingTest do
 
   test "pair_up/1" do
     folk = ["Alice", "Bob", "Carol", "Dan"]
+    tracks = ["basket weaving", "swimming"]
 
-    arrangement = OneTruePairing.Pairing.decide_pairs(folk, fn x -> x end)
+    {unpaired, arrangements} = OneTruePairing.Pairing.decide_pairs(folk, tracks, fn x -> x end)
 
-    assert arrangement == [["Alice", "Bob"], ["Carol", "Dan"]]
+    assert arrangements == [["Alice", "Bob"], ["Carol", "Dan"]]
+    assert unpaired == []
   end
 end

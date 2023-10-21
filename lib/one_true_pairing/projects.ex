@@ -19,9 +19,8 @@ defmodule OneTruePairing.Projects do
 
   @shuffler Application.compile_env(:one_true_pairing, :shuffler)
 
-  def assign_pairs(folks) do
-    remaining = []
-    assigned = Pairing.decide_pairs(folks, @shuffler)
+  def assign_pairs(folks, tracks) do
+    {remaining, assigned} = Pairing.decide_pairs(folks, tracks, @shuffler)
 
     {remaining, assigned}
   end

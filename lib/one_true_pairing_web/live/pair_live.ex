@@ -66,7 +66,8 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   def handle_event("randomize_pairs", _params, socket) do
     folks = socket.assigns.pairing_list
-    {unpaired, pairings} = Projects.assign_pairs(folks)
+    tracks = socket.assigns.tracks
+    {unpaired, pairings} = Projects.assign_pairs(folks, tracks)
     new_tracks = place_in_tracks(pairings)
 
     {:noreply,
