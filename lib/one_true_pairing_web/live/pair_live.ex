@@ -30,7 +30,7 @@ defmodule OneTruePairingWeb.Live.PairView do
       </.button>
     </div>
 
-    <div id="pairing_list" class="grid sm:grid-cols-1 md:grid-cols-3 gap-2">
+    <div id="pairing_list" class="grid sm:grid-cols-1 md:grid-cols-4 gap-2">
       <.live_component
         id="1"
         module={OneTruePairingWeb.Live.ListComponent}
