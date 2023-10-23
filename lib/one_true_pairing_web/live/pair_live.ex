@@ -11,10 +11,16 @@ defmodule OneTruePairingWeb.Live.PairView do
     form2 = to_form(Projects.change_project(%Project{}))
     form3 = to_form(Projects.change_project(%Project{}))
 
+    pairing_form = to_form(Projects.change_project(%Project{}))
+    unavailable_form = to_form(Projects.change_project(%Project{}))
+
     {:ok,
      socket
      |> assign(pairing_list: fetch_people())
+     |> assign(unavailable_list: [])
      |> assign(tracks: tracks)
+     |> assign(pairing_form: pairing_form)
+     |> assign(unavailable_form: unavailable_form)
      |> assign(form1: form1)
      |> assign(form2: form2)
      |> assign(form3: form3)}
@@ -35,11 +41,11 @@ defmodule OneTruePairingWeb.Live.PairView do
 
     <div id="pairing_list" class="grid sm:grid-cols-1 md:grid-cols-4 gap-2">
       <.live_component
-        id="1"
+        id="available"
         module={OneTruePairingWeb.Live.ListComponent}
         list={@pairing_list}
         list_name="Folks"
-        form={@form1}
+        form={@pairing_form}
         group="pairing"
         test_role="unpaired"
       />
@@ -55,13 +61,44 @@ defmodule OneTruePairingWeb.Live.PairView do
           test_role="track-of-work"
         />
       <% end %>
+
+      <.live_component
+        id="unavailable"
+        module={OneTruePairingWeb.Live.ListComponent}
+        list={@unavailable_list}
+        list_name="Unavailable"
+        form={@unavailable_form}
+        group="pairing"
+        test_role="unavailable"
+      />
     </div>
     """
   end
 
   def handle_info({:repositioned, params}, socket) do
-    IO.inspect(params, label: "==========>")
+    index = String.to_integer(params["id"])
+
+    person =
+      case params["from"]["list_id"] do
+        "available" -> Enum.at(socket.assigns.pairing_list, index)
+      end
+
+    socket =
+      case params["to"]["list_id"] do
+        "unavailable" ->
+          socket
+          |> assign(:unavailable_list, socket.assigns.unavailable_list ++ [person])
+          |> assign(:pairing_list, socket.assigns.pairing_list -- [person])
+
+        _ ->
+          socket
+      end
+
     {:noreply, socket}
+  end
+
+  def handle_event("repositioned", params, socket) do
+    handle_info({:repositioned, params}, socket)
   end
 
   def handle_event("randomize_pairs", _params, socket) do
@@ -79,7 +116,7 @@ defmodule OneTruePairingWeb.Live.PairView do
   def handle_event("reset_pairs", _params, socket) do
     {:noreply,
      socket
-     |> assign(pairing_list: fetch_people())
+     |> assign(pairing_list: fetch_people() -- socket.assigns.unavailable_list)
      |> assign(tracks: fetch_tracks())}
   end
 

@@ -91,4 +91,56 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     assert second_pair == ""
     assert third_pair == ""
   end
+
+  describe "when people aren't available to pair" do
+    test "they don't get randomly assigned", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/pairing")
+
+      # send Tim from unpaired to unavailable
+      html =
+        view
+        |> render_hook(:repositioned, %{
+          "id" => "5",
+          "from" => %{"list_id" => "available"},
+          "to" => %{"list_id" => "unavailable"}
+        })
+
+      unavailable = html |> HtmlQuery.find!(test_role: "unavailable") |> HtmlQuery.text()
+      assert unavailable == "Tim"
+
+      available = html |> HtmlQuery.find(test_role: "unpaired") |> HtmlQuery.text()
+      refute available =~ "Tim"
+
+      html =
+        view
+        |> element("button", "Randomize pairs")
+        |> render_click()
+
+      unavailable = html |> HtmlQuery.find!(test_role: "unavailable") |> HtmlQuery.text()
+      assert unavailable == "Tim"
+    end
+
+    test "they don't get reset", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/pairing")
+
+      # send Tim from unpaired to unavailable
+      view
+      |> render_hook(:repositioned, %{
+        "id" => "5",
+        "from" => %{"list_id" => "available"},
+        "to" => %{"list_id" => "unavailable"}
+      })
+
+      html =
+        view
+        |> element("button", "Reset pairs")
+        |> render_click()
+
+      unavailable = html |> HtmlQuery.find!(test_role: "unavailable") |> HtmlQuery.text()
+      assert unavailable == "Tim"
+
+      available = html |> HtmlQuery.find!(test_role: "unpaired") |> HtmlQuery.text()
+      refute available =~ "Tim"
+    end
+  end
 end

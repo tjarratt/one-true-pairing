@@ -42,13 +42,15 @@ defmodule OneTruePairingWeb.Live.ListComponent do
   end
 
   def handle_event("reposition", params, socket) do
-    IO.inspect(params, label: "reposition =========>")
+    IO.inspect(params, label: "handle_event(reposition) =========>")
+    send(self(), {:repositioned, params})
 
     {:noreply, socket}
   end
 
   def handle_event("validate", params, socket) do
     IO.inspect(params, label: "validate ===========>")
+
     {:noreply, socket}
   end
 end

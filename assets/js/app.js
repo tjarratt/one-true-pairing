@@ -38,7 +38,13 @@ Hooks.Sortable = {
 			ghostClass: "drag-ghost",
 			forceFallback: true,
 			onEnd: e => {
-				let params = {old: e.oldIndex, new: e.newIndex, to: e.to.dataset, ...e.item.dataset};
+				let params = {
+          old: e.oldIndex, 
+          new: e.newIndex, 
+          from: e.from.dataset,
+          to: e.to.dataset, 
+          ...e.item.dataset,
+        };
 				this.pushEventTo(this.el, "reposition", params);
 			},
 		});
