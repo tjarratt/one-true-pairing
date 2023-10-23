@@ -60,7 +60,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
     unpaired_folks = html |> HtmlQuery.find!(test_role: "unpaired") |> HtmlQuery.text()
 
-    assert unpaired_folks == ""
+    assert unpaired_folks == "Nikhil"
   end
 
   test "resetting pairs", %{conn: conn} do

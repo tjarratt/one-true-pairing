@@ -10,7 +10,7 @@ defmodule OneTruePairing.Projects do
   alias OneTruePairing.Projects.Project
 
   def people_for(project: "nrg") do
-    ~w(Sarah Andrew Konstantinos Jon Freja Tim)
+    ~w(Sarah Andrew Konstantinos Jon Freja Tim Nikhil)
   end
 
   def tracks_for(project: "nrg") do
@@ -20,7 +20,8 @@ defmodule OneTruePairing.Projects do
   @shuffler Application.compile_env(:one_true_pairing, :shuffler)
 
   def assign_pairs(folks, tracks) do
-    {remaining, assigned} = Pairing.decide_pairs(folks, tracks, @shuffler)
+    track_names = Map.keys(tracks)
+    {remaining, assigned} = Pairing.decide_pairs(folks, track_names, @shuffler)
 
     {remaining, assigned}
   end

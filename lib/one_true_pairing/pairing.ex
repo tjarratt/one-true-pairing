@@ -1,10 +1,11 @@
 defmodule OneTruePairing.Pairing do
-  def decide_pairs(people, _tracks, shuffler) do
-    assignments = people
-      |> shuffler.()
-      |> Enum.chunk_every(2)
+  def decide_pairs(people, tracks, shuffler) do
+    shuffled = people |> shuffler.()
+    {to_pair, remaining} = Enum.split(shuffled, length(tracks) * 2)
 
-    {[], assignments}
+    assignments = Enum.chunk_every(to_pair, 2)
+
+    {remaining, assignments}
   end
 
   def identity_shuffle(list), do: list
