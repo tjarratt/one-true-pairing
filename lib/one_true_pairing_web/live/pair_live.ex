@@ -44,7 +44,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         id="available"
         module={OneTruePairingWeb.Live.ListComponent}
         list={@pairing_list}
-        list_name="Folks"
+        list_name="Available to pair"
         form={@pairing_form}
         group="pairing"
         test_role="unpaired"
