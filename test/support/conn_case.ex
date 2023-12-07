@@ -39,6 +39,6 @@ defmodule OneTruePairingWeb.ConnCase do
     {:ok,
      conn:
        Phoenix.ConnTest.build_conn()
-       |> Plug.Conn.put_req_header("authorization", "Basic " <> Base.encode64("pivot:#{@basic_auth_password}"))}
+       |> Plug.Conn.put_req_header("authorization", "Basic " <> Base.encode64("nrg:#{@basic_auth_password}"))}
   end
 end

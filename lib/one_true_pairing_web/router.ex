@@ -18,7 +18,7 @@ defmodule OneTruePairingWeb.Router do
 
   pipeline :auth do
     plug(:basic_auth,
-      username: "pivot",
+      username: "nrg",
       password: Application.compile_env!(:one_true_pairing, :basic_auth_password)
     )
   end
