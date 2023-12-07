@@ -16,7 +16,6 @@ swap_size_mb = 512
 [env]
   PHX_HOST = "one-true-pairing.fly.dev"
   PORT = "8080"
-  FLY_SCALE_TO_ZERO = "15m"
 
 [http_service]
   internal_port = 8080
