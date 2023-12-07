@@ -26,9 +26,9 @@ defmodule OneTruePairingWeb.Router do
   scope "/", OneTruePairingWeb do
     pipe_through [:browser, :auth]
 
-    get "/", PageController, :home
     resources "/projects", ProjectController
 
+    live "/", Live.PairView, :index
     live "/pairing", Live.PairView, :index
     live "/example", Live.ExampleView, :index
   end
