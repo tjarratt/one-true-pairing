@@ -10,11 +10,11 @@ defmodule OneTruePairing.Projects do
   alias OneTruePairing.Projects.Project
 
   def people_for(project: "nrg") do
-    ~w(Sarah Andrew Konstantinos Jon Freja Tim Nikhil)
+    ~w(Andrew Freja Ronaldo Hitalo Alicia)
   end
 
   def tracks_for(project: "nrg") do
-    ["Inland", "Energy Bank", "Emissions Calculations"]
+    ["Ocean", "Not Ocean"]
   end
 
   @shuffler Application.compile_env(:one_true_pairing, :shuffler)

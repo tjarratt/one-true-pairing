@@ -7,20 +7,18 @@ defmodule OneTruePairing.ProjectsTest do
     test "getting the people for a given project" do
       people = Projects.people_for(project: "nrg") |> Enum.sort()
 
-      assert Enum.member?(people, "Tim")
       assert Enum.member?(people, "Andrew")
-      assert Enum.member?(people, "Sarah")
       assert Enum.member?(people, "Freja")
-      assert Enum.member?(people, "Jon")
-      assert Enum.member?(people, "Konstantinos")
+      assert Enum.member?(people, "Ronaldo")
+      assert Enum.member?(people, "Hitalo")
+      assert Enum.member?(people, "Alicia")
     end
 
     test "getting tracks for a project" do
       tracks = Projects.tracks_for(project: "nrg") |> Enum.sort()
 
-      assert Enum.member?(tracks, "Inland")
-      assert Enum.member?(tracks, "Emissions Calculations")
-      assert Enum.member?(tracks, "Energy Bank")
+      assert Enum.member?(tracks, "Ocean")
+      assert Enum.member?(tracks, "Not Ocean")
     end
   end
 
