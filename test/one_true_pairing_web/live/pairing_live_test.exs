@@ -58,6 +58,28 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     assert unpaired_folks == "Alicia"
   end
 
+  test "pairs can be randomized multiple times", %{conn: conn} do
+    {:ok, view, _html} = live(conn, ~p"/pairing")
+
+    view
+    |> element("button", "Randomize pairs")
+    |> render_click()
+
+    html =
+      view
+      |> element("button", "Randomize pairs")
+      |> render_click()
+
+    [first_pair, second_pair] =
+      html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
+
+    assert first_pair =~ "Andrew"
+    assert first_pair =~ "Freja"
+
+    assert second_pair =~ "Ronaldo"
+    assert second_pair =~ "Hitalo"
+  end
+
   test "resetting pairs", %{conn: conn} do
     {:ok, view, _html} = live(conn, ~p"/pairing")
 
@@ -111,6 +133,45 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       unavailable = html |> HtmlQuery.find!(test_role: "unavailable") |> HtmlQuery.text()
       assert unavailable == "Alicia"
+
+      [first_pair, second_pair] =
+        html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
+
+      refute first_pair =~ "Alicia"
+      refute second_pair =~ "Alicia"
+    end
+
+    test "people do not get assigned twice when randomized", %{conn: conn} do
+      {:ok, view, _html} = live(conn, ~p"/pairing")
+
+      # send Andrew from unpaired to unavailable
+      html =
+        view
+        |> render_hook(:repositioned, %{
+          "id" => "0",
+          "from" => %{"list_id" => "available"},
+          "to" => %{"list_id" => "unavailable"}
+        })
+
+      unavailable = html |> HtmlQuery.find!(test_role: "unavailable") |> HtmlQuery.text()
+      assert unavailable == "Andrew"
+
+      available = html |> HtmlQuery.find(test_role: "unpaired") |> HtmlQuery.text()
+      refute available =~ "Andrew"
+
+      html =
+        view
+        |> element("button", "Randomize pairs")
+        |> render_click()
+
+      unavailable = html |> HtmlQuery.find!(test_role: "unavailable") |> HtmlQuery.text()
+      assert unavailable == "Andrew"
+
+      [first_pair, second_pair] =
+        html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
+
+      refute first_pair =~ "Andrew"
+      refute second_pair =~ "Andrew"
     end
 
     test "they don't get reset", %{conn: conn} do

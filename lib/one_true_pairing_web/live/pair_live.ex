@@ -5,6 +5,7 @@ defmodule OneTruePairingWeb.Live.PairView do
   alias OneTruePairing.Projects.Project
 
   def mount(_params, _session, socket) do
+    everyone = fetch_people()
     tracks = fetch_tracks()
 
     form1 = to_form(Projects.change_project(%Project{}))
@@ -16,7 +17,8 @@ defmodule OneTruePairingWeb.Live.PairView do
 
     {:ok,
      socket
-     |> assign(pairing_list: fetch_people())
+     |> assign(everyone: everyone)
+     |> assign(pairing_list: everyone)
      |> assign(unavailable_list: [])
      |> assign(tracks: tracks)
      |> assign(pairing_form: pairing_form)
@@ -102,7 +104,7 @@ defmodule OneTruePairingWeb.Live.PairView do
   end
 
   def handle_event("randomize_pairs", _params, socket) do
-    folks = socket.assigns.pairing_list
+    folks = socket.assigns.everyone -- socket.assigns.unavailable_list
     tracks = socket.assigns.tracks
     {unpaired, pairings} = Projects.assign_pairs(folks, tracks)
     new_tracks = place_in_tracks(pairings)
