@@ -43,8 +43,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       |> Enum.map(fn elem -> HtmlQuery.find!(elem, test_role: "track-name") end)
       |> Enum.map(fn elem -> HtmlQuery.attr(elem, "value") end)
 
-    assert Enum.member?(list, "Ocean")
-    assert Enum.member?(list, "Not Ocean")
+    assert Enum.member?(list, "Track 1")
+    assert Enum.member?(list, "Track 2")
   end
 
   test "randomising pairs", %{conn: conn, project: project} do

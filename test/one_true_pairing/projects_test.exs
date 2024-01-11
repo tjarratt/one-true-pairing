@@ -17,8 +17,8 @@ defmodule OneTruePairing.ProjectsTest do
     test "getting tracks for a project" do
       tracks = Projects.tracks_for(project: "nrg") |> Enum.sort()
 
-      assert Enum.member?(tracks, "Ocean")
-      assert Enum.member?(tracks, "Not Ocean")
+      assert Enum.member?(tracks, "Track 1")
+      assert Enum.member?(tracks, "Track 2")
     end
   end
 

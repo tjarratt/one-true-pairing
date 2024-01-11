@@ -20,7 +20,7 @@ defmodule OneTruePairing.Projects do
   end
 
   def tracks_for(project: "nrg") do
-    ["Ocean", "Not Ocean"]
+    ["Track 1", "Track 2"]
   end
 
   @shuffler Application.compile_env(:one_true_pairing, :shuffler)
