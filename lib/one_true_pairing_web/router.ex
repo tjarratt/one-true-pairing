@@ -31,8 +31,7 @@ defmodule OneTruePairingWeb.Router do
       live "/pairing", Live.PairView, :index
     end
 
-    live "/", Live.PairView, :index
-    live "/pairing", Live.PairView, :index
+    live "/", Live.HomeView, :index
     live "/example", Live.ExampleView, :index
   end
 
