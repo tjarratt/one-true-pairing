@@ -3,6 +3,6 @@
   <:subtitle>Use this form to manage person records in your database.</:subtitle>
 </.header>
 
-<.person_form changeset={@changeset} action={~p"/persons/#{@person}"} />
+<.person_form changeset={@changeset} action={~p"/projects/#{@project}/persons/#{@person}"} />
 
-<.back navigate={~p"/persons"}>Back to persons</.back>
+<.back navigate={~p"/projects/#{@project}/persons"}>Back to persons</.back>

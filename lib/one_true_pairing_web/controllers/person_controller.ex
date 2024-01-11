@@ -16,6 +16,7 @@ defmodule OneTruePairingWeb.PersonController do
 
   def create(conn, %{"person" => person_params, "project_id" => project_id}) do
     full_params = Map.merge(person_params, %{"project_id" => project_id})
+
     case Projects.create_person(full_params) do
       {:ok, person} ->
         conn

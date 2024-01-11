@@ -28,6 +28,7 @@ defmodule OneTruePairingWeb.Router do
 
     resources "/projects", ProjectController do
       resources "/persons", PersonController
+      live "/pairing", Live.PairView, :index
     end
 
     live "/", Live.PairView, :index

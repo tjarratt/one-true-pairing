@@ -4,8 +4,8 @@ defmodule OneTruePairingWeb.Live.PairView do
   alias OneTruePairing.Projects
   alias OneTruePairing.Projects.Project
 
-  def mount(_params, _session, socket) do
-    everyone = fetch_people()
+  def mount(%{"project_id" => project_id}, _session, socket) do
+    everyone = fetch_people(project_id)
     tracks = fetch_tracks()
 
     form1 = to_form(Projects.change_project(%Project{}))
@@ -17,6 +17,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
     {:ok,
      socket
+     |> assign(project_id: project_id)
      |> assign(everyone: everyone)
      |> assign(pairing_list: everyone)
      |> assign(unavailable_list: [])
@@ -118,7 +119,7 @@ defmodule OneTruePairingWeb.Live.PairView do
   def handle_event("reset_pairs", _params, socket) do
     {:noreply,
      socket
-     |> assign(pairing_list: fetch_people() -- socket.assigns.unavailable_list)
+     |> assign(pairing_list: fetch_people(socket.assigns.project_id) -- socket.assigns.unavailable_list)
      |> assign(tracks: fetch_tracks())}
   end
 
@@ -128,8 +129,9 @@ defmodule OneTruePairingWeb.Live.PairView do
     |> Enum.reduce(%{}, fn {key, value}, acc -> Map.put(acc, key, value) end)
   end
 
-  defp fetch_people() do
-    Projects.people_for(project: "nrg")
+  defp fetch_people(project_id) do
+    Projects.persons_for(project_id: project_id)
+    |> Enum.map(fn person -> person.name end)
     |> Enum.with_index()
     |> Enum.map(fn {name, idx} -> %{name: name, id: idx, position: idx} end)
   end
