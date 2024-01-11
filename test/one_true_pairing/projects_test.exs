@@ -94,7 +94,8 @@ defmodule OneTruePairing.ProjectsTest do
     end
 
     test "create_person/1 with valid data creates a person" do
-      valid_attrs = %{name: "some name"}
+      project = project_fixture()
+      valid_attrs = %{name: "some name", project_id: project.id}
 
       assert {:ok, %Person{} = person} = Projects.create_person(valid_attrs)
       assert person.name == "some name"

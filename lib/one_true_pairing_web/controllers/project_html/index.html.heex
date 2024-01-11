@@ -14,11 +14,7 @@
     <div class="sr-only">
       <.link navigate={~p"/projects/#{project}"}>Show</.link>
     </div>
-    <.link navigate={~p"/projects/#{project}/edit"}>Edit</.link>
-  </:action>
-  <:action :let={project}>
-    <.link href={~p"/projects/#{project}"} method="delete" data-conform="Are you sure?">
-      Delete
-    </.link>
+    <.link navigate={~p"/projects/#{project}/edit"}>Edit Name</.link>
+    <.link navigate={~p"/projects/#{project}/persons"}>Edit Team</.link>
   </:action>
 </.table>

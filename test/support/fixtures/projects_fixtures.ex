@@ -25,7 +25,8 @@ defmodule OneTruePairing.ProjectsFixtures do
     {:ok, person} =
       attrs
       |> Enum.into(%{
-        name: "some name"
+        name: "some name",
+        project_id: project_fixture().id
       })
       |> OneTruePairing.Projects.create_person()
 

@@ -8,6 +8,12 @@ defmodule OneTruePairing.Projects do
 
   alias OneTruePairing.Pairing
   alias OneTruePairing.Projects.Project
+  alias OneTruePairing.Projects.Person
+
+  def persons_for(project_id: project_id) do
+    query = from(p in Person, where: p.project_id == ^project_id)
+    Repo.all(query)
+  end
 
   def people_for(project: "nrg") do
     ~w(Andrew Freja Ronaldo Hitalo Alicia)

@@ -12,7 +12,7 @@ defmodule OneTruePairing.Projects.Person do
   @doc false
   def changeset(person, attrs) do
     person
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :project_id])
+    |> validate_required([:name, :project_id])
   end
 end
