@@ -20,20 +20,26 @@ defmodule OneTruePairing.Projects do
     Repo.all(query)
   end
 
+  @deprecated
   def people_for(project: "nrg") do
     ~w(Andrew Freja Ronaldo Hitalo Alicia)
   end
 
   # tracks
 
-  def tracks_for(project: "nrg") do
-    ["Track 1", "Track 2"]
-  end
-
   def create_track(attrs) do
     %Track{}
     |> Track.changeset(attrs)
     |> Repo.insert()
+  end
+
+  @deprecated
+  def tracks_for(project: "nrg") do
+    ["Track 1", "Track 2"]
+  end
+
+  def tracks_for(project_id: project_id) do
+    :notimplemented
   end
 
   # # # Pairing Arrangements

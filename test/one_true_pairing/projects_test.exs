@@ -83,12 +83,12 @@ defmodule OneTruePairing.ProjectsTest do
     import OneTruePairing.ProjectsFixtures
 
     test "can be created" do
-      track_fixture = track_fixture()
       project = project_fixture()
-
       valid_attrs = %{title: "coal mining", project_id: project.id}
 
-      assert {:ok, %Track{} = track} = Projects.create_track(valid_attrs)
+      result = Projects.create_track(valid_attrs)
+
+      assert {:ok, %Track{} = track} = result
       assert track.title == "coal mining"
       assert track.project_id == project.id
     end
@@ -100,6 +100,18 @@ defmodule OneTruePairing.ProjectsTest do
     import OneTruePairing.ProjectsFixtures
 
     @invalid_attrs %{name: nil}
+
+    test "fetching the people for a given project" do 
+      project_a = project_fixture(name: "a")
+      project_b = project_fixture(name: "b")
+
+      alice = person_fixture(name: "Alice", project_id: project_a.id)
+      bob = person_fixture(name: "Bob", project_id: project_b.id)
+
+      people = Projects.persons_for(project_id: project_a.id)
+
+      assert people == [alice]
+    end
 
     test "list_people/0 returns all people" do
       person = person_fixture()
