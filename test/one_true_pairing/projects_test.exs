@@ -4,25 +4,6 @@ defmodule OneTruePairing.ProjectsTest do
 
   alias OneTruePairing.Projects
 
-  describe "stuff that isn't crud" do
-    test "getting the people for a given project" do
-      people = Projects.people_for(project: "nrg") |> Enum.sort()
-
-      assert Enum.member?(people, "Andrew")
-      assert Enum.member?(people, "Freja")
-      assert Enum.member?(people, "Ronaldo")
-      assert Enum.member?(people, "Hitalo")
-      assert Enum.member?(people, "Alicia")
-    end
-
-    test "getting tracks for a project" do
-      tracks = Projects.tracks_for(project: "nrg") |> Enum.sort()
-
-      assert Enum.member?(tracks, "Track 1")
-      assert Enum.member?(tracks, "Track 2")
-    end
-  end
-
   describe "projects" do
     alias OneTruePairing.Projects.Project
 
@@ -98,7 +79,7 @@ defmodule OneTruePairing.ProjectsTest do
       project_b = project_fixture(name: "b")
 
       homepage = track_fixture(title: "homepage", project_id: project_a.id)
-      backoffice = track_fixture(title: "backoffice", project_id: project_b.id)
+      _backoffice = track_fixture(title: "backoffice", project_id: project_b.id)
 
       tracks = Projects.tracks_for(project_id: project_a.id)
 
@@ -118,7 +99,7 @@ defmodule OneTruePairing.ProjectsTest do
       project_b = project_fixture(name: "b")
 
       alice = person_fixture(name: "Alice", project_id: project_a.id)
-      bob = person_fixture(name: "Bob", project_id: project_b.id)
+      _bob = person_fixture(name: "Bob", project_id: project_b.id)
 
       people = Projects.persons_for(project_id: project_a.id)
 

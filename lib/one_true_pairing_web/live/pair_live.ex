@@ -7,7 +7,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   def mount(%{"project_id" => project_id}, _session, socket) do
     everyone = fetch_people(project_id)
-    tracks = fetch_tracks()
+    tracks = fetch_tracks(project_id: project_id)
 
     form1 = to_form(Projects.change_project(%Project{}))
     form2 = to_form(Projects.change_project(%Project{}))
@@ -105,11 +105,11 @@ defmodule OneTruePairingWeb.Live.PairView do
     handle_info({:repositioned, params}, socket)
   end
 
-  def handle_event("randomize_pairs", _params, socket) do
+  def handle_event("randomize_pairs", _params, %{assigns: %{project_id: project_id}} = socket) do
     folks = socket.assigns.everyone -- socket.assigns.unavailable_list
     tracks = socket.assigns.tracks
     {unpaired, pairings} = Projects.assign_pairs(folks, tracks)
-    new_tracks = place_in_tracks(pairings)
+    new_tracks = place_in_tracks(project_id, pairings)
 
     {:noreply,
      socket
@@ -117,15 +117,15 @@ defmodule OneTruePairingWeb.Live.PairView do
      |> assign(pairing_list: unpaired)}
   end
 
-  def handle_event("reset_pairs", _params, socket) do
+  def handle_event("reset_pairs", _params, %{assigns: %{project_id: project_id}} = socket) do
     pairing_list =
-      fetch_people(socket.assigns.project_id)
+      fetch_people(project_id)
       |> without(socket.assigns.unavailable_list)
 
     {:noreply,
      socket
      |> assign(pairing_list: pairing_list)
-     |> assign(tracks: fetch_tracks())}
+     |> assign(tracks: fetch_tracks(project_id: project_id))}
   end
 
   defp without(everyone, unavailable) do
@@ -141,8 +141,9 @@ defmodule OneTruePairingWeb.Live.PairView do
     |> Enum.map(fn {name, idx} -> %{name: name, id: idx, position: idx} end)
   end
 
-  defp fetch_tracks() do
-    Projects.tracks_for(project: "nrg")
+  defp fetch_tracks(project_id: project_id) do
+    Projects.tracks_for(project_id: project_id)
+    |> Enum.map(&(&1.title))
     |> Enum.map(fn track -> {track, %{people: [], name: track}} end)
     |> Enum.reduce(%{}, fn {key, value}, acc -> Map.put(acc, key, value) end)
   end
@@ -154,8 +155,8 @@ defmodule OneTruePairingWeb.Live.PairView do
     |> Enum.map(fn {name, idx} -> %{name: name, id: idx, position: idx} end)
   end
 
-  defp place_in_tracks(pairings) do
-    tracks = fetch_tracks()
+  defp place_in_tracks(project_id, pairings) do
+    tracks = fetch_tracks(project_id: project_id)
 
     Enum.zip(pairings, tracks)
     |> Enum.map(fn {pair, {name, track_info}} -> {name, %{track_info | people: pair}} end)

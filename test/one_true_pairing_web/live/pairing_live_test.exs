@@ -3,14 +3,19 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   use OneTruePairingWeb.ConnCase
 
   import Phoenix.LiveViewTest
+  import OneTruePairing.ProjectsFixtures 
 
   setup do
-    project = OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Project{name: "Fellowship"})
-    create_person(project, "Andrew")
-    create_person(project, "Freja")
-    create_person(project, "Ronaldo")
-    create_person(project, "Hitalo")
-    create_person(project, "Alicia")
+    project = project_fixture(name: "Fellowship")
+
+    track_fixture(title: "Taking the hobbits to Eisengard", project_id: project.id)
+    track_fixture(title: "Boiling potatoes", project_id: project.id)
+
+    person_fixture(project_id: project.id, name: "Andrew")
+    person_fixture(project_id: project.id, name: "Freja")
+    person_fixture(project_id: project.id, name: "Ronaldo")
+    person_fixture(project_id: project.id, name: "Hitalo")
+    person_fixture(project_id: project.id, name: "Alicia")
 
     [project: project]
   end
@@ -44,8 +49,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       |> Enum.map(fn elem -> HtmlQuery.find!(elem, test_role: "track-name") end)
       |> Enum.map(fn elem -> HtmlQuery.attr(elem, "value") end)
 
-    assert Enum.member?(list, "Track 1")
-    assert Enum.member?(list, "Track 2")
+    assert Enum.member?(list, "Taking the hobbits to Eisengard")
+    assert Enum.member?(list, "Boiling potatoes")
   end
 
   describe "randomising pairs" do
@@ -246,12 +251,5 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       assert available_indices == [0, 1, 2, 3]
     end
-  end
-
-  defp create_person(project, name) do
-    OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{
-      name: name,
-      project_id: project.id
-    })
   end
 end

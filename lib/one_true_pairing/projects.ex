@@ -20,9 +20,14 @@ defmodule OneTruePairing.Projects do
     Repo.all(query)
   end
 
-  @deprecated
-  def people_for(project: "nrg") do
-    ~w(Andrew Freja Ronaldo Hitalo Alicia)
+  @doc """
+  Creates a person for a given project.
+
+  """
+  def create_person(attrs \\ %{}) do
+    %Person{}
+    |> Person.changeset(attrs)
+    |> Repo.insert()
   end
 
   # tracks
@@ -31,11 +36,6 @@ defmodule OneTruePairing.Projects do
     %Track{}
     |> Track.changeset(attrs)
     |> Repo.insert()
-  end
-
-  @deprecated
-  def tracks_for(project: "nrg") do
-    ["Track 1", "Track 2"]
   end
 
   def tracks_for(project_id: project_id) do
@@ -180,24 +180,6 @@ defmodule OneTruePairing.Projects do
 
   """
   def get_person!(id), do: Repo.get!(Person, id)
-
-  @doc """
-  Creates a person.
-
-  ## Examples
-
-      iex> create_person(%{field: value})
-      {:ok, %Person{}}
-
-      iex> create_person(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_person(attrs \\ %{}) do
-    %Person{}
-    |> Person.changeset(attrs)
-    |> Repo.insert()
-  end
 
   @doc """
   Updates a person.
