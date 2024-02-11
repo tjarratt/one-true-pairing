@@ -1,4 +1,6 @@
 defmodule OneTruePairing.Projects do
+  # @related [test](test/one_true_pairing/projects_test.exs)
+
   @moduledoc """
   The Projects context.
   """
@@ -9,6 +11,9 @@ defmodule OneTruePairing.Projects do
   alias OneTruePairing.Pairing
   alias OneTruePairing.Projects.Project
   alias OneTruePairing.Projects.Person
+  alias OneTruePairing.Projects.Track
+
+  # # # people
 
   def persons_for(project_id: project_id) do
     query = from(p in Person, where: p.project_id == ^project_id)
@@ -19,9 +24,19 @@ defmodule OneTruePairing.Projects do
     ~w(Andrew Freja Ronaldo Hitalo Alicia)
   end
 
+  # tracks
+
   def tracks_for(project: "nrg") do
     ["Track 1", "Track 2"]
   end
+
+  def create_track(attrs) do
+    %Track{}
+    |> Track.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  # # # Pairing Arrangements
 
   @shuffler Application.compile_env(:one_true_pairing, :shuffler)
 
@@ -31,6 +46,8 @@ defmodule OneTruePairing.Projects do
 
     {remaining, assigned}
   end
+
+  # # # Crud ahoy hoy
 
   @doc """
   Returns the list of projects.

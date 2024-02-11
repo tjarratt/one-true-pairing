@@ -1,4 +1,5 @@
 defmodule OneTruePairing.ProjectsTest do
+  # @related [impl](lib/one_true_pairing/projects.ex)
   use OneTruePairing.DataCase
 
   alias OneTruePairing.Projects
@@ -73,6 +74,23 @@ defmodule OneTruePairing.ProjectsTest do
     test "change_project/1 returns a project changeset" do
       project = project_fixture()
       assert %Ecto.Changeset{} = Projects.change_project(project)
+    end
+  end
+
+  describe "tracks" do
+    alias OneTruePairing.Projects.Track
+
+    import OneTruePairing.ProjectsFixtures
+
+    test "can be created" do
+      track_fixture = track_fixture()
+      project = project_fixture()
+
+      valid_attrs = %{title: "coal mining", project_id: project.id}
+
+      assert {:ok, %Track{} = track} = Projects.create_track(valid_attrs)
+      assert track.title == "coal mining"
+      assert track.project_id == project.id
     end
   end
 

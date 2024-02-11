@@ -32,4 +32,19 @@ defmodule OneTruePairing.ProjectsFixtures do
 
     person
   end
+
+  @doc """
+  Generate a track of work.
+  """
+  def track_fixture(attrs \\ %{}) do
+    {:ok, track} =
+      attrs
+      |> Enum.into(%{
+        title: "underwater basket weaving",
+        project_id: project_fixture().id
+      })
+      |> OneTruePairing.Projects.create_track()
+
+    track
+  end
 end

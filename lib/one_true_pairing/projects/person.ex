@@ -9,7 +9,6 @@ defmodule OneTruePairing.Projects.Person do
     timestamps()
   end
 
-  @doc false
   def changeset(person, attrs) do
     person
     |> cast(attrs, [:name, :project_id])
