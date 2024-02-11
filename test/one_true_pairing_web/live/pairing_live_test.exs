@@ -1,4 +1,5 @@
 defmodule OneTruePairingWeb.PairingLiveTest do
+  # @related [impl](lib/one_true_pairing_web/live/pair_live.ex)
   use OneTruePairingWeb.ConnCase
 
   import Phoenix.LiveViewTest
@@ -47,51 +48,53 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     assert Enum.member?(list, "Track 2")
   end
 
-  test "randomising pairs", %{conn: conn, project: project} do
-    {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+  describe "randomising pairs" do
+    test "puts two people in each track of work, and the rest remain unpaired", %{conn: conn, project: project} do
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-    html =
+      html =
+        view
+        |> element("button", "Randomize pairs")
+        |> render_click()
+
+      [first_pair, second_pair] =
+        html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
+
+      assert first_pair =~ "Andrew"
+      assert first_pair =~ "Freja"
+
+      assert second_pair =~ "Ronaldo"
+      assert second_pair =~ "Hitalo"
+
+      unpaired_folks = html |> HtmlQuery.find!(test_role: "unpaired") |> HtmlQuery.text()
+
+      assert unpaired_folks == "Alicia"
+    end
+
+    test "pairs can be randomized multiple times", %{conn: conn, project: project} do
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
       view
       |> element("button", "Randomize pairs")
       |> render_click()
 
-    [first_pair, second_pair] =
-      html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
+      html =
+        view
+        |> element("button", "Randomize pairs")
+        |> render_click()
 
-    assert first_pair =~ "Andrew"
-    assert first_pair =~ "Freja"
+      [first_pair, second_pair] =
+        html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
 
-    assert second_pair =~ "Ronaldo"
-    assert second_pair =~ "Hitalo"
+      assert first_pair =~ "Andrew"
+      assert first_pair =~ "Freja"
 
-    unpaired_folks = html |> HtmlQuery.find!(test_role: "unpaired") |> HtmlQuery.text()
-
-    assert unpaired_folks == "Alicia"
+      assert second_pair =~ "Ronaldo"
+      assert second_pair =~ "Hitalo"
+    end
   end
 
-  test "pairs can be randomized multiple times", %{conn: conn, project: project} do
-    {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
-
-    view
-    |> element("button", "Randomize pairs")
-    |> render_click()
-
-    html =
-      view
-      |> element("button", "Randomize pairs")
-      |> render_click()
-
-    [first_pair, second_pair] =
-      html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
-
-    assert first_pair =~ "Andrew"
-    assert first_pair =~ "Freja"
-
-    assert second_pair =~ "Ronaldo"
-    assert second_pair =~ "Hitalo"
-  end
-
-  test "resetting pairs", %{conn: conn, project: project} do
+  test "the pair assignments can be reset", %{conn: conn, project: project} do
     {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
     view
@@ -207,9 +210,45 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       available = html |> HtmlQuery.find!(test_role: "unpaired") |> HtmlQuery.text()
       refute available =~ "Alicia"
     end
+
+    test "the positions in the lists are recalculated", %{conn: conn, project: project} do
+      # if we don't do this, we'll get the incorrect index on the front-end the second time you move someone in a list
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      # send Alicia from unpaired to unavailable
+      view
+      |> render_hook(:repositioned, %{
+        "id" => "4",
+        "from" => %{"list_id" => "available"},
+        "to" => %{"list_id" => "unavailable"}
+      })
+
+      html =
+        view
+        |> element("button", "Reset pairs")
+        |> render_click()
+
+      unavailable_indices =
+        html
+        |> HtmlQuery.find!(test_role: "unavailable")
+        |> HtmlQuery.all("div[test-index]")
+        |> Enum.map(&HtmlQuery.attr(&1, "test-index"))
+        |> Enum.map(&String.to_integer/1)
+
+      assert unavailable_indices == [0]
+
+      available_indices =
+        html
+        |> HtmlQuery.find!(test_role: "unpaired")
+        |> HtmlQuery.all("div[test-index]")
+        |> Enum.map(&HtmlQuery.attr(&1, "test-index"))
+        |> Enum.map(&String.to_integer/1)
+
+      assert available_indices == [0, 1, 2, 3]
+    end
   end
 
-  def create_person(project, name) do
+  defp create_person(project, name) do
     OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{
       name: name,
       project_id: project.id

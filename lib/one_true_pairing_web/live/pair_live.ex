@@ -1,4 +1,5 @@
 defmodule OneTruePairingWeb.Live.PairView do
+  # @related [test](test/one_true_pairing_web/live/pairing_live_test.exs)
   use OneTruePairingWeb, :live_view
 
   alias OneTruePairing.Projects
@@ -90,8 +91,8 @@ defmodule OneTruePairingWeb.Live.PairView do
       case params["to"]["list_id"] do
         "unavailable" ->
           socket
-          |> assign(:unavailable_list, socket.assigns.unavailable_list ++ [person])
-          |> assign(:pairing_list, socket.assigns.pairing_list -- [person])
+          |> assign(:unavailable_list, recalculate_positions(socket.assigns.unavailable_list ++ [person]))
+          |> assign(:pairing_list, recalculate_positions(socket.assigns.pairing_list -- [person]))
 
         _ ->
           socket
@@ -117,10 +118,27 @@ defmodule OneTruePairingWeb.Live.PairView do
   end
 
   def handle_event("reset_pairs", _params, socket) do
+    pairing_list =
+      fetch_people(socket.assigns.project_id)
+      |> without(socket.assigns.unavailable_list)
+
     {:noreply,
      socket
-     |> assign(pairing_list: fetch_people(socket.assigns.project_id) -- socket.assigns.unavailable_list)
+     |> assign(pairing_list: pairing_list)
      |> assign(tracks: fetch_tracks())}
+  end
+
+  defp without(everyone, unavailable) do
+    unavailable_names = Enum.map(unavailable, & &1.name)
+
+    Enum.reject(everyone, fn person -> person.name in unavailable_names end)
+  end
+
+  defp recalculate_positions(list) do
+    list
+    |> Enum.map(& &1.name)
+    |> Enum.with_index()
+    |> Enum.map(fn {name, idx} -> %{name: name, id: idx, position: idx} end)
   end
 
   defp fetch_tracks() do

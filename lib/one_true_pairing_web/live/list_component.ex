@@ -23,6 +23,7 @@ defmodule OneTruePairingWeb.Live.ListComponent do
             id={"#{@id}-#{item.id}"}
             class="drag-item:focus-within:ring-0 drag-item:focus-within:ring-offset-0 drag-ghost:bg-zinc-300 drag-ghost:border-0 drag-ghost:ring-0 m-2 border-2 border-dashed border-slate-300"
             data-id={item.id}
+            test-index={item.position}
           >
             <div class="flex drag-ghost:opacity-0">
               <.icon name="hero-user-circle" class="w-7 h-7 bg-gray-300 mr-2" />
