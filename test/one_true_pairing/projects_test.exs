@@ -92,6 +92,18 @@ defmodule OneTruePairing.ProjectsTest do
       assert track.title == "coal mining"
       assert track.project_id == project.id
     end
+
+    test "can be fetched given a project" do
+      project_a = project_fixture(name: "a")
+      project_b = project_fixture(name: "b")
+
+      homepage = track_fixture(title: "homepage", project_id: project_a.id)
+      backoffice = track_fixture(title: "backoffice", project_id: project_b.id)
+
+      tracks = Projects.tracks_for(project_id: project_a.id)
+
+      assert tracks == [homepage]
+    end
   end
 
   describe "people" do

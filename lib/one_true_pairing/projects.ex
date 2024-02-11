@@ -39,7 +39,8 @@ defmodule OneTruePairing.Projects do
   end
 
   def tracks_for(project_id: project_id) do
-    :notimplemented
+    query = from(t in Track, where: t.project_id == ^project_id)
+    Repo.all(query)
   end
 
   # # # Pairing Arrangements
