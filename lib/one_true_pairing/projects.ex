@@ -43,6 +43,16 @@ defmodule OneTruePairing.Projects do
     Repo.all(query)
   end
 
+  def update_track_title!(track, new_title) do
+    track
+    |> Track.changeset(%{"title" => new_title})
+    |> Repo.update!()
+  end
+
+  def get_track!(id) do
+    Repo.get!(Track, id)
+  end
+
   # # # Pairing Arrangements
 
   @shuffler Application.compile_env(:one_true_pairing, :shuffler)

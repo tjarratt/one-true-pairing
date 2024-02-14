@@ -85,6 +85,16 @@ defmodule OneTruePairing.ProjectsTest do
 
       assert tracks == [homepage]
     end
+
+    test "can have their title updated" do
+      project = project_fixture()
+      {:ok, track} = Projects.create_track(%{title: "coal mining", project_id: project.id})
+
+      updated = Projects.update_track_title!(track, "refining vespene gas")
+
+      assert updated.title == "refining vespene gas"
+      assert Projects.get_track!(track.id).title == "refining vespene gas"
+    end
   end
 
   describe "people" do
