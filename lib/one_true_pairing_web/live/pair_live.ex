@@ -108,13 +108,20 @@ defmodule OneTruePairingWeb.Live.PairView do
   def handle_event("randomize_pairs", _params, %{assigns: %{project_id: project_id}} = socket) do
     folks = socket.assigns.everyone -- socket.assigns.unavailable_list
     tracks = socket.assigns.tracks
-    {unpaired, pairings} = Projects.assign_pairs(folks, tracks)
-    new_tracks = place_in_tracks(project_id, pairings)
+
+    state = %{
+       unpaired: folks,
+       unavailable: socket.assigns.unavailable_list,
+       arrangements: [],
+       tracks: Map.keys(tracks),
+     }
+    new_state = Projects.decide_pairs(state)
+    new_tracks = place_in_tracks(project_id, Map.get(new_state, :arrangements))
 
     {:noreply,
      socket
      |> assign(tracks: new_tracks)
-     |> assign(pairing_list: unpaired)}
+     |> assign(pairing_list: Map.get(new_state, :unpaired))}
   end
 
   def handle_event("reset_pairs", _params, %{assigns: %{project_id: project_id}} = socket) do

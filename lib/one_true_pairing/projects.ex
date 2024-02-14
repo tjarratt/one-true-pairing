@@ -47,11 +47,8 @@ defmodule OneTruePairing.Projects do
 
   @shuffler Application.compile_env(:one_true_pairing, :shuffler)
 
-  def assign_pairs(folks, tracks) do
-    track_names = Map.keys(tracks)
-    {remaining, assigned} = Pairing.decide_pairs(folks, track_names, @shuffler)
-
-    {remaining, assigned}
+  def decide_pairs(state) do
+    Pairing.decide_pairs(state, @shuffler)
   end
 
   # # # Crud ahoy hoy
