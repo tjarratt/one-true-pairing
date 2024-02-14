@@ -48,7 +48,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         id="available"
         module={OneTruePairingWeb.Live.ListComponent}
         list={@pairing_list}
-        track_id={"unpaired"}
+        track_id="unpaired"
         list_name="Available to pair"
         form={@pairing_form}
         group="pairing"
@@ -73,7 +73,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         module={OneTruePairingWeb.Live.ListComponent}
         list={@unavailable_list}
         list_name="Unavailable"
-        track_id={"unavailable"}
+        track_id="unavailable"
         form={@unavailable_form}
         group="pairing"
         test_role="unavailable"
