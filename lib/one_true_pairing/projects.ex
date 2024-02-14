@@ -38,6 +38,10 @@ defmodule OneTruePairing.Projects do
     |> Repo.insert()
   end
 
+  def get_track!(id) do
+    Repo.get!(Track, id)
+  end
+
   def tracks_for(project_id: project_id) do
     query = from(t in Track, where: t.project_id == ^project_id)
     Repo.all(query)
@@ -47,10 +51,6 @@ defmodule OneTruePairing.Projects do
     track
     |> Track.changeset(%{"title" => new_title})
     |> Repo.update!()
-  end
-
-  def get_track!(id) do
-    Repo.get!(Track, id)
   end
 
   # # # Pairing Arrangements

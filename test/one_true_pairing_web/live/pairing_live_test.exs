@@ -97,6 +97,21 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       assert second_pair =~ "Ronaldo"
       assert second_pair =~ "Hitalo"
     end
+
+    test "does not change the tracks of work", %{conn: conn, project: project} do
+      {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      rename_first_track(view, html, "Staring at the One Ring")
+
+      track_titles =
+        view
+        |> element("button", "Randomize pairs")
+        |> render_click()
+        |> HtmlQuery.all("[test-role=track-of-work] input")
+        |> Enum.map(&HtmlQuery.attr(&1, "value"))
+
+      assert "Staring at the One Ring" in track_titles
+    end
   end
 
   test "the pair assignments can be reset", %{conn: conn, project: project} do
@@ -251,5 +266,32 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       assert available_indices == [0, 1, 2, 3]
     end
+  end
+
+  describe "the tracks of work" do
+    test "can be edited", %{conn: conn, project: project} do
+      {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      html = rename_first_track(view, html, "Staring at the One Ring")
+
+      track_title =
+        html
+        |> HtmlQuery.all("[test-role=track-of-work] input")
+        |> Enum.at(0)
+        |> HtmlQuery.attr("value")
+
+      assert track_title == "Staring at the One Ring"
+    end
+  end
+
+  defp rename_first_track(view, html, new_name) do
+    track_id =
+      html
+      |> HtmlQuery.all("[test-role=track-of-work] input")
+      |> Enum.at(0)
+      |> HtmlQuery.attr("name")
+
+    view
+    |> render_change(:save, %{track_id => new_name})
   end
 end

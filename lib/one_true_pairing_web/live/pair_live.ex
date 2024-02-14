@@ -55,13 +55,13 @@ defmodule OneTruePairingWeb.Live.PairView do
         test_role="unpaired"
       />
 
-      <%= for track <- Map.keys(@tracks) do %>
+      <%= for track <- @tracks do %>
         <.live_component
-          id={track.title}
+          id={track.name}
           module={OneTruePairingWeb.Live.ListComponent}
-          track_id={@tracks[track][:id]}
-          list={@tracks[track][:people]}
-          list_name={@tracks[track][:name]}
+          track_id={track.id}
+          list={track.people}
+          list_name={track.name}
           form={@form2}
           group="pairing"
           test_role="track-of-work"
@@ -80,6 +80,70 @@ defmodule OneTruePairingWeb.Live.PairView do
       />
     </div>
     """
+  end
+
+  def handle_event("repositioned", params, socket) do
+    handle_info({:repositioned, params}, socket)
+  end
+
+  def handle_event("save", params, socket) do
+    handle_info({:save, params}, socket)
+  end
+
+  def handle_event("randomize_pairs", _params, %{assigns: %{project_id: project_id}} = socket) do
+    folks = socket.assigns.everyone -- socket.assigns.unavailable_list
+    tracks = socket.assigns.tracks
+
+    state = %{
+      unpaired: folks,
+      unavailable: socket.assigns.unavailable_list,
+      arrangements: [],
+      tracks: Enum.map(tracks, & &1.name)
+    }
+
+    new_state = Projects.decide_pairs(state)
+    new_tracks = place_in_tracks(project_id, Map.get(new_state, :arrangements))
+
+    {:noreply,
+     socket
+     |> assign(tracks: new_tracks)
+     |> assign(pairing_list: Map.get(new_state, :unpaired))}
+  end
+
+  def handle_event("reset_pairs", _params, %{assigns: %{project_id: project_id}} = socket) do
+    pairing_list =
+      fetch_people(project_id)
+      |> without(socket.assigns.unavailable_list)
+
+    {:noreply,
+     socket
+     |> assign(pairing_list: pairing_list)
+     |> assign(tracks: fetch_tracks(project_id: project_id))}
+  end
+
+  def handle_info({:renamed, params}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_info({:save, params}, socket) do
+    target = params |> Map.keys() |> Enum.find(&String.starts_with?(&1, "track_id_"))
+
+    ["track", "id", id] = String.split(target, "_")
+
+    id = String.to_integer(id)
+    new_title = Map.get(params, target)
+
+    tracks =
+      socket.assigns.tracks
+      |> Enum.map(fn track ->
+        if track.id == id do
+          update_track_title!(track, new_title)
+        else
+          track
+        end
+      end)
+
+    {:noreply, socket |> assign(:tracks, tracks)}
   end
 
   def handle_info({:repositioned, params}, socket) do
@@ -104,39 +168,11 @@ defmodule OneTruePairingWeb.Live.PairView do
     {:noreply, socket}
   end
 
-  def handle_event("repositioned", params, socket) do
-    handle_info({:repositioned, params}, socket)
-  end
+  defp update_track_title!(track, new_title) do
+    Projects.get_track!(track.id)
+    |> Projects.update_track_title!(new_title)
 
-  def handle_event("randomize_pairs", _params, %{assigns: %{project_id: project_id}} = socket) do
-    folks = socket.assigns.everyone -- socket.assigns.unavailable_list
-    tracks = socket.assigns.tracks
-
-    state = %{
-      unpaired: folks,
-      unavailable: socket.assigns.unavailable_list,
-      arrangements: [],
-      tracks: Map.keys(tracks)
-    }
-
-    new_state = Projects.decide_pairs(state)
-    new_tracks = place_in_tracks(project_id, Map.get(new_state, :arrangements))
-
-    {:noreply,
-     socket
-     |> assign(tracks: new_tracks)
-     |> assign(pairing_list: Map.get(new_state, :unpaired))}
-  end
-
-  def handle_event("reset_pairs", _params, %{assigns: %{project_id: project_id}} = socket) do
-    pairing_list =
-      fetch_people(project_id)
-      |> without(socket.assigns.unavailable_list)
-
-    {:noreply,
-     socket
-     |> assign(pairing_list: pairing_list)
-     |> assign(tracks: fetch_tracks(project_id: project_id))}
+    Map.put(track, :name, new_title)
   end
 
   defp without(everyone, unavailable) do
@@ -154,9 +190,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   defp fetch_tracks(project_id: project_id) do
     Projects.tracks_for(project_id: project_id)
-    # |> Enum.map(& &1.title)
-    |> Enum.map(fn track -> {track, %{people: [], id: track.id, name: track.title}} end)
-    |> Enum.reduce(%{}, fn {key, value}, acc -> Map.put(acc, key, value) end)
+    |> Enum.map(fn track -> %{people: [], id: track.id, name: track.title} end)
   end
 
   defp fetch_people(project_id) do
@@ -170,7 +204,6 @@ defmodule OneTruePairingWeb.Live.PairView do
     tracks = fetch_tracks(project_id: project_id)
 
     Enum.zip(pairings, tracks)
-    |> Enum.map(fn {pair, {name, track_info}} -> {name, %{track_info | people: pair}} end)
-    |> Enum.reduce(%{}, fn {key, value}, acc -> Map.put(acc, key, value) end)
+    |> Enum.map(fn {pair, track_info} -> %{track_info | people: pair} end)
   end
 end
