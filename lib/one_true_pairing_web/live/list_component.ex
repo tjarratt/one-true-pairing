@@ -10,7 +10,7 @@ defmodule OneTruePairingWeb.Live.ListComponent do
             <.input
               type="text"
               test-role="track-name"
-              name={"track-named-#{@list_name}"}
+              name={"track_id_#{@track_id}"}
               value={@list_name}
               class="text-2xl"
             />

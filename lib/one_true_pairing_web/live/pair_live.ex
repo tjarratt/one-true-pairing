@@ -48,6 +48,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         id="available"
         module={OneTruePairingWeb.Live.ListComponent}
         list={@pairing_list}
+        track_id={"unpaired"}
         list_name="Available to pair"
         form={@pairing_form}
         group="pairing"
@@ -56,8 +57,9 @@ defmodule OneTruePairingWeb.Live.PairView do
 
       <%= for track <- Map.keys(@tracks) do %>
         <.live_component
-          id={track}
+          id={track.title}
           module={OneTruePairingWeb.Live.ListComponent}
+          track_id={@tracks[track][:id]}
           list={@tracks[track][:people]}
           list_name={@tracks[track][:name]}
           form={@form2}
@@ -71,6 +73,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         module={OneTruePairingWeb.Live.ListComponent}
         list={@unavailable_list}
         list_name="Unavailable"
+        track_id={"unavailable"}
         form={@unavailable_form}
         group="pairing"
         test_role="unavailable"
@@ -151,8 +154,8 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   defp fetch_tracks(project_id: project_id) do
     Projects.tracks_for(project_id: project_id)
-    |> Enum.map(& &1.title)
-    |> Enum.map(fn track -> {track, %{people: [], name: track}} end)
+    # |> Enum.map(& &1.title)
+    |> Enum.map(fn track -> {track, %{people: [], id: track.id, name: track.title}} end)
     |> Enum.reduce(%{}, fn {key, value}, acc -> Map.put(acc, key, value) end)
   end
 
