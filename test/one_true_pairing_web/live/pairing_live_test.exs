@@ -3,7 +3,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   use OneTruePairingWeb.ConnCase
 
   import Phoenix.LiveViewTest
-  import OneTruePairing.ProjectsFixtures 
+  import OneTruePairing.ProjectsFixtures
 
   setup do
     project = project_fixture(name: "Fellowship")
@@ -216,8 +216,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       refute available =~ "Alicia"
     end
 
-    test "the positions in the lists are recalculated", %{conn: conn, project: project} do
-      # if we don't do this, we'll get the incorrect index on the front-end the second time you move someone in a list
+    test "the indices of people in the lists are recalculated", %{conn: conn, project: project} do
+      # if we don't recalculate indices, we'll get the incorrect index on the front-end the second time you move someone in a list
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       # send Alicia from unpaired to unavailable

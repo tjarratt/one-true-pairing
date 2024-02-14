@@ -23,6 +23,6 @@ defmodule OneTruePairing.Pairing do
   def reset_pairs(%{unpaired: unpaired, arrangements: assignments} = state) do
     state
     |> Map.put(:arrangements, [])
-    |> Map.put(:unpaired, assignments |> List.flatten |> Enum.concat(unpaired))
+    |> Map.put(:unpaired, assignments |> List.flatten() |> Enum.concat(unpaired))
   end
 end

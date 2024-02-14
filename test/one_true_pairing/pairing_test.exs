@@ -3,7 +3,7 @@ defmodule OneTruePairing.PairingTest do
   use OneTruePairing.DataCase, async: true
 
   import OneTruePairing.Pairing, only: [decide_pairs: 2, reset_pairs: 1]
-  
+
   @folks ["Alice", "Bob", "Carol", "Dan"]
   @shuffler &Function.identity/1
 
@@ -11,7 +11,8 @@ defmodule OneTruePairing.PairingTest do
     test "when there are enough people for the tracks of work" do
       tracks = ["basket weaving", "swimming"]
 
-      %{unpaired: unpaired, arrangements: arrangements} = decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks, arrangements: []}, @shuffler)
+      %{unpaired: unpaired, arrangements: arrangements} =
+        decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks, arrangements: []}, @shuffler)
 
       assert arrangements == [["Alice", "Bob"], ["Carol", "Dan"]]
       assert unpaired == []
@@ -20,7 +21,8 @@ defmodule OneTruePairing.PairingTest do
     test "when there are more than 2 people per track of work" do
       tracks = ["Dancing"]
 
-      %{unpaired: unpaired, arrangements: arrangements} = decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks, arrangements: []}, @shuffler)
+      %{unpaired: unpaired, arrangements: arrangements} =
+        decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks, arrangements: []}, @shuffler)
 
       assert arrangements == [["Alice", "Bob"]]
       assert unpaired == ["Carol", "Dan"]
@@ -33,17 +35,17 @@ defmodule OneTruePairing.PairingTest do
         unpaired: [],
         unavailable: [],
         tracks: ["basket weaving", "swimming"],
-        arrangements: [["Alice", "Bob"], ["Carol", "Dan"]],
+        arrangements: [["Alice", "Bob"], ["Carol", "Dan"]]
       }
-    
+
       new_state = reset_pairs(state)
 
       assert new_state == %{
-        unpaired: ~w(Alice Bob Carol Dan),
-        unavailable: [],
-        tracks: ["basket weaving", "swimming"],
-        arrangements: [],
-      }
+               unpaired: ~w(Alice Bob Carol Dan),
+               unavailable: [],
+               tracks: ["basket weaving", "swimming"],
+               arrangements: []
+             }
     end
 
     test "does not move people out of 'unavailable'" do
@@ -51,7 +53,7 @@ defmodule OneTruePairing.PairingTest do
         unpaired: [],
         unavailable: @folks,
         tracks: ["basket weaving", "swimming"],
-        arrangements: [],
+        arrangements: []
       }
 
       new_state = reset_pairs(state)

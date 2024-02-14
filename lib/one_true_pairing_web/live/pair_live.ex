@@ -110,11 +110,12 @@ defmodule OneTruePairingWeb.Live.PairView do
     tracks = socket.assigns.tracks
 
     state = %{
-       unpaired: folks,
-       unavailable: socket.assigns.unavailable_list,
-       arrangements: [],
-       tracks: Map.keys(tracks),
-     }
+      unpaired: folks,
+      unavailable: socket.assigns.unavailable_list,
+      arrangements: [],
+      tracks: Map.keys(tracks)
+    }
+
     new_state = Projects.decide_pairs(state)
     new_tracks = place_in_tracks(project_id, Map.get(new_state, :arrangements))
 
@@ -150,7 +151,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   defp fetch_tracks(project_id: project_id) do
     Projects.tracks_for(project_id: project_id)
-    |> Enum.map(&(&1.title))
+    |> Enum.map(& &1.title)
     |> Enum.map(fn track -> {track, %{people: [], name: track}} end)
     |> Enum.reduce(%{}, fn {key, value}, acc -> Map.put(acc, key, value) end)
   end

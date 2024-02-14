@@ -24,4 +24,3 @@ OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Merry", proje
 
 OneTruePairing.Projects.create_track(%{title: "Hobbit babysitting", project_id: project.id})
 OneTruePairing.Projects.create_track(%{title: "Potatoe boiling", project_id: project.id})
-

@@ -94,7 +94,7 @@ defmodule OneTruePairing.ProjectsTest do
 
     @invalid_attrs %{name: nil}
 
-    test "fetching the people for a given project" do 
+    test "fetching the people for a given project" do
       project_a = project_fixture(name: "a")
       project_b = project_fixture(name: "b")
 
