@@ -121,7 +121,7 @@ defmodule OneTruePairingWeb.Live.PairView do
      |> assign(tracks: fetch_tracks(project_id: project_id))}
   end
 
-  def handle_info({:renamed, params}, socket) do
+  def handle_info({:renamed, _params}, socket) do
     {:noreply, socket}
   end
 

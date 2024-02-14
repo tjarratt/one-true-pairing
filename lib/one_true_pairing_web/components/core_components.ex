@@ -279,7 +279,7 @@ defmodule OneTruePairingWeb.CoreComponents do
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
 
   attr :rest, :global, include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
-                multiple pattern placeholder readonly required rows size step test-role)
+                multiple pattern placeholder readonly required rows size step test-role test_role)
 
   slot :inner_block
 
