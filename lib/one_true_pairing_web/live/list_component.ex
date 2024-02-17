@@ -11,7 +11,12 @@ defmodule OneTruePairingWeb.Live.ListComponent do
           </.simple_form>
         </header>
 
-        <div id={"#{@id}-items"} phx-hook="Sortable" data-list_id={@id} test-role="list" data-group={@group}>
+        <div id={"#{@id}-items"} 
+              phx-hook="Sortable" 
+              data-list_id={@id} 
+              test-role="list" 
+              data-group={@group}
+              class="min-h-80">
           <div
             :for={item <- @list}
             id={"#{@id}-#{item.id}"}
