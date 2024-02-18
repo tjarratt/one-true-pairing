@@ -140,20 +140,6 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     assert second_pair == ""
   end
 
-  def select_unpaired(html) do
-    html
-    |> HtmlQuery.find!(test_role: "unpaired")
-    |> HtmlQuery.find!(test_role: "list")
-    |> HtmlQuery.text()
-  end
-
-  def select_unavailable(html) do
-    html
-    |> HtmlQuery.find!(test_role: "unavailable")
-    |> HtmlQuery.find!(test_role: "list")
-    |> HtmlQuery.text()
-  end
-
   describe "when people aren't available to pair" do
     test "they don't get randomly assigned", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
@@ -306,5 +292,19 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
     view
     |> render_change(:save, %{track_id => new_name})
+  end
+
+  def select_unpaired(html) do
+    html
+    |> HtmlQuery.find!(test_role: "unpaired")
+    |> HtmlQuery.find!(test_role: "list")
+    |> HtmlQuery.text()
+  end
+
+  def select_unavailable(html) do
+    html
+    |> HtmlQuery.find!(test_role: "unavailable")
+    |> HtmlQuery.find!(test_role: "list")
+    |> HtmlQuery.text()
   end
 end
