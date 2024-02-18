@@ -72,7 +72,6 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       assert second_pair =~ "Hitalo"
 
       unpaired_folks = select_unpaired(html)
-
       assert unpaired_folks == "Alicia"
     end
 
