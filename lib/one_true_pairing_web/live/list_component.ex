@@ -1,15 +1,28 @@
 defmodule OneTruePairingWeb.Live.ListComponent do
   use OneTruePairingWeb, :live_component
 
+  @doc """
+  Renders a list of items that can be dragged from one list to another
+  """
+
+  attr :custom_header, :boolean, default: false
+  slot :inner_block, required: false
+
   def render(assigns) do
     ~H"""
-    <div class="bg-gray-100 py-4 rounded-lg" test-role={@test_role}>
-      <div class="space-y-5 mx-auto px-4 space-y-4">
-        <header>
-          <.simple_form for={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
-            <.input type="text" test-role="track-name" name={"track_id_#{@track_id}"} value={@list_name} class="text-2xl" />
-          </.simple_form>
-        </header>
+    <div class="bg-gray-100 py-4 rounded-lg select-none" test-role={@test_role}>
+      <div class="space-y-5 mx-auto px-4 space-y-4 h-full">
+        <div class="flex justify-center">
+          <%= if @custom_header do %>
+            <%= render_slot(@inner_block) %>
+          <% else %>
+            <header>
+              <.simple_form for={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
+                <.input type="text" test-role="track-name" name={"track_id_#{@track_id}"} value={@list_name} class="text-2xl" />
+              </.simple_form>
+            </header>
+          <% end %>
+        </div>
 
         <div
           id={"#{@id}-items"}

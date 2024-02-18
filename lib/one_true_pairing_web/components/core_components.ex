@@ -432,6 +432,19 @@ defmodule OneTruePairingWeb.CoreComponents do
     """
   end
 
+  @doc "Renders an h2 with title"
+  slot :inner_block, required: true
+
+  def sub_header(assigns) do
+    ~H"""
+    <header class="mt-1.5 flex items-center justify-between gap-6">
+      <h2 class="text-lg font-medium leading-8 text-zinc-800">
+        <%= render_slot(@inner_block) %>
+      </h2>
+    </header>
+    """
+  end
+
   @doc ~S"""
   Renders a table with generic styling.
 

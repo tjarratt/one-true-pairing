@@ -71,7 +71,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       assert second_pair =~ "Ronaldo"
       assert second_pair =~ "Hitalo"
 
-      unpaired_folks = html |> HtmlQuery.find!(test_role: "unpaired") |> HtmlQuery.text()
+      unpaired_folks = select_unpaired(html)
 
       assert unpaired_folks == "Alicia"
     end
@@ -141,6 +141,20 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     assert second_pair == ""
   end
 
+  def select_unpaired(html) do
+    html
+    |> HtmlQuery.find!(test_role: "unpaired")
+    |> HtmlQuery.find!(test_role: "list")
+    |> HtmlQuery.text()
+  end
+
+  def select_unavailable(html) do
+    html
+    |> HtmlQuery.find!(test_role: "unavailable")
+    |> HtmlQuery.find!(test_role: "list")
+    |> HtmlQuery.text()
+  end
+
   describe "when people aren't available to pair" do
     test "they don't get randomly assigned", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
@@ -154,10 +168,10 @@ defmodule OneTruePairingWeb.PairingLiveTest do
           "to" => %{"list_id" => "unavailable"}
         })
 
-      unavailable = html |> HtmlQuery.find!(test_role: "unavailable") |> HtmlQuery.text()
+      unavailable = select_unavailable(html)
       assert unavailable == "Alicia"
 
-      available = html |> HtmlQuery.find(test_role: "unpaired") |> HtmlQuery.text()
+      available = select_unpaired(html)
       refute available =~ "Alicia"
 
       html =
@@ -165,7 +179,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> element("button", "Randomize pairs")
         |> render_click()
 
-      unavailable = html |> HtmlQuery.find!(test_role: "unavailable") |> HtmlQuery.text()
+      unavailable = select_unavailable(html)
       assert unavailable == "Alicia"
 
       [first_pair, second_pair] =
@@ -187,7 +201,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
           "to" => %{"list_id" => "unavailable"}
         })
 
-      unavailable = html |> HtmlQuery.find!(test_role: "unavailable") |> HtmlQuery.text()
+      unavailable = select_unavailable(html)
       assert unavailable == "Andrew"
 
       available = html |> HtmlQuery.find(test_role: "unpaired") |> HtmlQuery.text()
@@ -198,7 +212,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> element("button", "Randomize pairs")
         |> render_click()
 
-      unavailable = html |> HtmlQuery.find!(test_role: "unavailable") |> HtmlQuery.text()
+      unavailable = select_unavailable(html)
       assert unavailable == "Andrew"
 
       [first_pair, second_pair] =
@@ -224,10 +238,10 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> element("button", "Reset pairs")
         |> render_click()
 
-      unavailable = html |> HtmlQuery.find!(test_role: "unavailable") |> HtmlQuery.text()
+      unavailable = select_unavailable(html)
       assert unavailable == "Alicia"
 
-      available = html |> HtmlQuery.find!(test_role: "unpaired") |> HtmlQuery.text()
+      available = select_unpaired(html)
       refute available =~ "Alicia"
     end
 

@@ -49,11 +49,13 @@ defmodule OneTruePairingWeb.Live.PairView do
         module={OneTruePairingWeb.Live.ListComponent}
         list={@pairing_list}
         track_id="unpaired"
-        list_name="Available to pair"
         form={@pairing_form}
         group="pairing"
         test_role="unpaired"
-      />
+        custom_header
+      >
+        <.sub_header>Available to pair</.sub_header>
+      </.live_component>
 
       <%= for track <- @tracks do %>
         <.live_component
@@ -74,10 +76,13 @@ defmodule OneTruePairingWeb.Live.PairView do
         list={@unavailable_list}
         list_name="Unavailable"
         track_id="unavailable"
+        test_role="unavailable"
         form={@unavailable_form}
         group="pairing"
-        test_role="unavailable"
-      />
+        custom_header
+      >
+        <.sub_header>Unavailable</.sub_header>
+      </.live_component>
     </div>
     """
   end
