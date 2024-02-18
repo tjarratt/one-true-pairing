@@ -47,9 +47,9 @@ defmodule OneTruePairingWeb.Live.ListComponent do
             data-id={item.id}
             test-index={item.position}
           >
-            <div class="flex drag-ghost:opacity-0">
-              <.icon name="hero-user-circle" class="w-7 h-7 bg-gray-300 mr-2" />
-              <div class="flex-auto block text-sm leading-6 text-zinc-900 text-xl">
+            <div class="flex drag-ghost:opacity-0 min-h-10 align-bottom">
+              <.icon name="hero-user-circle" class="w-10 h-10 bg-gray-300 mr-2" />
+              <div class="flex-auto block text-sm leading-10 text-zinc-900 text-xl">
                 <%= item.name %>
               </div>
             </div>
