@@ -14,7 +14,9 @@ defmodule OneTruePairingWeb.Live.ListComponent do
       <div class="space-y-5 mx-auto px-4 space-y-4 h-full">
         <div class="flex justify-center">
           <%= if @custom_header do %>
-            <%= render_slot(@inner_block) %>
+            <div class="mb-1">
+              <%= render_slot(@inner_block) %>
+            </div>
           <% else %>
             <header>
               <.simple_form for={@form} phx-change="validate" phx-submit="save" phx-target={@myself}>
