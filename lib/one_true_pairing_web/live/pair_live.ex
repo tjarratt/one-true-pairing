@@ -35,12 +35,8 @@ defmodule OneTruePairingWeb.Live.PairView do
     <.header>Let's pair today</.header>
 
     <div class="my-4">
-      <.button phx-click="randomize_pairs">
-        Randomize pairs
-      </.button>
-      <.button phx-click="reset_pairs">
-        Reset pairs
-      </.button>
+      <.button phx-click="randomize_pairs">Randomize pairs</.button>
+      <.button phx-click="reset_pairs">Reset pairs</.button>
     </div>
 
     <div id="pairing_list" class="grid sm:grid-cols-1 md:grid-cols-4 gap-2">
