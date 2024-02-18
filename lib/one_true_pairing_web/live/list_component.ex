@@ -30,7 +30,7 @@ defmodule OneTruePairingWeb.Live.ListComponent do
           data-list_id={@id}
           test-role="list"
           data-group={@group}
-          class="min-h-40"
+          class="min-h-40 h-full"
         >
           <div
             :for={item <- @list}
