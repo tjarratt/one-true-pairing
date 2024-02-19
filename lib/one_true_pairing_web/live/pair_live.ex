@@ -9,8 +9,6 @@ defmodule OneTruePairingWeb.Live.PairView do
     everyone = fetch_people(project_id)
     tracks = fetch_tracks(project_id: project_id)
 
-    form = to_form(Projects.change_project(%Project{}))
-
     pairing_form = to_form(Projects.change_project(%Project{}))
     unavailable_form = to_form(Projects.change_project(%Project{}))
 
@@ -20,10 +18,7 @@ defmodule OneTruePairingWeb.Live.PairView do
      |> assign(everyone: everyone)
      |> assign(pairing_list: everyone)
      |> assign(unavailable_list: [])
-     |> assign(tracks: tracks)
-     |> assign(pairing_form: pairing_form)
-     |> assign(unavailable_form: unavailable_form)
-     |> assign(form: form)}
+     |> assign(tracks: tracks)}
   end
 
   def render(assigns) do
@@ -42,7 +37,6 @@ defmodule OneTruePairingWeb.Live.PairView do
         list={@pairing_list}
         list_name="unpaired"
         track_id="unpaired"
-        form={@pairing_form}
         group="pairing"
         test_role="unpaired"
         custom_header
@@ -57,7 +51,6 @@ defmodule OneTruePairingWeb.Live.PairView do
           track_id={track.id}
           list={track.people}
           list_name={track.name}
-          form={@form}
           group="pairing"
           test_role="track-of-work"
         />
@@ -70,7 +63,6 @@ defmodule OneTruePairingWeb.Live.PairView do
         list_name="Unavailable"
         track_id="unavailable"
         test_role="unavailable"
-        form={@unavailable_form}
         group="pairing"
         custom_header
       >
