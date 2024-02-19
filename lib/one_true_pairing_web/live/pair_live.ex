@@ -44,13 +44,14 @@ defmodule OneTruePairingWeb.Live.PairView do
         id="available"
         module={OneTruePairingWeb.Live.ListComponent}
         list={@pairing_list}
+        list_name="unpaired"
         track_id="unpaired"
         form={@pairing_form}
         group="pairing"
         test_role="unpaired"
         custom_header
       >
-        <.sub_header>Available to pair</.sub_header>
+        <.sub_header>Unpaired</.sub_header>
       </.live_component>
 
       <%= for track <- @tracks do %>
@@ -149,24 +150,51 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   def handle_info({:repositioned, params}, socket) do
     index = String.to_integer(params["id"])
+    tracks = socket.assigns.tracks
+    track_names = tracks |> Enum.map(& &1.name)
+    moving_from = params["from"]["list_id"]
+    moving_to = params["to"]["list_id"]
 
     person =
-      case params["from"]["list_id"] do
-        "available" -> Enum.at(socket.assigns.pairing_list, index)
+      cond do
+        moving_from == "available" -> Enum.at(socket.assigns.pairing_list, index)
+        moving_from in track_names -> extract_person_from_tracks(tracks, moving_from, index)
       end
 
     socket =
-      case params["to"]["list_id"] do
-        "unavailable" ->
+      cond do
+        moving_to == "unavailable" ->
           socket
           |> assign(:unavailable_list, recalculate_positions(socket.assigns.unavailable_list ++ [person]))
           |> assign(:pairing_list, recalculate_positions(socket.assigns.pairing_list -- [person]))
 
-        _ ->
+        moving_to in track_names ->
           socket
+          |> assign(:tracks, move_person_to(tracks, moving_to, person))
+          |> assign(:unavailable_list, recalculate_positions(socket.assigns.unavailable_list -- [person]))
+          |> assign(:pairing_list, recalculate_positions(socket.assigns.pairing_list -- [person]))
       end
 
     {:noreply, socket}
+  end
+
+  defp extract_person_from_tracks(tracks, track_name, person_index) do
+    # take person at index from track with name
+    tracks
+    |> Enum.find(fn track -> track.name == track_name end)
+    |> then(& &1.people)
+    |> Enum.at(person_index)
+  end
+
+  defp move_person_to(tracks, track_name, person) do
+    tracks
+    |> Enum.map(fn %{id: id, people: people, name: name} ->
+      if name == track_name do
+        %{id: id, people: recalculate_positions(people ++ [person]), name: name}
+      else
+        %{id: id, people: recalculate_positions(people -- [person]), name: name}
+      end
+    end)
   end
 
   defp update_track_title!(track, new_title) do

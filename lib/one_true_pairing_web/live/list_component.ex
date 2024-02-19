@@ -10,7 +10,7 @@ defmodule OneTruePairingWeb.Live.ListComponent do
 
   def render(assigns) do
     ~H"""
-    <div class="bg-gray-100 py-4 rounded-lg select-none" test-role={@test_role}>
+    <div class="bg-gray-100 py-4 rounded-lg select-none" test-role={@test_role} test-track-name={@list_name}>
       <div class="space-y-5 mx-auto px-4 space-y-4 h-full">
         <div class="flex justify-center">
           <%= if @custom_header do %>

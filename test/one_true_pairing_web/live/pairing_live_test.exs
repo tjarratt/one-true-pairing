@@ -267,6 +267,35 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     end
   end
 
+  describe "moving people" do
+    test "... between tracks of work", %{conn: conn, project: project} do
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      # send Alicia from unpaired to first track
+      html =
+        view
+        |> render_hook(:repositioned, %{
+          "id" => "4",
+          "from" => %{"list_id" => "available"},
+          "to" => %{"list_id" => "Taking the hobbits to Eisengard"}
+        })
+
+      assert "Alicia" in people_in_track(html, "Taking the hobbits to Eisengard")
+
+      # send Alicia from first track to second track
+      html =
+        view
+        |> render_hook(:repositioned, %{
+          "id" => "0",
+          "from" => %{"list_id" => "Taking the hobbits to Eisengard"},
+          "to" => %{"list_id" => "Boiling potatoes"}
+        })
+
+      assert [] == people_in_track(html, "Taking the hobbits to Eisengard")
+      assert "Alicia" in people_in_track(html, "Boiling potatoes")
+    end
+  end
+
   describe "the tracks of work" do
     test "can be edited", %{conn: conn, project: project} do
       {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
@@ -306,5 +335,13 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     |> HtmlQuery.find!(test_role: "unavailable")
     |> HtmlQuery.find!(test_role: "list")
     |> HtmlQuery.text()
+  end
+
+  def people_in_track(html, track_name) do
+    html
+    |> HtmlQuery.find!(test_track_name: track_name)
+    |> HtmlQuery.find!(test_role: "list")
+    |> HtmlQuery.text()
+    |> String.split(" ", trim: true)
   end
 end
