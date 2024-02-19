@@ -1,4 +1,5 @@
 defmodule OneTruePairing.Projects.Track do
+  # @related [test](test/one_true_pairing/projects/track_test.exs)
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -13,5 +14,6 @@ defmodule OneTruePairing.Projects.Track do
     track
     |> cast(attrs, [:title, :project_id])
     |> validate_required([:title, :project_id])
+    |> unique_constraint([:title], name: :tracks_project_id_title_index)
   end
 end

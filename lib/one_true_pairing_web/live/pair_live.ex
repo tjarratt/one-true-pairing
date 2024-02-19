@@ -3,14 +3,10 @@ defmodule OneTruePairingWeb.Live.PairView do
   use OneTruePairingWeb, :live_view
 
   alias OneTruePairing.Projects
-  alias OneTruePairing.Projects.Project
 
   def mount(%{"project_id" => project_id}, _session, socket) do
     everyone = fetch_people(project_id)
     tracks = fetch_tracks(project_id: project_id)
-
-    pairing_form = to_form(Projects.change_project(%Project{}))
-    unavailable_form = to_form(Projects.change_project(%Project{}))
 
     {:ok,
      socket
