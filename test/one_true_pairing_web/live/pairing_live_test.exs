@@ -145,13 +145,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       # send Alicia from unpaired to unavailable
-      html =
-        view
-        |> render_hook(:repositioned, %{
-          "id" => "4",
-          "from" => %{"list_id" => "available"},
-          "to" => %{"list_id" => "unavailable"}
-        })
+      html = send_person(view, at_index: "4", from: "available", to: "unavailable")
 
       unavailable = select_unavailable(html)
       assert unavailable == "Alicia"
@@ -178,13 +172,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       # send Andrew from unpaired to unavailable
-      html =
-        view
-        |> render_hook(:repositioned, %{
-          "id" => "0",
-          "from" => %{"list_id" => "available"},
-          "to" => %{"list_id" => "unavailable"}
-        })
+      html = send_person(view, at_index: "0", from: "available", to: "unavailable")
 
       unavailable = select_unavailable(html)
       assert unavailable == "Andrew"
@@ -211,12 +199,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       # send Alicia from unpaired to unavailable
-      view
-      |> render_hook(:repositioned, %{
-        "id" => "4",
-        "from" => %{"list_id" => "available"},
-        "to" => %{"list_id" => "unavailable"}
-      })
+      send_person(view, at_index: "4", from: "available", to: "unavailable")
 
       html =
         view
@@ -235,12 +218,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       # send Alicia from unpaired to unavailable
-      view
-      |> render_hook(:repositioned, %{
-        "id" => "4",
-        "from" => %{"list_id" => "available"},
-        "to" => %{"list_id" => "unavailable"}
-      })
+      send_person(view, at_index: "4", from: "available", to: "unavailable")
 
       html =
         view
@@ -272,27 +250,22 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       # send Alicia from unpaired to first track
-      html =
-        view
-        |> render_hook(:repositioned, %{
-          "id" => "4",
-          "from" => %{"list_id" => "available"},
-          "to" => %{"list_id" => "Taking the hobbits to Eisengard"}
-        })
-
+      html = send_person(view, at_index: "4", from: "available", to: "Taking the hobbits to Eisengard")
       assert "Alicia" in people_in_track(html, "Taking the hobbits to Eisengard")
 
       # send Alicia from first track to second track
-      html =
-        view
-        |> render_hook(:repositioned, %{
-          "id" => "0",
-          "from" => %{"list_id" => "Taking the hobbits to Eisengard"},
-          "to" => %{"list_id" => "Boiling potatoes"}
-        })
-
+      html = send_person(view, at_index: "0", from: "Taking the hobbits to Eisengard", to: "Boiling potatoes")
       assert [] == people_in_track(html, "Taking the hobbits to Eisengard")
       assert "Alicia" in people_in_track(html, "Boiling potatoes")
+    end
+
+    test "to the same track of work is a no-op", %{conn: conn, project: project} do
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      send_person(view, at_index: "4", from: "available", to: "Taking the hobbits to Eisengard")
+      html = send_person(view, at_index: "0", from: "Taking the hobbits to Eisengard", to: "Taking the hobbits to Eisengard")
+
+      assert ["Alicia"] == people_in_track(html, "Taking the hobbits to Eisengard")
     end
   end
 
@@ -310,6 +283,15 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       assert track_title == "Staring at the One Ring"
     end
+  end
+
+  defp send_person(view, at_index: index, from: old_list, to: new_list) do
+     view
+     |> render_hook(:repositioned, %{
+       "id" => index,
+       "from" => %{"list_id" => old_list},
+       "to" => %{"list_id" => new_list}
+     })
   end
 
   defp rename_first_track(view, html, new_name) do
@@ -342,6 +324,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     |> HtmlQuery.find!(test_track_name: track_name)
     |> HtmlQuery.find!(test_role: "list")
     |> HtmlQuery.text()
-    |> String.split(" ", trim: true)
+    |> String.split("\n", trim: true)
+    |> Enum.map(&String.trim(&1))
+    |> Enum.reject(fn str -> String.length(str) == 0 end)
   end
 end
