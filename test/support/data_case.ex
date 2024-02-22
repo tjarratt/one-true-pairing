@@ -55,4 +55,18 @@ defmodule OneTruePairing.DataCase do
       end)
     end)
   end
+
+  # # # changeset assertion helpers
+  def changeset_valid?(%Ecto.Changeset{valid?: false} = changeset) do
+    flunk("Expected changeset to be valid but it was invalid:\n#{inspect(errors_on(changeset))}")
+  end
+
+  def changeset_valid?(%Ecto.Changeset{valid?: true} = changeset), do: changeset
+
+  def changeset_invalid?(%Ecto.Changeset{valid?: true}),
+    do: flunk("Expected changeset to be invalid but it was valid.")
+
+  def changeset_invalid?(%Ecto.Changeset{valid?: false} = changeset),
+    do: changeset
+
 end
