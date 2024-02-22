@@ -174,7 +174,7 @@ defmodule OneTruePairingWeb.Live.PairView do
     tracks
     |> Enum.map(fn %{id: id, people: people, name: name} ->
       if name == track_name do
-        list = people ++ [person] |> MapSet.new() |> MapSet.to_list()
+        list = (people ++ [person]) |> MapSet.new() |> MapSet.to_list()
         %{id: id, people: recalculate_positions(list), name: name}
       else
         %{id: id, people: recalculate_positions(people -- [person]), name: name}

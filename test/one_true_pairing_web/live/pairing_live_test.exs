@@ -263,7 +263,9 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       send_person(view, at_index: "4", from: "available", to: "Taking the hobbits to Eisengard")
-      html = send_person(view, at_index: "0", from: "Taking the hobbits to Eisengard", to: "Taking the hobbits to Eisengard")
+
+      html =
+        send_person(view, at_index: "0", from: "Taking the hobbits to Eisengard", to: "Taking the hobbits to Eisengard")
 
       assert ["Alicia"] == people_in_track(html, "Taking the hobbits to Eisengard")
     end
@@ -286,12 +288,12 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   end
 
   defp send_person(view, at_index: index, from: old_list, to: new_list) do
-     view
-     |> render_hook(:repositioned, %{
-       "id" => index,
-       "from" => %{"list_id" => old_list},
-       "to" => %{"list_id" => new_list}
-     })
+    view
+    |> render_hook(:repositioned, %{
+      "id" => index,
+      "from" => %{"list_id" => old_list},
+      "to" => %{"list_id" => new_list}
+    })
   end
 
   defp rename_first_track(view, html, new_name) do

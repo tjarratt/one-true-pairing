@@ -68,5 +68,4 @@ defmodule OneTruePairing.DataCase do
 
   def changeset_invalid?(%Ecto.Changeset{valid?: false} = changeset),
     do: changeset
-
 end
