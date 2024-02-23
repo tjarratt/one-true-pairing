@@ -13,8 +13,22 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  preflightcheck:
+    name: preflightcheck
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Determine to continue or halt
+      id: output
+      env:
+        SHOULD_DEPLOY_FLY_IO: "${{ secrets.SHOULD_DEPLOY_FLY_IO }}"
+      run: |
+        echo "Should deploy to fly.io : ${{ env.SHOULD_DEPLOY_FLY_IO == 'yes plz' }}"
+        echo "::set-output name=should_deploy_fly_io::${{ env.SHOULD_DEPLOY_FLY_IO == 'yes plz' }}"
 
+  build:
+    if: needs.preflightcheck.outputs.should_deploy_fly_io == 'true'
     name: Build and test
     runs-on: ubuntu-latest
 
