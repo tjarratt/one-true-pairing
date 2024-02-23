@@ -8,23 +8,21 @@ concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
   cancel-in-progress: true
 jobs:
-  DecideWhetherToContinue:
+  preflightcheck:
     name: preflightcheck
     runs-on: ubuntu-latest
-    env:
-      SHOULD_CONTINUE: "${{ secrets.SHOULD_RUN }}"
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-    - name: Set output from env secret determining if we continue or not
+    - name: Set output from env secret determining if we continue or halt
       id: output
       env:
-        SHOULD_CONTINUE: "${{ secrets.SHOULD_RUN }}"
+        SHOULD_DEPLOY_MDP: "${{ secrets.SHOULD_DEPLOY_MDP }}"
       run: |
-          echo "Should continue : ${{ env.SHOULD_RUN == 'yes plz' }}"
-          echo "::set-output name=should_continue::${{ env.SHOULD_RUN == 'yes plz' }}"
+          echo "Should deploy mdp : ${{ env.SHOULD_DEPLOY_MDP == 'yes plz' }}"
+          echo "::set-output name=should_deploy_mdp::${{ env.SHOULD_DEPLOY_MDP == 'yes plz' }}"
   BuildAndPushDockerImage:
-    if: needs.preflightcheck.outputs.should_run == 'true'
+    if: needs.preflightcheck.outputs.should_deploy_mdp == 'true'
     runs-on: ubuntu-latest
     env:
       DOCKER_IMAGE_TAG: "dev-${{ github.sha }}"
