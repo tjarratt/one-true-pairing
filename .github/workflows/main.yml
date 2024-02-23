@@ -8,8 +8,23 @@ concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
   cancel-in-progress: true
 jobs:
-  Execute:
-    if: secrets.SHOULD_RUN == 'yes plz'
+  DecideWhetherToContinue:
+    name: preflightcheck
+    runs-on: ubuntu-latest
+    env:
+      SHOULD_CONTINUE: "${{ secrets.SHOULD_RUN }}"
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Set output from env secret determining if we continue or not
+      id: output
+      env:
+        SHOULD_CONTINUE: "${{ secrets.SHOULD_RUN }}"
+      run: |
+          echo "Should continue : ${{ env.SHOULD_RUN == 'yes plz' }}"
+          echo "::set-output name=should_continue::${{ env.SHOULD_RUN == 'yes plz' }}"
+  BuildAndPushDockerImage:
+    if: needs.preflightcheck.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     env:
       DOCKER_IMAGE_TAG: "dev-${{ github.sha }}"
@@ -25,4 +40,4 @@ jobs:
       - name: Output Docker Image Tag
         run: |
           echo "Docker image has been pushed with tag:"
-          echo "  ${{ env.DOCKER_IMAGE_TAG }}"
+          echo "${{ env.DOCKER_IMAGE_TAG }}"
