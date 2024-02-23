@@ -1,0 +1,28 @@
+name: Main
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: { }
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+jobs:
+  Execute:
+    if: secrets.SHOULD_RUN == 'yes plz'
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_IMAGE_TAG: "dev-${{ github.sha }}"
+      DOCKER_IMAGE_NAME: "${{ secrets.CONTAINER_REGISTRY_SERVER }}/onetruepairing/onetruepairing"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build and Push Docker Image
+        run: |
+          echo "${{ secrets.CONTAINER_REGISTRY_PASSWORD }}" | docker login --username="${{ secrets.CONTAINER_REGISTRY_USERNAME }}" --password-stdin "${{ secrets.CONTAINER_REGISTRY_SERVER }}"
+          docker build --quiet --build-arg="GITHUB_SHA=${{ github.sha }}" --tag="${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}" . 
+          docker push --quiet "${{ env.DOCKER_IMAGE_NAME }}:${{ env.DOCKER_IMAGE_TAG }}"
+      - name: Output Docker Image Tag
+        run: |
+          echo "Docker image has been pushed with tag:"
+          echo "  ${{ env.DOCKER_IMAGE_TAG }}"
