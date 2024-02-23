@@ -24,6 +24,11 @@ jobs:
       env:
         SHOULD_DEPLOY_FLY_IO: "${{ secrets.SHOULD_DEPLOY_FLY_IO }}"
       run: |
+        echo "${{ github }}"
+        echo "${{ github.server_URL }}"
+        echo "${{ github.repository }}"
+        echo "${{ github.event.repository.name }}"
+        echo "${{ github.repository_owner }}"
         echo "Should deploy to fly.io : ${{ env.SHOULD_DEPLOY_FLY_IO == 'yes plz' }}"
         echo "::set-output name=should_deploy_fly_io::${{ env.SHOULD_DEPLOY_FLY_IO == 'yes plz' }}"
 
