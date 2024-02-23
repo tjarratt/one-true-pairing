@@ -8,21 +8,8 @@ concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
   cancel-in-progress: true
 jobs:
-  preflightcheck:
-    name: preflightcheck
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Set output from env secret determining if we continue or halt
-      id: output
-      env:
-        SHOULD_DEPLOY_MDP: "${{ secrets.SHOULD_DEPLOY_MDP }}"
-      run: |
-          echo "Should deploy mdp : ${{ env.SHOULD_DEPLOY_MDP == 'yes plz' }}"
-          echo "::set-output name=should_deploy_mdp::${{ env.SHOULD_DEPLOY_MDP == 'yes plz' }}"
   BuildAndPushDockerImage:
-    if: needs.preflightcheck.outputs.should_deploy_mdp == 'true'
+    if: github.repository_owner == 'Maersk-Global'
     runs-on: ubuntu-latest
     env:
       DOCKER_IMAGE_TAG: "dev-${{ github.sha }}"
