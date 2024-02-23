@@ -1,4 +1,5 @@
-name: Main
+name: Deploy to MDP
+
 on:
   push:
     branches:
