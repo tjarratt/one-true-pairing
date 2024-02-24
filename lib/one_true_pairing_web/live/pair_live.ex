@@ -85,7 +85,7 @@ defmodule OneTruePairingWeb.Live.PairView do
   end
 
   def handle_event("randomize_pairs", _params, %{assigns: %{project_id: project_id}} = socket) do
-    folks = socket.assigns.everyone -- socket.assigns.unavailable_list
+    folks = without(socket.assigns.everyone, socket.assigns.unavailable_list)
     tracks = socket.assigns.tracks
 
     state = %{
@@ -182,14 +182,14 @@ defmodule OneTruePairingWeb.Live.PairView do
         %{
           tracks: tracks,
           unavailable: unavailable ++ [person],
-          unpaired: unpaired -- [person]
+          unpaired: without(unpaired, [person])
         }
 
       to in track_names ->
         %{
           tracks: move_person_to(tracks, to, person),
-          unavailable: unavailable -- [person],
-          unpaired: unpaired -- [person]
+          unavailable: without(unavailable, [person]),
+          unpaired: without(unpaired, [person])
         }
     end
   end
@@ -224,7 +224,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         list = (people ++ [person]) |> MapSet.new() |> MapSet.to_list()
         %{id: id, people: recalculate_positions(list), name: name}
       else
-        %{id: id, people: recalculate_positions(people -- [person]), name: name}
+        %{id: id, people: recalculate_positions(without(people, [person])), name: name}
       end
     end)
   end

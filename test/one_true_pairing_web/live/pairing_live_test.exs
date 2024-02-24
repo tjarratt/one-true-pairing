@@ -148,6 +148,9 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       unavailable = select_unavailable(html)
       assert unavailable == "Alicia"
 
+      available = select_unpaired(html)
+      refute available =~ "Alicia"
+
       [first_pair, second_pair] =
         html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
 
