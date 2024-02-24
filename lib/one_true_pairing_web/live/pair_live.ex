@@ -187,11 +187,17 @@ defmodule OneTruePairingWeb.Live.PairView do
 
       to in track_names ->
         %{
-          tracks: move_person_to(tracks, to, person),
+          tracks: move_person_to(tracks, to, person) |> recalculate_track_positions(),
           unavailable: without(unavailable, [person]),
           unpaired: without(unpaired, [person])
         }
     end
+  end
+
+  defp recalculate_track_positions(tracks) do
+    Enum.map(tracks, fn %{id: id, people: people, name: name} ->
+      %{id: id, people: recalculate_positions(people), name: name}
+    end)
   end
 
   defp decide_pairs(state) do
@@ -222,9 +228,9 @@ defmodule OneTruePairingWeb.Live.PairView do
     |> Enum.map(fn %{id: id, people: people, name: name} ->
       if name == track_name do
         list = (people ++ [person]) |> MapSet.new() |> MapSet.to_list()
-        %{id: id, people: recalculate_positions(list), name: name}
+        %{id: id, people: list, name: name}
       else
-        %{id: id, people: recalculate_positions(without(people, [person])), name: name}
+        %{id: id, people: without(people, [person]), name: name}
       end
     end)
   end
@@ -236,10 +242,10 @@ defmodule OneTruePairingWeb.Live.PairView do
     Map.put(track, :name, new_title)
   end
 
-  defp without(everyone, unavailable) do
-    unavailable_names = Enum.map(unavailable, & &1.name)
+  defp without(to_filter, to_remove) do
+    names_to_remove = Enum.map(to_remove, & &1.name)
 
-    Enum.reject(everyone, fn person -> person.name in unavailable_names end)
+    Enum.reject(to_filter, fn thing -> thing.name in names_to_remove end)
   end
 
   defp recalculate_positions(list) do
