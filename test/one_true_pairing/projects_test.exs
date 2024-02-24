@@ -158,6 +158,8 @@ defmodule OneTruePairing.ProjectsTest do
   end
 
   describe "allocations" do
+    alias OneTruePairing.Projects.Allocation
+
     test "people can be allocated to a track" do
       track = track_fixture(title: "Rockin out")
       ziggy = person_fixture(name: "Ziggy")
@@ -170,6 +172,64 @@ defmodule OneTruePairing.ProjectsTest do
       |> Enum.map(&(&1.person_id))
 
       assert allocated == [ziggy.id, lady_stardust.id]
+    end
+
+    test "getting allocations for a track only gives the allocations for today" do
+      track = track_fixture(title: "Rockin out")
+      ziggy = person_fixture(name: "Ziggy")
+      lady_stardust = person_fixture(name: "Lady Stardust")
+
+      {:ok, now} = DateTime.now("Etc/UTC")
+      yesterday = DateTime.add(now, -1, :day)
+
+      # allocate ziggy yesterday
+      %Allocation{}
+      |> Allocation.changeset(%{track_id: track.id, person_id: ziggy.id, updated_at: yesterday, inserted_at: yesterday})
+      |> Repo.insert!()
+
+      Projects.allocate_person_to_track!(track.id, lady_stardust.id)
+
+      allocated = Projects.allocations_for_track(track.id)
+      |> Enum.map(&(&1.person_id))
+
+      assert allocated == [lady_stardust.id]
+    end
+
+    test "people can be removed from a track" do
+      track = track_fixture(title: "Rockin out")
+      ziggy = person_fixture(name: "Ziggy")
+      lady_stardust = person_fixture(name: "Lady Stardust")
+
+      Projects.allocate_person_to_track!(track.id, ziggy.id)
+      Projects.allocate_person_to_track!(track.id, lady_stardust.id)
+
+      Projects.remove_person_from_track!(track.id, lady_stardust.id)
+
+      allocated = Projects.allocations_for_track(track.id)
+      |> Enum.map(&(&1.person_id))
+
+      assert allocated == [ziggy.id]
+    end
+
+    test "removing someone only removes the allocation for today" do
+      track = track_fixture(title: "Rockin out")
+      ziggy = person_fixture(name: "Ziggy")
+
+      {:ok, now} = DateTime.now("Etc/UTC")
+      yesterday = DateTime.add(now, -1, :day)
+
+      # allocate ziggy yesterday
+      %Allocation{}
+      |> Allocation.changeset(%{track_id: track.id, person_id: ziggy.id, updated_at: yesterday, created_at: yesterday})
+      |> Repo.insert!()
+
+      Projects.allocate_person_to_track!(track.id, ziggy.id)
+      Projects.remove_person_from_track!(track.id, ziggy.id)
+
+      allocated = Projects.allocations_for_track(track.id)
+      |> Enum.map(&(&1.person_id))
+
+      assert allocated == []
     end
   end
 end

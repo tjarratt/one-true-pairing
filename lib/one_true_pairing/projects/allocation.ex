@@ -20,7 +20,7 @@ defmodule OneTruePairing.Projects.Allocation do
 
   def changeset(allocation \\ %__MODULE__{}, attrs) do
     allocation
-    |> cast(attrs, [:track_id, :person_id])
+    |> cast(attrs, [:track_id, :person_id, :updated_at])
     |> validate_required(~w[person_id track_id]a)
   end
 end
