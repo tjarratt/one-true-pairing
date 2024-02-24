@@ -74,14 +74,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> element("button", "Randomize pairs")
         |> render_click()
 
-      [first_pair, second_pair] =
-        html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
-
-      assert first_pair =~ "Andrew"
-      assert first_pair =~ "Freja"
-
-      assert second_pair =~ "Ronaldo"
-      assert second_pair =~ "Hitalo"
+      assert ~w[Andrew Freja] == people_in_track(html, "Taking the hobbits to Eisengard")
+      assert ~w[Ronaldo Hitalo] == people_in_track(html, "Boiling potatoes")
     end
 
     test "does not change the tracks of work", %{conn: conn, project: project} do
