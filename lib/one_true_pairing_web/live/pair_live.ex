@@ -175,6 +175,46 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   # # # private functions
 
+  defp recalculate_track_positions(tracks) do
+    Enum.map(tracks, fn %{id: id, people: people, name: name} ->
+      %{id: id, people: recalculate_positions(people), name: name}
+    end)
+  end
+
+  defp recalculate_positions(list) do
+    list
+    |> Enum.with_index()
+    |> Enum.map(fn {thing, index} -> %{name: thing.name, id: thing.id, position: index} end)
+  end
+
+  defp fetch_tracks(project_id: project_id) do
+    Projects.tracks_for(project_id: project_id)
+    |> Enum.map(fn track -> %{people: [], id: track.id, name: track.title} end)
+  end
+
+  defp fetch_people(project_id) do
+    Projects.persons_for(project_id: project_id)
+    |> Enum.with_index()
+    |> Enum.map(fn {person, index} -> %{name: person.name, id: person.id, position: index} end)
+  end
+
+  # finds a person at a given index within the named track
+  defp extract_person_from_tracks(tracks, track_name, person_index) do
+    tracks
+    |> Enum.find(fn track -> track.name == track_name end)
+    |> then(& &1.people)
+    |> Enum.at(person_index)
+  end
+  
+  defp update_track_title!(track, new_title) do
+    Projects.get_track!(track.id)
+    |> Projects.update_track_title!(new_title)
+
+    Map.put(track, :name, new_title)
+  end
+
+  # # # push down a layer
+
   defp move(_project_id, person: person, to: to, tracks: tracks, unavailable: unavailable, unpaired: unpaired) do
     track_names = tracks |> Enum.map(& &1.name)
     cond do
@@ -194,12 +234,6 @@ defmodule OneTruePairingWeb.Live.PairView do
     end
   end
 
-  defp recalculate_track_positions(tracks) do
-    Enum.map(tracks, fn %{id: id, people: people, name: name} ->
-      %{id: id, people: recalculate_positions(people), name: name}
-    end)
-  end
-
   defp decide_pairs(state) do
     new_state = Projects.decide_pairs(state)
     new_tracks = place_in_tracks(Map.get(state, :project_id), Map.get(new_state, :arrangements))
@@ -215,14 +249,6 @@ defmodule OneTruePairingWeb.Live.PairView do
     }
   end
 
-  @doc "find person at a given index within the named track"
-  defp extract_person_from_tracks(tracks, track_name, person_index) do
-    tracks
-    |> Enum.find(fn track -> track.name == track_name end)
-    |> then(& &1.people)
-    |> Enum.at(person_index)
-  end
-
   defp move_person_to(tracks, track_name, person) do
     tracks
     |> Enum.map(fn %{id: id, people: people, name: name} ->
@@ -235,36 +261,10 @@ defmodule OneTruePairingWeb.Live.PairView do
     end)
   end
 
-  defp update_track_title!(track, new_title) do
-    Projects.get_track!(track.id)
-    |> Projects.update_track_title!(new_title)
-
-    Map.put(track, :name, new_title)
-  end
-
   defp without(to_filter, to_remove) do
     names_to_remove = Enum.map(to_remove, & &1.name)
 
     Enum.reject(to_filter, fn thing -> thing.name in names_to_remove end)
-  end
-
-  defp recalculate_positions(list) do
-    list
-    |> Enum.map(& &1.name)
-    |> Enum.with_index()
-    |> Enum.map(fn {name, idx} -> %{name: name, id: idx, position: idx} end)
-  end
-
-  defp fetch_tracks(project_id: project_id) do
-    Projects.tracks_for(project_id: project_id)
-    |> Enum.map(fn track -> %{people: [], id: track.id, name: track.title} end)
-  end
-
-  defp fetch_people(project_id) do
-    Projects.persons_for(project_id: project_id)
-    |> Enum.map(fn person -> person.name end)
-    |> Enum.with_index()
-    |> Enum.map(fn {name, idx} -> %{name: name, id: idx, position: idx} end)
   end
 
   defp place_in_tracks(project_id, pairings) do
