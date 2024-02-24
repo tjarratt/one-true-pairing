@@ -40,19 +40,6 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     assert list =~ "Alicia"
   end
 
-  test "it renders the tracks of work", %{conn: conn, project: project} do
-    {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
-
-    list =
-      html
-      |> HtmlQuery.all(test_role: "track-of-work")
-      |> Enum.map(fn elem -> HtmlQuery.find!(elem, test_role: "track-name") end)
-      |> Enum.map(fn elem -> HtmlQuery.attr(elem, "value") end)
-
-    assert Enum.member?(list, "Taking the hobbits to Eisengard")
-    assert Enum.member?(list, "Boiling potatoes")
-  end
-
   describe "randomising pairs" do
     test "puts two people in each track of work, and the rest remain unpaired", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
@@ -111,33 +98,33 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       assert "Staring at the One Ring" in track_titles
     end
-  end
 
-  test "the pair assignments can be reset", %{conn: conn, project: project} do
-    {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+    test "can be reset once randomized", %{conn: conn, project: project} do
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-    view
-    |> element("button", "Randomize pairs")
-    |> render_click()
-
-    html =
       view
-      |> element("button", "Reset pairs")
+      |> element("button", "Randomize pairs")
       |> render_click()
 
-    available = html |> HtmlQuery.find!("#pairing_list") |> HtmlQuery.text()
+      html =
+        view
+        |> element("button", "Reset pairs")
+        |> render_click()
 
-    assert available =~ "Andrew"
-    assert available =~ "Freja"
-    assert available =~ "Ronaldo"
-    assert available =~ "Hitalo"
-    assert available =~ "Alicia"
+      available = html |> HtmlQuery.find!("#pairing_list") |> HtmlQuery.text()
 
-    [first_pair, second_pair] =
-      html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
+      assert available =~ "Andrew"
+      assert available =~ "Freja"
+      assert available =~ "Ronaldo"
+      assert available =~ "Hitalo"
+      assert available =~ "Alicia"
 
-    assert first_pair == ""
-    assert second_pair == ""
+      [first_pair, second_pair] =
+        html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
+
+      assert first_pair == ""
+      assert second_pair == ""
+    end
   end
 
   describe "when people aren't available to pair" do
@@ -272,6 +259,19 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   end
 
   describe "the tracks of work" do
+    test "are rendered as separate lists", %{conn: conn, project: project} do
+      {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      list =
+        html
+        |> HtmlQuery.all(test_role: "track-of-work")
+        |> Enum.map(fn elem -> HtmlQuery.find!(elem, test_role: "track-name") end)
+        |> Enum.map(fn elem -> HtmlQuery.attr(elem, "value") end)
+
+      assert Enum.member?(list, "Taking the hobbits to Eisengard")
+      assert Enum.member?(list, "Boiling potatoes")
+    end
+
     test "can be edited", %{conn: conn, project: project} do
       {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
