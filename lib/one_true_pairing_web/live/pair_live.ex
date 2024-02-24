@@ -4,19 +4,26 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   alias OneTruePairing.Projects
 
+  @impl Phoenix.LiveView
   def mount(%{"project_id" => project_id}, _session, socket) do
     everyone = fetch_people(project_id)
-    tracks = fetch_tracks(project_id: project_id)
+
+    %{
+      unpaired: unpaired,
+      unavailable: unavailable,
+      tracks: tracks,
+    } = load_project(project_id)
 
     {:ok,
      socket
      |> assign(project_id: project_id)
      |> assign(everyone: everyone)
-     |> assign(pairing_list: everyone)
-     |> assign(unavailable_list: [])
+     |> assign(pairing_list: unpaired)
+     |> assign(unavailable_list: unavailable)
      |> assign(tracks: tracks)}
   end
 
+  @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
     <.header>Let's pair today</.header>
@@ -68,6 +75,7 @@ defmodule OneTruePairingWeb.Live.PairView do
     """
   end
 
+  @impl Phoenix.LiveView
   def handle_event("repositioned", params, socket) do
     handle_info({:repositioned, params}, socket)
   end
@@ -81,19 +89,19 @@ defmodule OneTruePairingWeb.Live.PairView do
     tracks = socket.assigns.tracks
 
     state = %{
+      project_id: project_id,
       unpaired: folks,
       unavailable: socket.assigns.unavailable_list,
       arrangements: [],
       tracks: Enum.map(tracks, & &1.name)
     }
 
-    new_state = Projects.decide_pairs(state)
-    new_tracks = place_in_tracks(project_id, Map.get(new_state, :arrangements))
+    %{tracks: new_tracks, unpaired: unpaired} = decide_pairs(state)
 
     {:noreply,
      socket
      |> assign(tracks: new_tracks)
-     |> assign(pairing_list: Map.get(new_state, :unpaired))}
+     |> assign(pairing_list: unpaired)}
   end
 
   def handle_event("reset_pairs", _params, %{assigns: %{project_id: project_id}} = socket) do
@@ -107,10 +115,17 @@ defmodule OneTruePairingWeb.Live.PairView do
      |> assign(tracks: fetch_tracks(project_id: project_id))}
   end
 
+  @impl Phoenix.LiveView
   def handle_info({:renamed, _params}, socket) do
     {:noreply, socket}
   end
 
+  @doc """
+  Handles the submit event for the name of tracks.
+
+  This is triggered as the user types the name of a track, or presses enter when the
+  track input element has focus.
+  """
   def handle_info({:save, params}, socket) do
     target = params |> Map.keys() |> Enum.find(&String.starts_with?(&1, "track_id_"))
 
@@ -133,6 +148,7 @@ defmodule OneTruePairingWeb.Live.PairView do
   end
 
   def handle_info({:repositioned, params}, socket) do
+    project_id = socket.assigns.project_id
     index = String.to_integer(params["id"])
     tracks = socket.assigns.tracks
     track_names = tracks |> Enum.map(& &1.name)
@@ -145,25 +161,56 @@ defmodule OneTruePairingWeb.Live.PairView do
         moving_from in track_names -> extract_person_from_tracks(tracks, moving_from, index)
       end
 
-    socket =
-      cond do
-        moving_to == "unavailable" ->
-          socket
-          |> assign(:unavailable_list, recalculate_positions(socket.assigns.unavailable_list ++ [person]))
-          |> assign(:pairing_list, recalculate_positions(socket.assigns.pairing_list -- [person]))
+    %{
+      unpaired: unpaired,
+      unavailable: unavailable,
+      tracks: tracks
+    } = move(project_id, person: person, to: moving_to, tracks: tracks, unavailable: socket.assigns.unavailable_list, unpaired: socket.assigns.pairing_list)
 
-        moving_to in track_names ->
-          socket
-          |> assign(:tracks, move_person_to(tracks, moving_to, person))
-          |> assign(:unavailable_list, recalculate_positions(socket.assigns.unavailable_list -- [person]))
-          |> assign(:pairing_list, recalculate_positions(socket.assigns.pairing_list -- [person]))
-      end
-
-    {:noreply, socket}
+    {:noreply, socket
+      |> assign(:unavailable_list, recalculate_positions(unavailable))
+      |> assign(:pairing_list, recalculate_positions(unpaired))
+      |> assign(:tracks, tracks)}
   end
 
+  # # # private functions
+
+  defp move(_project_id, person: person, to: to, tracks: tracks, unavailable: unavailable, unpaired: unpaired) do
+    track_names = tracks |> Enum.map(& &1.name)
+    cond do
+      to == "unavailable" ->
+        %{
+          tracks: tracks,
+          unavailable: unavailable ++ [person],
+          unpaired: unpaired -- [person]
+        }
+
+      to in track_names ->
+        %{
+          tracks: move_person_to(tracks, to, person),
+          unavailable: unavailable -- [person],
+          unpaired: unpaired -- [person]
+        }
+    end
+  end
+
+  defp decide_pairs(state) do
+    new_state = Projects.decide_pairs(state)
+    new_tracks = place_in_tracks(Map.get(state, :project_id), Map.get(new_state, :arrangements))
+
+    Map.put(new_state, :tracks, new_tracks)
+  end
+
+  defp load_project(project_id) do
+    %{
+      unpaired: fetch_people(project_id),
+      unavailable: [],
+      tracks: fetch_tracks(project_id: project_id),
+    }
+  end
+
+  @doc "find person at a given index within the named track"
   defp extract_person_from_tracks(tracks, track_name, person_index) do
-    # take person at index from track with name
     tracks
     |> Enum.find(fn track -> track.name == track_name end)
     |> then(& &1.people)
