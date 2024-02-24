@@ -12,11 +12,25 @@ defmodule OneTruePairing.Projects do
   alias OneTruePairing.Projects.Project
   alias OneTruePairing.Projects.Person
   alias OneTruePairing.Projects.Track
+  alias OneTruePairing.Projects.Allocation
 
   # # # people
 
   def persons_for(project_id: project_id) do
     query = from(p in Person, where: p.project_id == ^project_id)
+    Repo.all(query)
+  end
+
+  # # # allocations
+
+  def allocate_person_to_track!(track_id, person_id) do
+    %Allocation{}
+    |> Allocation.changeset(%{track_id: track_id, person_id: person_id})
+    |> Repo.insert!()
+  end
+
+  def allocations_for_track(track_id) do
+    query = from(a in Allocation, where: a.track_id == ^track_id)
     Repo.all(query)
   end
 

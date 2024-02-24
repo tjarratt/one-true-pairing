@@ -1,14 +1,11 @@
 defmodule OneTruePairing.ProjectsTest do
   # @related [impl](lib/one_true_pairing/projects.ex)
   use OneTruePairing.DataCase
-
   alias OneTruePairing.Projects
+  import OneTruePairing.ProjectsFixtures
 
   describe "projects" do
     alias OneTruePairing.Projects.Project
-
-    import OneTruePairing.ProjectsFixtures
-
     @invalid_attrs %{name: nil}
 
     test "list_projects/0 returns all projects" do
@@ -61,8 +58,6 @@ defmodule OneTruePairing.ProjectsTest do
   describe "tracks" do
     alias OneTruePairing.Projects.Track
 
-    import OneTruePairing.ProjectsFixtures
-
     test "can be created" do
       project = project_fixture()
       valid_attrs = %{title: "coal mining", project_id: project.id}
@@ -99,8 +94,6 @@ defmodule OneTruePairing.ProjectsTest do
 
   describe "people" do
     alias OneTruePairing.Projects.Person
-
-    import OneTruePairing.ProjectsFixtures
 
     @invalid_attrs %{name: nil}
 
@@ -161,6 +154,22 @@ defmodule OneTruePairing.ProjectsTest do
     test "change_person/1 returns a person changeset" do
       person = person_fixture()
       assert %Ecto.Changeset{} = Projects.change_person(person)
+    end
+  end
+
+  describe "allocations" do
+    test "people can be allocated to a track" do
+      track = track_fixture(title: "Rockin out")
+      ziggy = person_fixture(name: "Ziggy")
+      lady_stardust = person_fixture(name: "Lady Stardust")
+
+      Projects.allocate_person_to_track!(track.id, ziggy.id)
+      Projects.allocate_person_to_track!(track.id, lady_stardust.id)
+
+      allocated = Projects.allocations_for_track(track.id)
+      |> Enum.map(&(&1.person_id))
+
+      assert allocated == [ziggy.id, lady_stardust.id]
     end
   end
 end
