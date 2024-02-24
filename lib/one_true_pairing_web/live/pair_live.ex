@@ -11,7 +11,7 @@ defmodule OneTruePairingWeb.Live.PairView do
     %{
       unpaired: unpaired,
       unavailable: unavailable,
-      tracks: tracks,
+      tracks: tracks
     } = load_project(project_id)
 
     {:ok,
@@ -165,12 +165,20 @@ defmodule OneTruePairingWeb.Live.PairView do
       unpaired: unpaired,
       unavailable: unavailable,
       tracks: tracks
-    } = move(project_id, person: person, to: moving_to, tracks: tracks, unavailable: socket.assigns.unavailable_list, unpaired: socket.assigns.pairing_list)
+    } =
+      move(project_id,
+        person: person,
+        to: moving_to,
+        tracks: tracks,
+        unavailable: socket.assigns.unavailable_list,
+        unpaired: socket.assigns.pairing_list
+      )
 
-    {:noreply, socket
-      |> assign(:unavailable_list, recalculate_positions(unavailable))
-      |> assign(:pairing_list, recalculate_positions(unpaired))
-      |> assign(:tracks, tracks)}
+    {:noreply,
+     socket
+     |> assign(:unavailable_list, recalculate_positions(unavailable))
+     |> assign(:pairing_list, recalculate_positions(unpaired))
+     |> assign(:tracks, tracks)}
   end
 
   # # # private functions
@@ -205,7 +213,7 @@ defmodule OneTruePairingWeb.Live.PairView do
     |> then(& &1.people)
     |> Enum.at(person_index)
   end
-  
+
   defp update_track_title!(track, new_title) do
     Projects.get_track!(track.id)
     |> Projects.update_track_title!(new_title)
@@ -217,6 +225,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   defp move(_project_id, person: person, to: to, tracks: tracks, unavailable: unavailable, unpaired: unpaired) do
     track_names = tracks |> Enum.map(& &1.name)
+
     cond do
       to == "unavailable" ->
         %{
@@ -245,7 +254,7 @@ defmodule OneTruePairingWeb.Live.PairView do
     %{
       unpaired: fetch_people(project_id),
       unavailable: [],
-      tracks: fetch_tracks(project_id: project_id),
+      tracks: fetch_tracks(project_id: project_id)
     }
   end
 
