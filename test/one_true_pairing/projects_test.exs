@@ -214,7 +214,7 @@ defmodule OneTruePairing.ProjectsTest do
       assert allocated == [ziggy.id]
     end
 
-    test "removing someone only removes the allocation for today" do
+    test "removing someone from a track of work preserves allocations from previous days" do
       track = track_fixture(title: "Rockin out")
       ziggy = person_fixture(name: "Ziggy")
 
@@ -223,17 +223,24 @@ defmodule OneTruePairing.ProjectsTest do
 
       # allocate ziggy yesterday
       %Allocation{}
-      |> Allocation.changeset(%{track_id: track.id, person_id: ziggy.id, updated_at: yesterday, created_at: yesterday})
+      |> Allocation.changeset(%{track_id: track.id, person_id: ziggy.id, updated_at: yesterday, inserted_at: yesterday})
       |> Repo.insert!()
 
       Projects.allocate_person_to_track!(track.id, ziggy.id)
       Projects.remove_person_from_track!(track.id, ziggy.id)
 
-      allocated =
-        Projects.allocations_for_track(track.id)
-        |> Enum.map(& &1.person_id)
+      [allocation] = Repo.all(Allocation)
 
-      assert allocated == []
+      assert dates_equal?(allocation.inserted_at, yesterday)
+      assert dates_equal?(allocation.updated_at, yesterday)
+      assert allocation.person_id == ziggy.id
+      assert allocation.track_id == track.id
     end
+  end
+
+  defp dates_equal?(a, b) do
+    a.year == b.year and
+    a.month == b.month and
+    a.day == b.day
   end
 end
