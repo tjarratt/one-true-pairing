@@ -319,7 +319,7 @@ defmodule OneTruePairingWeb.Live.PairView do
   end
 
   defp place_in_tracks(project_id, pairings) do
-    tracks = fetch_tracks(project_id: project_id)
+    tracks = fetch_tracks(project_id: project_id) |> Enum.sort_by(& &1.id)
 
     Enum.zip(pairings, tracks)
     |> Enum.map(fn {pair, track} ->
