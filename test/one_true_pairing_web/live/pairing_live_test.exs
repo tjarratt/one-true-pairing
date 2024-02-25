@@ -238,6 +238,16 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       assert [] == select_unavailable(html)
       assert "Alicia" in select_unpaired(html)
     end
+
+    test "they can be moved from a track to 'unavailable'", %{conn: conn, project: project} do
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      send_person(view, at_index: 4, from: "available", to: "Boiling potatoes")
+      html = send_person(view, at_index: 0, from: "Boiling potatoes", to: "unavailable")
+
+      assert "Alicia" in select_unavailable(html)
+      refute "Alicia" in people_in_track(html, "Boiling potatoes")
+    end
   end
 
   describe "moving people" do

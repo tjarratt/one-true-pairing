@@ -251,7 +251,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         }
       to == "unavailable" ->
         %{
-          tracks: tracks,
+          tracks: remove_person_from_tracks(tracks, person),
           unavailable: unavailable ++ [person],
           unpaired: without(unpaired, [person])
         }
