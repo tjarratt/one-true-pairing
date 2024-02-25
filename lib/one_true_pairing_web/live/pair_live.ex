@@ -228,7 +228,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   defp move(_project_id,
          person: person,
-         from: _from,
+         from: from,
          to: to,
          tracks: tracks,
          unavailable: unavailable,
@@ -236,7 +236,18 @@ defmodule OneTruePairingWeb.Live.PairView do
        ) do
     track_names = tracks |> Enum.map(& &1.name)
 
+    if from in track_names do
+      track = Enum.find(tracks, fn t -> t.name == from end)
+      Projects.remove_person_from_track!(track.id, person.id)
+    end
+
     cond do
+      to == "available" ->
+        %{
+          tracks: remove_person_from_tracks(tracks, person),
+          unavailable: without(unavailable, [person]),
+          unpaired: unpaired ++ [person]
+        }
       to == "unavailable" ->
         %{
           tracks: tracks,
@@ -251,6 +262,12 @@ defmodule OneTruePairingWeb.Live.PairView do
           unpaired: without(unpaired, [person])
         }
     end
+  end
+
+  defp remove_person_from_tracks(tracks, person) do
+    Enum.map(tracks, fn track ->
+      %{track | people: without(track.people, [person])}
+    end)
   end
 
   defp decide_pairs(state) do
