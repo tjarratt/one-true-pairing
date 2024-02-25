@@ -24,6 +24,11 @@ defmodule OneTruePairing.Projects do
   # # # allocations
 
   def allocate_person_to_track!(track_id, person_id) do
+    today = Date.utc_today()
+    {:ok, start_of_day} = NaiveDateTime.new(today, ~T[00:00:00])
+
+    Repo.delete_all(from(a in Allocation, where: a.person_id == ^person_id and a.updated_at >= ^start_of_day))
+
     %Allocation{}
     |> Allocation.changeset(%{track_id: track_id, person_id: person_id})
     |> Repo.insert!()
@@ -48,6 +53,18 @@ defmodule OneTruePairing.Projects do
     {:ok, start_of_day} = NaiveDateTime.new(today, ~T[00:00:00])
     query = from(a in Allocation, where: a.track_id == ^track_id and a.updated_at >= ^start_of_day)
     Repo.all(query)
+  end
+
+  def reset_allocations_for_the_day(project_id) do
+    today = Date.utc_today()
+    {:ok, start_of_day} = NaiveDateTime.new(today, ~T[00:00:00])
+
+    track_ids = tracks_for(project_id: project_id)
+    |> Enum.map(& &1.id)
+   
+    query = from(a in Allocation, where: a.track_id in ^track_ids and a.updated_at >= ^start_of_day)
+
+    Repo.delete_all(query)
   end
 
   @doc """

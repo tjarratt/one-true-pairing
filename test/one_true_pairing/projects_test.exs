@@ -236,11 +236,50 @@ defmodule OneTruePairing.ProjectsTest do
       assert allocation.person_id == ziggy.id
       assert allocation.track_id == track.id
     end
+
+    test "allocating someone to a track removes them from others" do
+      daydreaming = track_fixture(title: "Moonage daydream")
+      suicide = track_fixture(title: "Rock n' Roll suicide")
+      ziggy = person_fixture(name: "Ziggy")
+
+      Projects.allocate_person_to_track!(daydreaming.id, ziggy.id)
+      Projects.allocate_person_to_track!(suicide.id, ziggy.id)
+
+      [allocation] = Repo.all(Allocation)
+
+      assert allocation.track_id == suicide.id
+    end
+
+    test "can be reset for the current day" do
+      track = track_fixture(title: "Rockin out")
+      ziggy = person_fixture(name: "Ziggy")
+
+      {:ok, now} = DateTime.now("Etc/UTC")
+      yesterday = DateTime.add(now, -1, :day)
+
+      # allocate ziggy yesterday
+      %Allocation{}
+      |> Allocation.changeset(%{track_id: track.id, person_id: ziggy.id, updated_at: yesterday, inserted_at: yesterday})
+      |> Repo.insert!()
+
+      # allocate ziggy again today
+      Projects.allocate_person_to_track!(track.id, ziggy.id)
+
+      # reset the project
+      Projects.reset_allocations_for_the_day(track.project_id)
+
+      [allocation] = Repo.all(Allocation)
+
+      assert dates_equal?(allocation.inserted_at, yesterday)
+      assert dates_equal?(allocation.updated_at, yesterday)
+      assert allocation.person_id == ziggy.id
+      assert allocation.track_id == track.id
+    end
   end
 
   defp dates_equal?(a, b) do
     a.year == b.year and
-    a.month == b.month and
-    a.day == b.day
+      a.month == b.month and
+      a.day == b.day
   end
 end

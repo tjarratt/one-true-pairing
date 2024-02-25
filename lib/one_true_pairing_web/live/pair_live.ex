@@ -18,9 +18,9 @@ defmodule OneTruePairingWeb.Live.PairView do
      socket
      |> assign(project_id: project_id)
      |> assign(everyone: everyone)
-     |> assign(pairing_list: unpaired)
-     |> assign(unavailable_list: unavailable)
-     |> assign(tracks: tracks)}
+     |> assign(pairing_list: unpaired |> recalculate_positions())
+     |> assign(unavailable_list: unavailable |> recalculate_positions())
+     |> assign(tracks: tracks |> recalculate_track_positions())}
   end
 
   @impl Phoenix.LiveView
@@ -109,6 +109,8 @@ defmodule OneTruePairingWeb.Live.PairView do
       fetch_people(project_id)
       |> without(socket.assigns.unavailable_list)
 
+    Projects.reset_allocations_for_the_day(project_id)
+
     {:noreply,
      socket
      |> assign(pairing_list: pairing_list)
@@ -149,7 +151,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   def handle_info({:repositioned, params}, socket) do
     project_id = socket.assigns.project_id
-    index = String.to_integer(params["id"])
+    index = params["old"]
     tracks = socket.assigns.tracks
     track_names = tracks |> Enum.map(& &1.name)
     moving_from = params["from"]["list_id"]
@@ -168,6 +170,7 @@ defmodule OneTruePairingWeb.Live.PairView do
     } =
       move(project_id,
         person: person,
+        from: moving_from,
         to: moving_to,
         tracks: tracks,
         unavailable: socket.assigns.unavailable_list,
@@ -178,7 +181,7 @@ defmodule OneTruePairingWeb.Live.PairView do
      socket
      |> assign(:unavailable_list, recalculate_positions(unavailable))
      |> assign(:pairing_list, recalculate_positions(unpaired))
-     |> assign(:tracks, tracks)}
+     |> assign(:tracks, recalculate_track_positions(tracks))}
   end
 
   # # # private functions
@@ -223,7 +226,14 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   # # # push down a layer
 
-  defp move(_project_id, person: person, to: to, tracks: tracks, unavailable: unavailable, unpaired: unpaired) do
+  defp move(_project_id,
+         person: person,
+         from: _from,
+         to: to,
+         tracks: tracks,
+         unavailable: unavailable,
+         unpaired: unpaired
+       ) do
     track_names = tracks |> Enum.map(& &1.name)
 
     cond do
@@ -251,10 +261,29 @@ defmodule OneTruePairingWeb.Live.PairView do
   end
 
   defp load_project(project_id) do
+    people = fetch_people(project_id)
+
+    # for each track
+    # load allocations
+    # find each person by id
+    # assign track.people
+    # remove people from unpaired
+    tracks =
+      fetch_tracks(project_id: project_id)
+      |> Enum.map(fn track ->
+        allocated_ids = Projects.allocations_for_track(track.id) |> Enum.map(& &1.person_id)
+        allocated_people = Enum.filter(people, fn p -> p.id in allocated_ids end)
+
+        %{track | people: allocated_people}
+      end)
+
+    all_allocated_ids = tracks |> Enum.flat_map(fn track -> Enum.map(track.people, & &1.id) end)
+    unpaired = people |> Enum.filter(fn p -> p.id not in all_allocated_ids end)
+
     %{
-      unpaired: fetch_people(project_id),
+      unpaired: unpaired,
       unavailable: [],
-      tracks: fetch_tracks(project_id: project_id)
+      tracks: tracks
     }
   end
 
@@ -262,6 +291,7 @@ defmodule OneTruePairingWeb.Live.PairView do
     tracks
     |> Enum.map(fn %{id: id, people: people, name: name} ->
       if name == track_name do
+        Projects.allocate_person_to_track!(id, person.id)
         list = (people ++ [person]) |> MapSet.new() |> MapSet.to_list()
         %{id: id, people: list, name: name}
       else
@@ -280,6 +310,10 @@ defmodule OneTruePairingWeb.Live.PairView do
     tracks = fetch_tracks(project_id: project_id)
 
     Enum.zip(pairings, tracks)
-    |> Enum.map(fn {pair, track_info} -> %{track_info | people: pair} end)
+    |> Enum.map(fn {pair, track} ->
+      Enum.each(pair, &Projects.allocate_person_to_track!(track.id, &1.id))
+
+      %{track | people: pair}
+    end)
   end
 end
