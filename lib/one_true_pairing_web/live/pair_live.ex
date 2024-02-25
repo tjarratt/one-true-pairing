@@ -160,6 +160,7 @@ defmodule OneTruePairingWeb.Live.PairView do
     person =
       cond do
         moving_from == "available" -> Enum.at(socket.assigns.pairing_list, index)
+        moving_from == "unavailable" -> Enum.at(socket.assigns.unavailable_list, index)
         moving_from in track_names -> extract_person_from_tracks(tracks, moving_from, index)
       end
 

@@ -239,6 +239,16 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       assert available_indices == [0, 1, 2, 3]
     end
+
+    test "they can be moved back to 'unpaired' so they can be paired up again", %{conn: conn, project: project} do
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      send_person(view, at_index: 4, from: "available", to: "unavailable")
+      html = send_person(view, at_index: 0, from: "unavailable", to: "available")
+
+      assert "" == select_unavailable(html)
+      assert "Alicia" in select_unpaired(html)
+    end
   end
 
   describe "moving people" do
