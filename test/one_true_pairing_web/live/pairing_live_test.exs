@@ -140,22 +140,18 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       # send Alicia from unpaired to unavailable
       html = send_person(view, at_index: 4, from: "available", to: "unavailable")
 
-      unavailable = select_unavailable(html)
-      assert unavailable == "Alicia"
+      assert ["Alicia"] == select_unavailable(html)
 
-      available = select_unpaired(html)
-      refute "Alicia" in available
+      refute "Alicia" in select_unpaired(html)
 
       html =
         view
         |> element("button", "Randomize pairs")
         |> render_click()
 
-      unavailable = select_unavailable(html)
-      assert unavailable == "Alicia"
+      assert ["Alicia"] == select_unavailable(html)
 
-      available = select_unpaired(html)
-      refute "Alicia" in available
+      refute "Alicia" in select_unpaired(html)
 
       [first_pair, second_pair] =
         html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
@@ -170,19 +166,15 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       # send Andrew from unpaired to unavailable
       html = send_person(view, at_index: 0, from: "available", to: "unavailable")
 
-      unavailable = select_unavailable(html)
-      assert unavailable == "Andrew"
-
-      available = html |> HtmlQuery.find(test_role: "unpaired") |> HtmlQuery.text()
-      refute available =~ "Andrew"
+      assert ["Andrew"] == select_unavailable(html)
+      refute "Andrew" in select_unpaired(html)
 
       html =
         view
         |> element("button", "Randomize pairs")
         |> render_click()
 
-      unavailable = select_unavailable(html)
-      assert unavailable == "Andrew"
+      assert ["Andrew"] == select_unavailable(html)
 
       [first_pair, second_pair] =
         html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
@@ -202,11 +194,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> element("button", "Reset pairs")
         |> render_click()
 
-      unavailable = select_unavailable(html)
-      assert unavailable == "Alicia"
-
-      available = select_unpaired(html)
-      refute "Alicia" in available
+      assert ["Alicia"] == select_unavailable(html)
+      refute "Alicia" in select_unpaired(html)
     end
 
     test "the indices of people in the lists are recalculated", %{conn: conn, project: project} do
@@ -246,7 +235,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       send_person(view, at_index: 4, from: "available", to: "unavailable")
       html = send_person(view, at_index: 0, from: "unavailable", to: "available")
 
-      assert "" == select_unavailable(html)
+      assert [] == select_unavailable(html)
       assert "Alicia" in select_unpaired(html)
     end
   end
@@ -422,6 +411,9 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     |> HtmlQuery.find!(test_role: "unavailable")
     |> HtmlQuery.find!(test_role: "list")
     |> HtmlQuery.text()
+    |> String.split("\n", trim: true)
+    |> Enum.map(&String.trim(&1))
+    |> Enum.reject(fn str -> String.length(str) == 0 end)
   end
 
   defp people_in_track(html, track_name) do
