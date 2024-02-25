@@ -168,8 +168,9 @@ defmodule OneTruePairing.ProjectsTest do
       Projects.allocate_person_to_track!(track.id, ziggy.id)
       Projects.allocate_person_to_track!(track.id, lady_stardust.id)
 
-      allocated = Projects.allocations_for_track(track.id)
-      |> Enum.map(&(&1.person_id))
+      allocated =
+        Projects.allocations_for_track(track.id)
+        |> Enum.map(& &1.person_id)
 
       assert allocated == [ziggy.id, lady_stardust.id]
     end
@@ -189,8 +190,9 @@ defmodule OneTruePairing.ProjectsTest do
 
       Projects.allocate_person_to_track!(track.id, lady_stardust.id)
 
-      allocated = Projects.allocations_for_track(track.id)
-      |> Enum.map(&(&1.person_id))
+      allocated =
+        Projects.allocations_for_track(track.id)
+        |> Enum.map(& &1.person_id)
 
       assert allocated == [lady_stardust.id]
     end
@@ -205,8 +207,9 @@ defmodule OneTruePairing.ProjectsTest do
 
       Projects.remove_person_from_track!(track.id, lady_stardust.id)
 
-      allocated = Projects.allocations_for_track(track.id)
-      |> Enum.map(&(&1.person_id))
+      allocated =
+        Projects.allocations_for_track(track.id)
+        |> Enum.map(& &1.person_id)
 
       assert allocated == [ziggy.id]
     end
@@ -226,8 +229,9 @@ defmodule OneTruePairing.ProjectsTest do
       Projects.allocate_person_to_track!(track.id, ziggy.id)
       Projects.remove_person_from_track!(track.id, ziggy.id)
 
-      allocated = Projects.allocations_for_track(track.id)
-      |> Enum.map(&(&1.person_id))
+      allocated =
+        Projects.allocations_for_track(track.id)
+        |> Enum.map(& &1.person_id)
 
       assert allocated == []
     end

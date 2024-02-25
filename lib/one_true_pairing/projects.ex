@@ -30,16 +30,21 @@ defmodule OneTruePairing.Projects do
   end
 
   def remove_person_from_track!(track_id, person_id) do
-    today = Date.utc_today
+    today = Date.utc_today()
     {:ok, start_of_day} = NaiveDateTime.new(today, ~T[00:00:00])
-    query = from(a in Allocation, where: a.track_id == ^track_id and a.person_id == ^person_id and a.updated_at >= ^start_of_day)
+
+    query =
+      from(a in Allocation,
+        where: a.track_id == ^track_id and a.person_id == ^person_id and a.updated_at >= ^start_of_day
+      )
+
     [allocation | _rest] = Repo.all(query)
 
     Repo.delete!(allocation)
   end
 
   def allocations_for_track(track_id) do
-    today = Date.utc_today
+    today = Date.utc_today()
     {:ok, start_of_day} = NaiveDateTime.new(today, ~T[00:00:00])
     query = from(a in Allocation, where: a.track_id == ^track_id and a.updated_at >= ^start_of_day)
     Repo.all(query)
