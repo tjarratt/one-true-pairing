@@ -100,8 +100,8 @@ defmodule OneTruePairingWeb.Live.PairView do
 
     {:noreply,
      socket
-     |> assign(tracks: new_tracks)
-     |> assign(pairing_list: unpaired)}
+     |> assign(tracks: new_tracks |> recalculate_track_positions())
+     |> assign(pairing_list: unpaired |> recalculate_positions())}
   end
 
   def handle_event("reset_pairs", _params, %{assigns: %{project_id: project_id}} = socket) do
@@ -113,7 +113,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
     {:noreply,
      socket
-     |> assign(pairing_list: pairing_list)
+     |> assign(pairing_list: pairing_list |> recalculate_positions())
      |> assign(tracks: fetch_tracks(project_id: project_id))}
   end
 
@@ -246,7 +246,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
       to in track_names ->
         %{
-          tracks: move_person_to(tracks, to, person) |> recalculate_track_positions(),
+          tracks: move_person_to(tracks, to, person),
           unavailable: without(unavailable, [person]),
           unpaired: without(unpaired, [person])
         }
@@ -263,11 +263,6 @@ defmodule OneTruePairingWeb.Live.PairView do
   defp load_project(project_id) do
     people = fetch_people(project_id)
 
-    # for each track
-    # load allocations
-    # find each person by id
-    # assign track.people
-    # remove people from unpaired
     tracks =
       fetch_tracks(project_id: project_id)
       |> Enum.map(fn track ->
