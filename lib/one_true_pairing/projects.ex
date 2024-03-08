@@ -14,6 +14,30 @@ defmodule OneTruePairing.Projects do
   alias OneTruePairing.Projects.Track
   alias OneTruePairing.Projects.Allocation
 
+  # # # new board-based interface
+
+  def load_project(project_id) do
+    people = persons_for(project_id: project_id) |> Enum.map(&%{name: &1.name, id: &1.id})
+
+    tracks =
+      tracks_for(project_id: project_id)
+      |> Enum.map(fn track ->
+        allocated_ids = allocations_for_track(track.id) |> Enum.map(& &1.person_id)
+        allocated_people = Enum.filter(people, fn p -> p.id in allocated_ids end)
+
+        %{
+          people: allocated_people,
+          id: track.id,
+          name: track.title
+        }
+      end)
+
+    all_allocated_ids = Enum.flat_map(tracks, fn track -> Enum.map(track.people, & &1.id) end)
+    unpaired = people |> Enum.filter(fn p -> p.id not in all_allocated_ids end)
+
+    %{unpaired: unpaired, tracks: tracks}
+  end
+
   # # # people
 
   def persons_for(project_id: project_id) do
@@ -59,9 +83,10 @@ defmodule OneTruePairing.Projects do
     today = Date.utc_today()
     {:ok, start_of_day} = NaiveDateTime.new(today, ~T[00:00:00])
 
-    track_ids = tracks_for(project_id: project_id)
-    |> Enum.map(& &1.id)
-   
+    track_ids =
+      tracks_for(project_id: project_id)
+      |> Enum.map(& &1.id)
+
     query = from(a in Allocation, where: a.track_id in ^track_ids and a.updated_at >= ^start_of_day)
 
     Repo.delete_all(query)

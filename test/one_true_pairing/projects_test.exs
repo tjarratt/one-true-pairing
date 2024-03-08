@@ -4,6 +4,40 @@ defmodule OneTruePairing.ProjectsTest do
   alias OneTruePairing.Projects
   import OneTruePairing.ProjectsFixtures
 
+  describe "a new board-based interface" do
+    test "loads the current state of the project" do
+      project = project_fixture()
+      [alice, bob, carol] = Enum.map(~w[Alice Bob Carol], &person_fixture(name: &1, project_id: project.id))
+      track = track_fixture(title: "Making a Modest Proposal", project_id: project.id)
+
+      result = Projects.load_project(project.id)
+
+      assert result == %{
+               unpaired: [%{name: "Alice", id: alice.id}, %{name: "Bob", id: bob.id}, %{name: "Carol", id: carol.id}],
+               tracks: [
+                 %{id: track.id, name: "Making a Modest Proposal", people: []}
+               ]
+             }
+    end
+
+    test "keeps track of track allocations" do
+      project = project_fixture()
+      [alice, bob, carol] = Enum.map(~w[Alice Bob Carol], &person_fixture(name: &1, project_id: project.id))
+      track = track_fixture(title: "Making a Modest Proposal", project_id: project.id)
+
+      Projects.allocate_person_to_track!(track.id, alice.id)
+
+      result = Projects.load_project(project.id)
+
+      assert result == %{
+               unpaired: [%{name: "Bob", id: bob.id}, %{name: "Carol", id: carol.id}],
+               tracks: [
+                 %{id: track.id, name: "Making a Modest Proposal", people: [%{name: "Alice", id: alice.id}]}
+               ]
+             }
+    end
+  end
+
   describe "projects" do
     alias OneTruePairing.Projects.Project
     @invalid_attrs %{name: nil}
