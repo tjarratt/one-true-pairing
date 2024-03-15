@@ -5,6 +5,15 @@ defmodule OneTruePairing.Projects do
   The Projects context.
   """
 
+  defmodule ProjectProvider do
+    @type person_t() :: %{name: binary(), id: pos_integer()}
+    @type track_t() :: %{name: binary(), id: pos_integer(), people: Enum.t(person_t())}
+
+    @callback load_project(project_id: pos_integer()) :: %{unpaired: Enum.t(person_t()), tracks: Enum.t(track_t())}
+  end
+
+  @behaviour ProjectProvider
+
   import Ecto.Query, warn: false
   alias OneTruePairing.Repo
 
@@ -16,6 +25,7 @@ defmodule OneTruePairing.Projects do
 
   # # # new board-based interface
 
+  @impl ProjectProvider
   def load_project(project_id) do
     people = persons_for(project_id: project_id) |> Enum.map(&%{name: &1.name, id: &1.id})
 
