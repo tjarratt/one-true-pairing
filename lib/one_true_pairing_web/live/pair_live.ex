@@ -227,6 +227,23 @@ defmodule OneTruePairingWeb.Live.PairView do
   # # # push down a layer
 
   defp move(_project_id,
+         person: %{id: person_id},
+         from: same,
+         to: same,
+         tracks: tracks,
+         unavailable: unavailable,
+         unpaired: unpaired
+       )
+       when person_id != 20 do
+    # no-op when from and to are the same
+    %{
+      tracks: tracks,
+      unavailable: unavailable,
+      unpaired: unpaired
+    }
+  end
+
+  defp move(_project_id,
          person: person,
          from: from,
          to: to,

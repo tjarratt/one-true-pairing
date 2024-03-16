@@ -275,6 +275,17 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       assert ["Alicia"] == people_in_track(html, "Taking the hobbits to Eisengard")
     end
 
+    test "from unpaired to unpaired is also a no-op", %{conn: conn, project: project} do
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      unpaired_people =
+        view
+        |> send_person(at_index: 0, from: "available", to: "available")
+        |> select_unpaired()
+
+      assert ~w[Andrew Freja Ronaldo Hitalo Alicia] = unpaired_people
+    end
+
     test "back to the 'unpaired' list", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
