@@ -19,7 +19,7 @@ defmodule OneTruePairing.MixProject do
   def application do
     [
       mod: {OneTruePairing.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :os_mon]
     ]
   end
 
@@ -34,6 +34,7 @@ defmodule OneTruePairing.MixProject do
     [
       {:phoenix, "~> 1.7.7"},
       {:phoenix_ecto, "~> 4.4"},
+      {:ecto_psql_extras, "~> 0.6"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.3"},
