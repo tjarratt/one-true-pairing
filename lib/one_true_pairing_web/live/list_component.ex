@@ -19,13 +19,14 @@ defmodule OneTruePairingWeb.Live.ListComponent do
             </div>
           <% else %>
             <header>
-              <.simple_form for={nil} phx-change="validate" phx-submit="save" phx-target={@myself}>
+              <.simple_form for={nil} phx-change="save" phx-submit="save" phx-target={@myself}>
                 <.input
                   type="text"
                   test-role="track-name"
                   name={"track_id_#{@track_id}"}
                   value={@list_name}
                   class="text-2xl"
+                  phx-debounce
                 />
               </.simple_form>
             </header>
