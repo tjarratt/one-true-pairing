@@ -53,6 +53,7 @@ defmodule OneTruePairing.MixProject do
       {:html_query, "~> 1.1.1", only: :test},
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
       {:plug_cowboy, "~> 2.5"},
+      {:process_tree, git: "https://github.com/jbsf2/process-tree.git", tag: "v0.1.1"},
       {:markdown_formatter, "~> 0.5", only: [:dev, :test], runtime: false}
     ]
   end

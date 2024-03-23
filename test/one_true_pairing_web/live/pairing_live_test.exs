@@ -20,6 +20,29 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     [project: project]
   end
 
+  require Mocks.HandRolled
+
+  test "testing via dependency injection", %{conn: conn} do
+    Injector.inject(
+      :project_impl,
+      Mocks.HandRolled.new(%{
+        unpaired: [
+          %{id: 1, name: "Andrew"},
+          %{id: 2, name: "Freja"},
+          %{id: 3, name: "Ronaldo"},
+          %{id: 4, name: "Hitalo"},
+          %{id: 5, name: "Alicia"}
+        ],
+        tracks: []
+      })
+    )
+
+    {:ok, _view, html} = live(conn, ~p"/projects/1/pairing")
+    list = select_unpaired(html)
+
+    assert list == ~w[Andrew Freja Ronaldo Hitalo Alicia]
+  end
+
   test "it has a title", %{conn: conn, project: project} do
     {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 

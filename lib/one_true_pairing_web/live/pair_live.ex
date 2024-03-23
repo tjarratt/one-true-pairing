@@ -4,6 +4,10 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   alias OneTruePairing.Projects
 
+  defp projects_impl do
+    Provider.provide(:project_impl, default: Projects)
+  end
+
   @impl Phoenix.LiveView
   def mount(%{"project_id" => project_id}, _session, socket) do
     everyone = fetch_people(project_id)
@@ -11,7 +15,7 @@ defmodule OneTruePairingWeb.Live.PairView do
     %{
       unpaired: unpaired,
       tracks: tracks
-    } = Projects.load_project(project_id)
+    } = projects_impl().load_project(project_id)
 
     {:ok,
      socket

@@ -1,3 +1,18 @@
+defmodule Mocks.HandRolled do
+  defmacro new(stubbed_response) do
+    quote do
+      {:module, impl, _bytes, _method} =
+        defmodule Impl do
+          def load_project("1") do
+            unquote(stubbed_response)
+          end
+        end
+
+      impl
+    end
+  end
+end
+
 defmodule OneTruePairing.ProjectsFixtures do
   @moduledoc """
   This module defines test helpers for creating
