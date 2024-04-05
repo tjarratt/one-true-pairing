@@ -1,6 +1,6 @@
 defmodule OneTruePairingWeb.PairingLiveTest do
   # @related [impl](lib/one_true_pairing_web/live/pair_live.ex)
-  use OneTruePairingWeb.ConnCase
+  use OneTruePairingWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
   import OneTruePairing.ProjectsFixtures
