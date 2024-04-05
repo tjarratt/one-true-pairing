@@ -13,7 +13,6 @@ defmodule OneTruePairing.Projects.Track do
   def changeset(track, attrs) do
     track
     |> cast(attrs, [:title, :project_id])
-    |> validate_required([:title, :project_id])
-    |> unique_constraint([:title], name: :tracks_project_id_title_index)
+    |> validate_required([:project_id])
   end
 end
