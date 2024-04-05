@@ -33,18 +33,17 @@ Hooks.Sortable = {
 		let sorter = new Sortable(this.el, {
 			group: group,
 			animation: 150,
-			delay: 100,
 			dragClass: "drag-item",
 			ghostClass: "drag-ghost",
 			forceFallback: true,
 			onEnd: e => {
 				let params = {
-          old: e.oldIndex, 
-          new: e.newIndex, 
-          from: e.from.dataset,
-          to: e.to.dataset, 
-          ...e.item.dataset,
-        };
+					old: e.oldIndex,
+					new: e.newIndex,
+					from: e.from.dataset,
+					to: e.to.dataset,
+					...e.item.dataset,
+				};
 				this.pushEventTo(this.el, "reposition", params);
 			},
 		});
