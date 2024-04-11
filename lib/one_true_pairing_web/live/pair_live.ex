@@ -52,7 +52,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
       <%= for track <- @tracks do %>
         <.live_component
-          id={track.name}
+          id={track.id}
           module={OneTruePairingWeb.Live.ListComponent}
           track_id={track.id}
           list={track.people}

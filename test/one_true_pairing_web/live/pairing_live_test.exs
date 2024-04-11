@@ -330,14 +330,14 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     test "are rendered as separate lists", %{conn: conn, project: project} do
       {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      list =
+      tracks =
         html
         |> HtmlQuery.all(test_role: "track-of-work")
         |> Enum.map(fn elem -> HtmlQuery.find!(elem, test_role: "track-name") end)
         |> Enum.map(fn elem -> HtmlQuery.attr(elem, "value") end)
 
-      assert Enum.member?(list, "Taking the hobbits to Eisengard")
-      assert Enum.member?(list, "Boiling potatoes")
+      assert Enum.member?(tracks, "Taking the hobbits to Eisengard")
+      assert Enum.member?(tracks, "Boiling potatoes")
     end
 
     test "can be edited", %{conn: conn, project: project} do
@@ -352,6 +352,37 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> HtmlQuery.attr("value")
 
       assert track_title == "Staring at the One Ring"
+    end
+
+    test "can have the same name", %{conn: conn, project: project} do
+      {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      html = rename_first_track(view, html, "Boiling potatoes")
+
+      tracks =
+        html
+        |> HtmlQuery.all(test_role: "track-of-work")
+        |> Enum.map(fn elem -> HtmlQuery.find!(elem, test_role: "track-name") end)
+        |> Enum.map(fn elem -> HtmlQuery.attr(elem, "value") end)
+
+      assert tracks == ["Boiling potatoes", "Boiling potatoes"]
+    end
+
+    test "can be named 'unavailable'", %{conn: conn, project: project} do
+      {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      rename_first_track(view, html, "unavailable")
+
+      {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      tracks =
+        html
+        |> HtmlQuery.all(test_role: "track-of-work")
+        |> Enum.map(fn elem -> HtmlQuery.find!(elem, test_role: "track-name") end)
+        |> Enum.map(fn elem -> HtmlQuery.attr(elem, "value") end)
+
+      assert "unavailable" in tracks
+      assert "Boiling potatoes" in tracks
     end
   end
 
