@@ -42,8 +42,8 @@ defmodule OneTruePairingWeb.Live.PairView do
         id="available"
         module={OneTruePairingWeb.Live.ListComponent}
         list={@pairing_list}
-        list_name="unpaired"
-        track_id="unpaired"
+        list_name="available"
+        track_id="available"
         group="pairing"
         test_role="unpaired"
         custom_header
@@ -67,7 +67,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         id="unavailable"
         module={OneTruePairingWeb.Live.ListComponent}
         list={@unavailable_list}
-        list_name="Unavailable"
+        list_name="unavailable"
         track_id="unavailable"
         test_role="unavailable"
         group="pairing"
@@ -158,8 +158,9 @@ defmodule OneTruePairingWeb.Live.PairView do
     index = params["old"]
     tracks = socket.assigns.tracks
     track_names = tracks |> Enum.map(& &1.name)
-    moving_from = params["from"]["list_id"]
-    moving_to = params["to"]["list_id"]
+    moving_from = params["from"]["list_name"]
+    moving_to = params["to"]["list_name"]
+
 
     person =
       cond do

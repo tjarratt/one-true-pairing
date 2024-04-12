@@ -37,6 +37,7 @@ defmodule OneTruePairingWeb.Live.ListComponent do
           id={"#{@id}-items"}
           phx-hook="Sortable"
           data-list_id={@id}
+          data-list_name={@list_name}
           test-role="list"
           data-group={@group}
           class="min-h-40 h-full"

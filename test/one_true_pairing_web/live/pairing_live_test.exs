@@ -473,8 +473,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     view
     |> render_hook(:repositioned, %{
       "old" => index,
-      "from" => %{"list_id" => old_list},
-      "to" => %{"list_id" => new_list}
+      "from" => %{"list_name" => old_list},
+      "to" => %{"list_name" => new_list}
     })
   end
 
