@@ -26,6 +26,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     Injector.inject(
       :project_impl,
       Mocks.HandRolled.new(%{
+        unavailable: [],
         unpaired: [
           %{id: 1, name: "Andrew"},
           %{id: 2, name: "Freja"},
@@ -181,6 +182,23 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       refute first_pair =~ "Alicia"
       refute second_pair =~ "Alicia"
+    end
+
+    test "they stay unavailable until moved", %{conn: conn, project: project} do
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      # send alicia from unpaired to unavailable
+      send_person(view, at_index: 4, from: "available", to: "unavailable")
+      {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      assert "Alicia" in select_unavailable(html)
+
+      # send alicia from unavailable to unpaired
+      send_person(view, at_index: 0, from: "unavailable", to: "available")
+      {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      refute "Alicia" in select_unavailable(html)
+      assert "Alicia" in select_unpaired(html)
     end
 
     test "people do not get assigned twice when randomized", %{conn: conn, project: project} do

@@ -23,11 +23,11 @@ defmodule OneTruePairing.Projects do
   alias OneTruePairing.Projects.Track
   alias OneTruePairing.Projects.Allocation
 
-  # # # new board-based interface
+  # # # new interface
 
   @impl ProjectProvider
   def load_project(project_id) do
-    people = persons_for(project_id: project_id) |> Enum.map(&%{name: &1.name, id: &1.id})
+    people = persons_for(project_id: project_id) |> Enum.map(&%{name: &1.name, id: &1.id, unavailable: &1.unavailable})
 
     tracks =
       tracks_for(project_id: project_id)
@@ -43,9 +43,10 @@ defmodule OneTruePairing.Projects do
       end)
 
     all_allocated_ids = Enum.flat_map(tracks, fn track -> Enum.map(track.people, & &1.id) end)
-    unpaired = people |> Enum.filter(fn p -> p.id not in all_allocated_ids end)
+    unavailable = people |> Enum.filter(fn person -> person.unavailable end)
+    unpaired = people |> Enum.filter(fn person -> person.id not in all_allocated_ids and not person.unavailable end)
 
-    %{unpaired: unpaired, tracks: tracks}
+    %{unpaired: unpaired, tracks: tracks, unavailable: unavailable}
   end
 
   # # # people
@@ -53,6 +54,22 @@ defmodule OneTruePairing.Projects do
   def persons_for(project_id: project_id) do
     query = from(p in Person, where: p.project_id == ^project_id)
     Repo.all(query)
+  end
+
+  def mark_available_to_pair(person_id) do
+    person = get_person!(person_id)
+
+    person
+    |> Person.changeset(%{unavailable: false})
+    |> Repo.update!()
+  end
+
+  def mark_unavailable_to_pair(person_id) do
+    person = get_person!(person_id)
+
+    person
+    |> Person.changeset(%{unavailable: true})
+    |> Repo.update!()
   end
 
   # # # allocations

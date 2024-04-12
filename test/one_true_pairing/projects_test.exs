@@ -13,7 +13,12 @@ defmodule OneTruePairing.ProjectsTest do
       result = Projects.load_project(project.id)
 
       assert result == %{
-               unpaired: [%{name: "Alice", id: alice.id}, %{name: "Bob", id: bob.id}, %{name: "Carol", id: carol.id}],
+               unavailable: [],
+               unpaired: [
+                %{name: "Alice", id: alice.id, unavailable: false}, 
+                %{name: "Bob", id: bob.id, unavailable: false}, 
+                %{name: "Carol", id: carol.id, unavailable: false}
+                ],
                tracks: [
                  %{id: track.id, name: "Making a Modest Proposal", people: []}
                ]
@@ -30,9 +35,29 @@ defmodule OneTruePairing.ProjectsTest do
       result = Projects.load_project(project.id)
 
       assert result == %{
-               unpaired: [%{name: "Bob", id: bob.id}, %{name: "Carol", id: carol.id}],
+               unavailable: [],
+               unpaired: [%{name: "Bob", id: bob.id, unavailable: false}, %{name: "Carol", id: carol.id, unavailable: false}],
                tracks: [
-                 %{id: track.id, name: "Making a Modest Proposal", people: [%{name: "Alice", id: alice.id}]}
+                 %{id: track.id, name: "Making a Modest Proposal", people: [%{name: "Alice", id: alice.id, unavailable: false}]}
+               ]
+             }
+    end
+
+    test "keeps track of people's availability" do
+      project = project_fixture()
+      [alice, bob, carol] = Enum.map(~w[Alice Bob Carol], &person_fixture(name: &1, project_id: project.id))
+      track = track_fixture(title: "Making a Modest Proposal", project_id: project.id)
+
+      Projects.allocate_person_to_track!(track.id, alice.id)
+      Projects.mark_unavailable_to_pair(carol.id)
+
+      result = Projects.load_project(project.id)
+
+      assert result == %{
+               unavailable: [%{name: "Carol", id: carol.id, unavailable: true}],
+               unpaired: [%{name: "Bob", id: bob.id, unavailable: false}],
+               tracks: [
+                 %{id: track.id, name: "Making a Modest Proposal", people: [%{name: "Alice", id: alice.id, unavailable: false}]}
                ]
              }
     end
@@ -141,6 +166,31 @@ defmodule OneTruePairing.ProjectsTest do
       people = Projects.persons_for(project_id: project_a.id)
 
       assert people == [alice]
+    end
+
+    test "marking someone as unavailable sets the flag" do
+      project = project_fixture(name: "a")
+      alice = person_fixture(name: "Alice", project_id: project.id)
+
+      Projects.mark_unavailable_to_pair(alice.id)
+
+      [person] = Projects.persons_for(project_id: project.id)
+
+      assert person.name == "Alice"
+      assert person.unavailable
+    end
+
+    test "marking someone as available removes the flag" do
+      project = project_fixture(name: "a")
+      alice = person_fixture(name: "Alice", project_id: project.id)
+
+      Projects.mark_unavailable_to_pair(alice.id)
+      Projects.mark_available_to_pair(alice.id)
+
+      [person] = Projects.persons_for(project_id: project.id)
+
+      assert person.name == "Alice"
+      refute person.unavailable
     end
 
     test "list_people/0 returns all people" do

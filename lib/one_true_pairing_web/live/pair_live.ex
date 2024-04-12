@@ -14,7 +14,8 @@ defmodule OneTruePairingWeb.Live.PairView do
 
     %{
       unpaired: unpaired,
-      tracks: tracks
+      tracks: tracks,
+      unavailable: unavailable,
     } = projects_impl().load_project(project_id)
 
     {:ok,
@@ -22,7 +23,7 @@ defmodule OneTruePairingWeb.Live.PairView do
      |> assign(project_id: project_id)
      |> assign(everyone: everyone)
      |> assign(pairing_list: unpaired |> recalculate_positions())
-     |> assign(unavailable_list: [])
+     |> assign(unavailable_list: unavailable |> recalculate_positions())
      |> assign(tracks: tracks |> recalculate_track_positions())}
   end
 
@@ -264,6 +265,8 @@ defmodule OneTruePairingWeb.Live.PairView do
 
     cond do
       to == "available" ->
+        Projects.mark_available_to_pair(person.id)
+
         %{
           tracks: remove_person_from_tracks(tracks, person),
           unavailable: without(unavailable, [person]),
@@ -271,6 +274,8 @@ defmodule OneTruePairingWeb.Live.PairView do
         }
 
       to == "unavailable" ->
+        Projects.mark_unavailable_to_pair(person.id)
+
         %{
           tracks: remove_person_from_tracks(tracks, person),
           unavailable: unavailable ++ [person],
