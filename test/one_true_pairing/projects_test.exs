@@ -15,10 +15,10 @@ defmodule OneTruePairing.ProjectsTest do
       assert result == %{
                unavailable: [],
                unpaired: [
-                %{name: "Alice", id: alice.id, unavailable: false}, 
-                %{name: "Bob", id: bob.id, unavailable: false}, 
-                %{name: "Carol", id: carol.id, unavailable: false}
-                ],
+                 %{name: "Alice", id: alice.id, unavailable: false},
+                 %{name: "Bob", id: bob.id, unavailable: false},
+                 %{name: "Carol", id: carol.id, unavailable: false}
+               ],
                tracks: [
                  %{id: track.id, name: "Making a Modest Proposal", people: []}
                ]
@@ -36,9 +36,16 @@ defmodule OneTruePairing.ProjectsTest do
 
       assert result == %{
                unavailable: [],
-               unpaired: [%{name: "Bob", id: bob.id, unavailable: false}, %{name: "Carol", id: carol.id, unavailable: false}],
+               unpaired: [
+                 %{name: "Bob", id: bob.id, unavailable: false},
+                 %{name: "Carol", id: carol.id, unavailable: false}
+               ],
                tracks: [
-                 %{id: track.id, name: "Making a Modest Proposal", people: [%{name: "Alice", id: alice.id, unavailable: false}]}
+                 %{
+                   id: track.id,
+                   name: "Making a Modest Proposal",
+                   people: [%{name: "Alice", id: alice.id, unavailable: false}]
+                 }
                ]
              }
     end
@@ -57,7 +64,11 @@ defmodule OneTruePairing.ProjectsTest do
                unavailable: [%{name: "Carol", id: carol.id, unavailable: true}],
                unpaired: [%{name: "Bob", id: bob.id, unavailable: false}],
                tracks: [
-                 %{id: track.id, name: "Making a Modest Proposal", people: [%{name: "Alice", id: alice.id, unavailable: false}]}
+                 %{
+                   id: track.id,
+                   name: "Making a Modest Proposal",
+                   people: [%{name: "Alice", id: alice.id, unavailable: false}]
+                 }
                ]
              }
     end

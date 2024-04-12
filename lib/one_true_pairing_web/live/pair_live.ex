@@ -15,7 +15,7 @@ defmodule OneTruePairingWeb.Live.PairView do
     %{
       unpaired: unpaired,
       tracks: tracks,
-      unavailable: unavailable,
+      unavailable: unavailable
     } = projects_impl().load_project(project_id)
 
     {:ok,
