@@ -1,10 +1,6 @@
 defmodule OneTruePairing.Projects do
   # @related [test](test/one_true_pairing/projects_test.exs)
 
-  @moduledoc """
-  The Projects context.
-  """
-
   defmodule ProjectProvider do
     @type person_t() :: %{name: binary(), id: pos_integer()}
     @type track_t() :: %{name: binary(), id: pos_integer(), people: Enum.t(person_t())}
@@ -15,12 +11,12 @@ defmodule OneTruePairing.Projects do
   @behaviour ProjectProvider
 
   import Ecto.Query, warn: false
-  alias OneTruePairing.Repo
 
+  alias OneTruePairing.Repo
   alias OneTruePairing.Pairing
-  alias OneTruePairing.Projects.Project
-  alias OneTruePairing.Projects.Person
   alias OneTruePairing.Projects.Track
+  alias OneTruePairing.Projects.Person
+  alias OneTruePairing.Projects.Project
   alias OneTruePairing.Projects.Allocation
 
   # # # new interface
