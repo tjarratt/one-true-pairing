@@ -236,12 +236,23 @@ defmodule OneTruePairing.ProjectsTest do
 
     test "update_person/2 with invalid data returns error changeset" do
       person = person_fixture()
+
       assert {:error, %Ecto.Changeset{}} = Projects.update_person(person, @invalid_attrs)
       assert person == Projects.get_person!(person.id)
     end
 
     test "delete_person/1 deletes the person" do
       person = person_fixture()
+
+      assert {:ok, %Person{}} = Projects.delete_person(person)
+      assert_raise Ecto.NoResultsError, fn -> Projects.get_person!(person.id) end
+    end
+
+    test "delete_person/1 can delete a person that was previously allocated" do
+      person = person_fixture(name: "Thom Yorke")
+      track = track_fixture(title: "How to Disappear Completely")
+      Projects.allocate_person_to_track!(track.id, person.id)
+
       assert {:ok, %Person{}} = Projects.delete_person(person)
       assert_raise Ecto.NoResultsError, fn -> Projects.get_person!(person.id) end
     end

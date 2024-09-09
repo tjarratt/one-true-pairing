@@ -314,6 +314,9 @@ defmodule OneTruePairing.Projects do
 
   """
   def delete_person(%Person{} = person) do
+    previous_allocations = from(a in Allocation, where: a.person_id == ^person.id)
+    Repo.delete_all(previous_allocations)
+
     Repo.delete(person)
   end
 
