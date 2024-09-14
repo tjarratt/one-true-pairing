@@ -96,7 +96,6 @@ defmodule OneTruePairingWeb.Live.PairView do
       project_id: project_id,
       unpaired: folks,
       unavailable: socket.assigns.unavailable_list,
-      arrangements: [],
       track_names: Enum.map(tracks, & &1.name)
     }
 
