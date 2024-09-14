@@ -12,7 +12,7 @@ defmodule OneTruePairing.PairingTest do
       tracks = ["basket weaving", "swimming"]
 
       %{unpaired: unpaired, arrangements: arrangements} =
-        decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks, arrangements: []}, @shuffler)
+        decide_pairs(%{unpaired: @folks, unavailable: [], track_names: tracks, arrangements: []}, @shuffler)
 
       assert arrangements == [["Alice", "Bob"], ["Carol", "Dan"]]
       assert unpaired == []
@@ -22,7 +22,7 @@ defmodule OneTruePairing.PairingTest do
       tracks = ["Dancing"]
 
       %{unpaired: unpaired, arrangements: arrangements} =
-        decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks, arrangements: []}, @shuffler)
+        decide_pairs(%{unpaired: @folks, unavailable: [], track_names: tracks, arrangements: []}, @shuffler)
 
       assert arrangements == [["Alice", "Bob"]]
       assert unpaired == ["Carol", "Dan"]
