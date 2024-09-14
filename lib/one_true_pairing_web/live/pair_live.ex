@@ -160,7 +160,6 @@ defmodule OneTruePairingWeb.Live.PairView do
     moving_from = params["from"]["list_name"]
     moving_to = params["to"]["list_name"]
 
-
     person =
       cond do
         moving_from == "available" -> Enum.at(socket.assigns.pairing_list, index)
