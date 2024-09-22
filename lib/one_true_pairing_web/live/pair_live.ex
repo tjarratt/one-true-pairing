@@ -228,7 +228,9 @@ defmodule OneTruePairingWeb.Live.PairView do
     Map.put(track, :name, new_title)
   end
 
-  # # # push down a layer
+  # # # TODO: push these down a layer
+  # it would be nice to have a bounded context that better represents the 
+  # actions that we perform on the board, so that the live view does less work
 
   defp move(_project_id,
          person: %{id: person_id},
