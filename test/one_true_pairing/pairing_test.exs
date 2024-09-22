@@ -2,7 +2,7 @@ defmodule OneTruePairing.PairingTest do
   # @related [impl](lib/one_true_pairing/pairing.ex)
   use OneTruePairing.DataCase, async: true
 
-  import OneTruePairing.Pairing, only: [decide_pairs: 2, reset_pairs: 1]
+  import OneTruePairing.Pairing, only: [decide_pairs: 2]
 
   @folks ["Alice", "Bob", "Carol", "Dan"]
   @shuffler &Function.identity/1
@@ -47,39 +47,6 @@ defmodule OneTruePairing.PairingTest do
                ["Dan", "Alice"],
                ["Bob", "Carol"]
              ]
-    end
-  end
-
-  describe "resetting pairs" do
-    test "moves people out of tracks of work" do
-      state = %{
-        unpaired: [],
-        unavailable: [],
-        tracks: ["basket weaving", "swimming"],
-        arrangements: [["Alice", "Bob"], ["Carol", "Dan"]]
-      }
-
-      new_state = reset_pairs(state)
-
-      assert new_state == %{
-               unpaired: ~w(Alice Bob Carol Dan),
-               unavailable: [],
-               tracks: ["basket weaving", "swimming"],
-               arrangements: []
-             }
-    end
-
-    test "does not move people out of 'unavailable'" do
-      state = %{
-        unpaired: [],
-        unavailable: @folks,
-        tracks: ["basket weaving", "swimming"],
-        arrangements: []
-      }
-
-      new_state = reset_pairs(state)
-
-      assert new_state == state
     end
   end
 

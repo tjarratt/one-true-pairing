@@ -16,6 +16,18 @@ defmodule OneTruePairing.Pairing do
     |> Map.put(:unpaired, unpaired)
   end
 
+  # # # algorithms for shuffling a list
+
+  @doc "used in unit tests"
+  def identity_shuffle(list), do: list
+
+  @doc "used in the real application"
+  def shuffle(list) do
+    Enum.shuffle(list)
+  end
+
+  # # # private
+
   defp decide_recursively([], people), do: {[], people}
   defp decide_recursively(tracks, []), do: {tracks, []}
 
@@ -41,21 +53,5 @@ defmodule OneTruePairing.Pairing do
     # allocations and unpaired people as we go
     # but for the size of our current use case this is fine
     {[allocation | other_allocations], unpaired}
-  end
-
-  def reset_pairs(%{unpaired: unpaired, arrangements: assignments} = state) do
-    state
-    |> Map.put(:arrangements, [])
-    |> Map.put(:unpaired, assignments |> List.flatten() |> Enum.concat(unpaired))
-  end
-
-  # # # algorithms for shuffling a list
-
-  @doc "used in unit tests"
-  def identity_shuffle(list), do: list
-
-  @doc "used in the real application"
-  def shuffle(list) do
-    Enum.shuffle(list)
   end
 end
