@@ -1,7 +1,7 @@
 defmodule OneTruePairing.Pairing do
   # @related [test](test/one_true_pairing/pairing_test.exs)
 
-  def decide_pairs(%{unpaired: unpaired, track_names: tracks} = state, shuffler) do
+  def decide_pairs(%{unpaired: unpaired, tracks: tracks} = state, shuffler) do
     shuffled = unpaired |> shuffler.()
     {to_pair, remaining} = Enum.split(shuffled, length(tracks) * 2)
 

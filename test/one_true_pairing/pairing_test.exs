@@ -9,20 +9,20 @@ defmodule OneTruePairing.PairingTest do
 
   describe "assigning pairs" do
     test "when there are enough people for the tracks of work" do
-      tracks = ["basket weaving", "swimming"]
+      tracks = [track_fixture(name: "basket weaving"), track_fixture(name: "swimming")]
 
       %{unpaired: unpaired, arrangements: arrangements} =
-        decide_pairs(%{unpaired: @folks, unavailable: [], track_names: tracks}, @shuffler)
+        decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks}, @shuffler)
 
       assert arrangements == [["Alice", "Bob"], ["Carol", "Dan"]]
       assert unpaired == []
     end
 
     test "when there are more than 2 people per track of work" do
-      tracks = ["Dancing"]
+      tracks = [track_fixture(name: "Dancing")]
 
       %{unpaired: unpaired, arrangements: arrangements} =
-        decide_pairs(%{unpaired: @folks, unavailable: [], track_names: tracks}, @shuffler)
+        decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks}, @shuffler)
 
       assert arrangements == [["Alice", "Bob"]]
       assert unpaired == ["Carol", "Dan"]
@@ -60,5 +60,9 @@ defmodule OneTruePairing.PairingTest do
 
       assert new_state == state
     end
+  end
+
+  defp track_fixture(name: given_name) do
+    %{name: given_name, people: []}
   end
 end
