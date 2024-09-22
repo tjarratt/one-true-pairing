@@ -324,6 +324,10 @@ defmodule OneTruePairingWeb.Live.PairView do
     Enum.reject(to_filter, fn thing -> thing.name in names_to_remove end)
   end
 
+  # TODO: this would no longer be necessary if we pass the full tracks
+  # to the context function and receive the populated tracks back
+  # but we would need to persist the changes...
+  # (which would allow us to batch several db writes together in a single transaction)
   defp place_in_tracks(project_id, pairings) do
     tracks = fetch_tracks(project_id: project_id) |> Enum.sort_by(& &1.id)
 
