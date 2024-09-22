@@ -89,12 +89,12 @@ defmodule OneTruePairingWeb.Live.PairView do
   end
 
   def handle_event("randomize_pairs", _params, %{assigns: %{project_id: project_id}} = socket) do
-    folks = without(socket.assigns.everyone, socket.assigns.unavailable_list)
+    unpaired = socket.assigns.pairing_list
     tracks = socket.assigns.tracks
 
     state = %{
       project_id: project_id,
-      unpaired: folks,
+      unpaired: unpaired,
       unavailable: socket.assigns.unavailable_list,
       tracks: tracks
     }

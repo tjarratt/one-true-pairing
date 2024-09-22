@@ -27,6 +27,27 @@ defmodule OneTruePairing.PairingTest do
       assert arrangements == [["Alice", "Bob"]]
       assert unpaired == ["Carol", "Dan"]
     end
+
+    test "when some folks are already assigned to a track" do
+      tracks = [track_fixture(name: "Working", people: ["Dan"]), track_fixture(name: "Sleeping")]
+
+      %{unpaired: unpaired, arrangements: arrangements} =
+        decide_pairs(
+          %{
+            unpaired: ["Alice", "Bob", "Carol"],
+            tracks: tracks,
+            unavailable: []
+          },
+          @shuffler
+        )
+
+      assert unpaired == []
+
+      assert arrangements == [
+               ["Dan", "Alice"],
+               ["Bob", "Carol"]
+             ]
+    end
   end
 
   describe "resetting pairs" do
@@ -62,7 +83,10 @@ defmodule OneTruePairing.PairingTest do
     end
   end
 
-  defp track_fixture(name: given_name) do
-    %{name: given_name, people: []}
+  defp track_fixture(opts) do
+    given_name = Keyword.fetch!(opts, :name)
+    people = Keyword.get(opts, :people, [])
+
+    %{name: given_name, people: people}
   end
 end
