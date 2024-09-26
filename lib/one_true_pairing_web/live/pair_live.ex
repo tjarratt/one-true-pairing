@@ -326,7 +326,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   # TODO: this would no longer be necessary if we pass the full tracks
   # to the context function and receive the populated tracks back
-  # but we would need to persist the changes...
+  # HOWEVER we would still need to persist these changes (but ideally not from here)
   # (which would allow us to batch several db writes together in a single transaction)
   defp place_in_tracks(project_id, pairings) do
     tracks = fetch_tracks(project_id: project_id) |> Enum.sort_by(& &1.id)
