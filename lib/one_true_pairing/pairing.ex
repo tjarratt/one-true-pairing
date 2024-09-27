@@ -28,8 +28,10 @@ defmodule OneTruePairing.Pairing do
 
   # # # private
 
+  # in case there is not enough people for the work, leave people unassigned
   defp decide_recursively([], people), do: {[], people}
-  defp decide_recursively(tracks, []), do: {tracks, []}
+  # in case there is not enough people for the tracks, some tracks of work are left unassigned
+  defp decide_recursively(_tracks, []), do: {[], []}
 
   defp decide_recursively([track | other_tracks], people) do
     {allocation, not_yet_paired} =
