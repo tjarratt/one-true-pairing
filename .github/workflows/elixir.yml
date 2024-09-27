@@ -69,6 +69,8 @@ jobs:
       run: MIX_ENV=test mix test
       env:
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+    - name: Dialyzer
+      run: mix dialyzer
 
   deploy:
     name: Deploy App
