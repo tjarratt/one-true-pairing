@@ -125,8 +125,14 @@ defmodule OneTruePairing.Projects do
     |> Repo.insert()
   end
 
-  # tracks
+  # # # Tracks
 
+  @doc """
+    Create a track. Requires a `title` and `project_id`
+
+    OneTruePairing.Projects.create_track(%{title: "Hobbit babysitting", project_id: project.id})
+  """
+  @spec create_track(%{title: String.t(), project_id: pos_integer()}) :: %Track{}
   def create_track(attrs) do
     %Track{}
     |> Track.changeset(attrs)
