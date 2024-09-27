@@ -71,6 +71,8 @@ jobs:
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
     - name: Dialyzer
       run: mix dialyzer
+      env:
+        BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
 
   deploy:
     name: Deploy App
