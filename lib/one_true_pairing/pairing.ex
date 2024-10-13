@@ -18,6 +18,7 @@ defmodule OneTruePairing.Pairing do
 
   def decide_pairs(%{unpaired: unpaired, tracks: tracks} = state, shuffler) do
     shuffled = unpaired |> shuffler.()
+    tracks = tracks |> shuffler.()
 
     {assignments, unpaired} = decide_recursively(tracks, shuffled)
 
@@ -64,6 +65,6 @@ defmodule OneTruePairing.Pairing do
     # if we could turn this into a reduce, accumulating the 
     # allocations and unpaired people as we go
     # but for the size of our current use case this is fine
-    {[allocation | other_allocations], unpaired}
+    {[{track, allocation} | other_allocations], unpaired}
   end
 end

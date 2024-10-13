@@ -298,22 +298,20 @@ defmodule OneTruePairingWeb.Live.PairView do
     end)
   end
 
+  # TODO: move this into OTP.Pairing module and test it there
+  # live view should no longer need to assert on state of db for allocations
+  # or across page loads
   defp decide_pairs(state) do
-    new_state = Projects.decide_pairs(state)
-    new_tracks = place_in_tracks(Map.get(state, :project_id), Map.get(new_state, :arrangements))
+    %{arrangements: track_assignments} = state = Projects.decide_pairs(state)
+    new_tracks = place_in_tracks(track_assignments)
 
-    Map.put(new_state, :tracks, new_tracks)
+    %{state | tracks: new_tracks}
   end
 
-  # TODO: this would no longer be necessary if we pass the full tracks
-  # to the context function and receive the populated tracks back
-  # HOWEVER we would still need to persist these changes (but ideally not from here)
-  # (which would allow us to batch several db writes together in a single transaction)
-  defp place_in_tracks(project_id, pairings) do
-    tracks = fetch_tracks(project_id: project_id) |> Enum.sort_by(& &1.id)
-    Enum.zip(pairings, tracks)
-    |> Enum.map(fn {pair, track} ->
+  defp place_in_tracks(pairings) do
+    Enum.map(pairings, fn {track, pair} ->
       Enum.each(pair, &Projects.allocate_person_to_track!(track.id, &1.id))
+
       %{track | people: pair}
     end)
   end
@@ -336,5 +334,4 @@ defmodule OneTruePairingWeb.Live.PairView do
 
     Enum.reject(to_filter, fn thing -> thing.name in names_to_remove end)
   end
-
 end
