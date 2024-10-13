@@ -49,19 +49,15 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
     header = html |> HtmlQuery.find("h1") |> HtmlQuery.text()
 
-    assert header =~ "Let's pair today"
+    assert header == "Let's pair today"
   end
 
   test "it renders the list of people available to pair", %{conn: conn, project: project} do
     {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-    list = html |> HtmlQuery.find!("#pairing_list") |> HtmlQuery.text()
+    list = html |> HtmlQuery.find!("#pairing_list #available-items") |> HtmlQuery.text() |> to_pairs()
 
-    assert list =~ "Andrew"
-    assert list =~ "Freja"
-    assert list =~ "Ronaldo"
-    assert list =~ "Hitalo"
-    assert list =~ "Alicia"
+    assert list == ~w[Andrew Freja Ronaldo Hitalo Alicia]
   end
 
   describe "randomising pairs" do
@@ -74,13 +70,14 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> render_click()
 
       [first_pair, second_pair] =
-        html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
+        html 
+        |> HtmlQuery.all(test_role: "track-of-work") 
+        |> Enum.map(&HtmlQuery.text/1)
+        |> Enum.map(&to_pairs/1)
 
-      assert first_pair =~ "Andrew"
-      assert first_pair =~ "Freja"
+      assert first_pair == ~w[Andrew Freja]
 
-      assert second_pair =~ "Ronaldo"
-      assert second_pair =~ "Hitalo"
+      assert second_pair == ~w[Ronaldo Hitalo]
 
       unpaired_folks = select_unpaired(html)
       assert unpaired_folks == ["Alicia"]
@@ -171,13 +168,9 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> element("button", "Reset pairs")
         |> render_click()
 
-      available = html |> HtmlQuery.find!("#pairing_list") |> HtmlQuery.text()
+      available = html |> HtmlQuery.find!("#pairing_list #available-items") |> HtmlQuery.text() |> to_pairs()
 
-      assert available =~ "Andrew"
-      assert available =~ "Freja"
-      assert available =~ "Ronaldo"
-      assert available =~ "Hitalo"
-      assert available =~ "Alicia"
+      assert available == ~w[Andrew Freja Ronaldo Hitalo Alicia]
 
       [first_pair, second_pair] =
         html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
@@ -220,10 +213,13 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       refute "Alicia" in select_unpaired(html)
 
       [first_pair, second_pair] =
-        html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
+        html 
+        |> HtmlQuery.all(test_role: "track-of-work") 
+        |> Enum.map(&HtmlQuery.text/1)
+        |> Enum.map(&to_pairs/1)
 
-      refute first_pair =~ "Alicia"
-      refute second_pair =~ "Alicia"
+      refute "Alicia" in first_pair
+      refute "Alicia" in second_pair
     end
 
     test "they stay unavailable until moved", %{conn: conn, project: project} do
@@ -260,10 +256,13 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       assert ["Andrew"] == select_unavailable(html)
 
       [first_pair, second_pair] =
-        html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
+        html 
+        |> HtmlQuery.all(test_role: "track-of-work") 
+        |> Enum.map(&HtmlQuery.text/1)
+        |> Enum.map(&to_pairs/1)
 
-      refute first_pair =~ "Andrew"
-      refute second_pair =~ "Andrew"
+      refute "Andrew" in first_pair
+      refute "Andrew" in second_pair
     end
 
     test "they don't get reset", %{conn: conn, project: project} do
