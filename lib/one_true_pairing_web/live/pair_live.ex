@@ -305,6 +305,19 @@ defmodule OneTruePairingWeb.Live.PairView do
     Map.put(new_state, :tracks, new_tracks)
   end
 
+  # TODO: this would no longer be necessary if we pass the full tracks
+  # to the context function and receive the populated tracks back
+  # HOWEVER we would still need to persist these changes (but ideally not from here)
+  # (which would allow us to batch several db writes together in a single transaction)
+  defp place_in_tracks(project_id, pairings) do
+    tracks = fetch_tracks(project_id: project_id) |> Enum.sort_by(& &1.id)
+    Enum.zip(pairings, tracks)
+    |> Enum.map(fn {pair, track} ->
+      Enum.each(pair, &Projects.allocate_person_to_track!(track.id, &1.id))
+      %{track | people: pair}
+    end)
+  end
+
   defp move_person_to(tracks, track_name, person) do
     tracks
     |> Enum.map(fn %{id: id, people: people, name: name} ->
@@ -324,18 +337,4 @@ defmodule OneTruePairingWeb.Live.PairView do
     Enum.reject(to_filter, fn thing -> thing.name in names_to_remove end)
   end
 
-  # TODO: this would no longer be necessary if we pass the full tracks
-  # to the context function and receive the populated tracks back
-  # HOWEVER we would still need to persist these changes (but ideally not from here)
-  # (which would allow us to batch several db writes together in a single transaction)
-  defp place_in_tracks(project_id, pairings) do
-    tracks = fetch_tracks(project_id: project_id) |> Enum.sort_by(& &1.id)
-
-    Enum.zip(pairings, tracks)
-    |> Enum.map(fn {pair, track} ->
-      Enum.each(pair, &Projects.allocate_person_to_track!(track.id, &1.id))
-
-      %{track | people: pair}
-    end)
-  end
 end
