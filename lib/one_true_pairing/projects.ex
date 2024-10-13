@@ -5,7 +5,11 @@ defmodule OneTruePairing.Projects do
     @type person_t() :: %{name: binary(), id: pos_integer()}
     @type track_t() :: %{name: binary(), id: pos_integer(), people: list(person_t())}
 
-    @callback load_project(project_id: pos_integer()) :: %{unpaired: list(person_t()), tracks: list(track_t()), unavailable: list(person_t())}
+    @callback load_project(project_id: pos_integer()) :: %{
+                unpaired: list(person_t()),
+                tracks: list(track_t()),
+                unavailable: list(person_t())
+              }
   end
 
   @behaviour ProjectProvider

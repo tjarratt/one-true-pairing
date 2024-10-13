@@ -70,8 +70,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> render_click()
 
       [first_pair, second_pair] =
-        html 
-        |> HtmlQuery.all(test_role: "track-of-work") 
+        html
+        |> HtmlQuery.all(test_role: "track-of-work")
         |> Enum.map(&HtmlQuery.text/1)
         |> Enum.map(&to_pairs/1)
 
@@ -95,8 +95,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       html = send_person(view, at_index: 3, from: "available", to: "Protecting the one ring")
 
       [first_pair, second_pair, third_pair] =
-        html 
-        |> HtmlQuery.all(test_role: "track-of-work") 
+        html
+        |> HtmlQuery.all(test_role: "track-of-work")
         |> Enum.map(&HtmlQuery.text/1)
         |> Enum.map(&to_pairs/1)
 
@@ -110,8 +110,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> render_click()
 
       [first_pair, second_pair, third_pair] =
-        html 
-        |> HtmlQuery.all(test_role: "track-of-work") 
+        html
+        |> HtmlQuery.all(test_role: "track-of-work")
         |> Enum.map(&HtmlQuery.text/1)
         |> Enum.map(&to_pairs/1)
 
@@ -213,8 +213,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       refute "Alicia" in select_unpaired(html)
 
       [first_pair, second_pair] =
-        html 
-        |> HtmlQuery.all(test_role: "track-of-work") 
+        html
+        |> HtmlQuery.all(test_role: "track-of-work")
         |> Enum.map(&HtmlQuery.text/1)
         |> Enum.map(&to_pairs/1)
 
@@ -256,8 +256,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       assert ["Andrew"] == select_unavailable(html)
 
       [first_pair, second_pair] =
-        html 
-        |> HtmlQuery.all(test_role: "track-of-work") 
+        html
+        |> HtmlQuery.all(test_role: "track-of-work")
         |> Enum.map(&HtmlQuery.text/1)
         |> Enum.map(&to_pairs/1)
 
@@ -562,7 +562,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
   defp to_pairs(track_of_work_innertext) do
     track_of_work_innertext
-    |> String.split(~r[\s+]) 
-    |> Enum.reject(& String.length(&1) == 0)
+    |> String.split(~r[\s+])
+    |> Enum.reject(&(String.length(&1) == 0))
   end
 end

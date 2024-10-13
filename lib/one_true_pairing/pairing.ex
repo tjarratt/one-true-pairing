@@ -47,10 +47,10 @@ defmodule OneTruePairing.Pairing do
 
   # in case there are not enough people for the tracks, some tracks of work are left unallocated
   defp decide_recursively([track | other_tracks], []) do
-    {other_allocations,  unpaired} = decide_recursively(other_tracks, [])
+    {other_allocations, unpaired} = decide_recursively(other_tracks, [])
 
     {
-      [{track, track.people} | other_allocations], 
+      [{track, track.people} | other_allocations],
       unpaired
     }
   end
