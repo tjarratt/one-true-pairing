@@ -86,6 +86,48 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       assert unpaired_folks == ["Alicia"]
     end
 
+    test "fills in gaps left when someone is pre-assigned to a track", %{conn: conn, project: project} do
+      track_fixture(title: "Protecting the one ring", project_id: project.id)
+
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      # move Alicia to the first track
+      send_person(view, at_index: 4, from: "available", to: "Taking the hobbits to Eisengard")
+
+      # move Hitalo to the third track
+      html = send_person(view, at_index: 3, from: "available", to: "Protecting the one ring")
+
+      [first_pair, second_pair, third_pair] =
+        html 
+        |> HtmlQuery.all(test_role: "track-of-work") 
+        |> Enum.map(&HtmlQuery.text/1)
+        |> Enum.map(&to_pairs/1)
+
+      assert first_pair == ["Alicia"]
+      assert second_pair == []
+      assert third_pair == ["Hitalo"]
+
+      html =
+        view
+        |> element("button", "Randomize pairs")
+        |> render_click()
+
+      [first_pair, second_pair, third_pair] =
+        html 
+        |> HtmlQuery.all(test_role: "track-of-work") 
+        |> Enum.map(&HtmlQuery.text/1)
+        |> Enum.map(&to_pairs/1)
+
+      assert first_pair == ["Alicia", "Andrew"]
+
+      assert second_pair == ["Freja", "Ronaldo"]
+
+      assert third_pair == ["Hitalo"]
+
+      unpaired_folks = select_unpaired(html)
+      assert unpaired_folks == []
+    end
+
     test "pairs can be randomized multiple times", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
@@ -517,5 +559,11 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     |> String.split("\n", trim: true)
     |> Enum.map(&String.trim(&1))
     |> Enum.reject(fn str -> String.length(str) == 0 end)
+  end
+
+  defp to_pairs(track_of_work_innertext) do
+    track_of_work_innertext
+    |> String.split(~r[\s+]) 
+    |> Enum.reject(& String.length(&1) == 0)
   end
 end

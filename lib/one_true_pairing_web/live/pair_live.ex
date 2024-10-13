@@ -309,7 +309,8 @@ defmodule OneTruePairingWeb.Live.PairView do
   end
 
   defp place_in_tracks(pairings) do
-    Enum.map(pairings, fn {track, pair} ->
+    pairings
+    |> Enum.map(fn {track, pair} ->
       Enum.each(pair, &Projects.allocate_person_to_track!(track.id, &1.id))
 
       %{track | people: pair}

@@ -17,10 +17,10 @@ defmodule OneTruePairing.Pairing do
   """
 
   def decide_pairs(%{unpaired: unpaired, tracks: tracks} = state, shuffler) do
-    shuffled = unpaired |> shuffler.()
+    unpaired = unpaired |> shuffler.()
     tracks = tracks |> shuffler.()
 
-    {assignments, unpaired} = decide_recursively(tracks, shuffled)
+    {assignments, unpaired} = decide_recursively(tracks, unpaired)
 
     state
     |> Map.put(:arrangements, assignments)
@@ -39,10 +39,21 @@ defmodule OneTruePairing.Pairing do
 
   # # # private
 
-  # in case there is not enough people for the work, leave people unassigned
+  # base case
+  defp decide_recursively([], []), do: {[], []}
+
+  # in case there are not enough tracks for the people, leave people unassigned
   defp decide_recursively([], people), do: {[], people}
-  # in case there is not enough people for the tracks, some tracks of work are left unassigned
-  defp decide_recursively(_tracks, []), do: {[], []}
+
+  # in case there are not enough people for the tracks, some tracks of work are left unallocated
+  defp decide_recursively([track | other_tracks], []) do
+    {other_allocations,  unpaired} = decide_recursively(other_tracks, [])
+
+    {
+      [{track, track.people} | other_allocations], 
+      unpaired
+    }
+  end
 
   defp decide_recursively([track | other_tracks], people) do
     {allocation, not_yet_paired} =

@@ -57,15 +57,16 @@ defmodule OneTruePairing.PairingTest do
 
     test "when there are not enough people for the work -- it pairs people up, leaving some tracks unassigned" do
       tracks = [
-        track = track_fixture(name: "Important"),
-        track_fixture(name: "Nice to have")
+        allocate_me = track_fixture(name: "Important"),
+        empty_track = track_fixture(name: "Nice to have")
       ]
 
       %{unpaired:  unpaired, arrangements: arrangements} =
         decide_pairs(%{unpaired: ["Alice", "Bob"], tracks: tracks, unavailable: []}, @shuffler)
 
       assert arrangements == [
-        {track, ["Alice", "Bob"]}
+        {allocate_me, ["Alice", "Bob"]},
+        {empty_track, []}
       ]
       assert unpaired == []
     end
