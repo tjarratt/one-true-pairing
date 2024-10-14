@@ -8,8 +8,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   setup do
     project = project_fixture(name: "Fellowship")
 
-    track_fixture(title: "1. Taking the hobbits to Eisengard", project_id: project.id)
-    track_fixture(title: "2. Boiling potatoes", project_id: project.id)
+    track_fixture(title: "Taking the hobbits to Eisengard", project_id: project.id)
+    track_fixture(title: "Boiling potatoes", project_id: project.id)
 
     person_fixture(project_id: project.id, name: "Andrew")
     person_fixture(project_id: project.id, name: "Freja")
@@ -84,15 +84,15 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     end
 
     test "fills in gaps left when someone is pre-assigned to a track", %{conn: conn, project: project} do
-      track_fixture(title: "3. Protecting the one ring", project_id: project.id)
+      track_fixture(title: "Protecting the one ring", project_id: project.id)
 
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       # move Alicia to the first track
-      send_person(view, at_index: 4, from: "available", to: "1. Taking the hobbits to Eisengard")
+      send_person(view, at_index: 4, from: "available", to: "Taking the hobbits to Eisengard")
 
       # move Hitalo to the third track
-      html = send_person(view, at_index: 3, from: "available", to: "3. Protecting the one ring")
+      html = send_person(view, at_index: 3, from: "available", to: "Protecting the one ring")
 
       [first_pair, second_pair, third_pair] =
         html
@@ -137,8 +137,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> element("button", "Randomize pairs")
         |> render_click()
 
-      assert ~w[Andrew Freja] == people_in_track(html, "1. Taking the hobbits to Eisengard")
-      assert ~w[Ronaldo Hitalo] == people_in_track(html, "2. Boiling potatoes")
+      assert ~w[Andrew Freja] == people_in_track(html, "Taking the hobbits to Eisengard")
+      assert ~w[Ronaldo Hitalo] == people_in_track(html, "Boiling potatoes")
     end
 
     test "does not change the tracks of work", %{conn: conn, project: project} do
@@ -187,8 +187,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> element("button", "Randomize pairs")
         |> render_click()
 
-      assert ~w[Andrew Freja] == people_in_track(html, "1. Taking the hobbits to Eisengard")
-      assert ~w[Ronaldo Hitalo] == people_in_track(html, "2. Boiling potatoes")
+      assert ~w[Andrew Freja] == people_in_track(html, "Taking the hobbits to Eisengard")
+      assert ~w[Ronaldo Hitalo] == people_in_track(html, "Boiling potatoes")
     end
   end
 
@@ -324,11 +324,11 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     test "they can be moved from a track to 'unavailable'", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      send_person(view, at_index: 4, from: "available", to: "2. Boiling potatoes")
-      html = send_person(view, at_index: 0, from: "2. Boiling potatoes", to: "unavailable")
+      send_person(view, at_index: 4, from: "available", to: "Boiling potatoes")
+      html = send_person(view, at_index: 0, from: "Boiling potatoes", to: "unavailable")
 
       assert "Alicia" in select_unavailable(html)
-      refute "Alicia" in people_in_track(html, "2. Boiling potatoes")
+      refute "Alicia" in people_in_track(html, "Boiling potatoes")
     end
   end
 
@@ -337,24 +337,24 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       # send Alicia from unpaired to first track
-      html = send_person(view, at_index: 4, from: "available", to: "1. Taking the hobbits to Eisengard")
-      assert "Alicia" in people_in_track(html, "1. Taking the hobbits to Eisengard")
+      html = send_person(view, at_index: 4, from: "available", to: "Taking the hobbits to Eisengard")
+      assert "Alicia" in people_in_track(html, "Taking the hobbits to Eisengard")
 
       # send Alicia from first track to second track
-      html = send_person(view, at_index: 0, from: "1. Taking the hobbits to Eisengard", to: "2. Boiling potatoes")
-      assert [] == people_in_track(html, "1. Taking the hobbits to Eisengard")
-      assert "Alicia" in people_in_track(html, "2. Boiling potatoes")
+      html = send_person(view, at_index: 0, from: "Taking the hobbits to Eisengard", to: "Boiling potatoes")
+      assert [] == people_in_track(html, "Taking the hobbits to Eisengard")
+      assert "Alicia" in people_in_track(html, "Boiling potatoes")
     end
 
     test "to the same track of work is a no-op", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      send_person(view, at_index: 4, from: "available", to: "1. Taking the hobbits to Eisengard")
+      send_person(view, at_index: 4, from: "available", to: "Taking the hobbits to Eisengard")
 
       html =
-        send_person(view, at_index: 0, from: "1. Taking the hobbits to Eisengard", to: "1. Taking the hobbits to Eisengard")
+        send_person(view, at_index: 0, from: "Taking the hobbits to Eisengard", to: "Taking the hobbits to Eisengard")
 
-      assert ["Alicia"] == people_in_track(html, "1. Taking the hobbits to Eisengard")
+      assert ["Alicia"] == people_in_track(html, "Taking the hobbits to Eisengard")
     end
 
     test "from unpaired to unpaired is also a no-op", %{conn: conn, project: project} do
@@ -372,16 +372,16 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       # send Alicia from unpaired to first track
-      send_person(view, at_index: 4, from: "available", to: "1. Taking the hobbits to Eisengard")
-      html = send_person(view, at_index: 0, from: "1. Taking the hobbits to Eisengard", to: "available")
+      send_person(view, at_index: 4, from: "available", to: "Taking the hobbits to Eisengard")
+      html = send_person(view, at_index: 0, from: "Taking the hobbits to Eisengard", to: "available")
 
       assert "Alicia" in select_unpaired(html)
-      refute "Alicia" in people_in_track(html, "1. Taking the hobbits to Eisengard")
+      refute "Alicia" in people_in_track(html, "Taking the hobbits to Eisengard")
 
       {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       assert "Alicia" in select_unpaired(html)
-      refute "Alicia" in people_in_track(html, "1. Taking the hobbits to Eisengard")
+      refute "Alicia" in people_in_track(html, "Taking the hobbits to Eisengard")
     end
   end
 
@@ -395,8 +395,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> Enum.map(fn elem -> HtmlQuery.find!(elem, test_role: "track-name") end)
         |> Enum.map(fn elem -> HtmlQuery.attr(elem, "value") end)
 
-      assert Enum.member?(tracks, "1. Taking the hobbits to Eisengard")
-      assert Enum.member?(tracks, "2. Boiling potatoes")
+      assert Enum.member?(tracks, "Taking the hobbits to Eisengard")
+      assert Enum.member?(tracks, "Boiling potatoes")
     end
 
     test "can be edited", %{conn: conn, project: project} do
@@ -416,7 +416,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     test "can have the same name", %{conn: conn, project: project} do
       {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      html = rename_first_track(view, html, "2. Boiling potatoes")
+      html = rename_first_track(view, html, "Boiling potatoes")
 
       tracks =
         html
@@ -424,7 +424,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> Enum.map(fn elem -> HtmlQuery.find!(elem, test_role: "track-name") end)
         |> Enum.map(fn elem -> HtmlQuery.attr(elem, "value") end)
 
-      assert tracks == ["2. Boiling potatoes", "2. Boiling potatoes"]
+      assert tracks == ["Boiling potatoes", "Boiling potatoes"]
     end
 
     test "can be named 'unavailable'", %{conn: conn, project: project} do
@@ -441,7 +441,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> Enum.map(fn elem -> HtmlQuery.attr(elem, "value") end)
 
       assert "unavailable" in tracks
-      assert "2. Boiling potatoes" in tracks
+      assert "Boiling potatoes" in tracks
     end
   end
 
@@ -454,13 +454,13 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> element("button", "Randomize pairs")
         |> render_click()
 
-      assert ~w[Andrew Freja] == people_in_track(html, "1. Taking the hobbits to Eisengard")
-      assert ~w[Ronaldo Hitalo] == people_in_track(html, "2. Boiling potatoes")
+      assert ~w[Andrew Freja] == people_in_track(html, "Taking the hobbits to Eisengard")
+      assert ~w[Ronaldo Hitalo] == people_in_track(html, "Boiling potatoes")
 
       {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      assert ~w[Andrew Freja] == people_in_track(html, "1. Taking the hobbits to Eisengard")
-      assert ~w[Ronaldo Hitalo] == people_in_track(html, "2. Boiling potatoes")
+      assert ~w[Andrew Freja] == people_in_track(html, "Taking the hobbits to Eisengard")
+      assert ~w[Ronaldo Hitalo] == people_in_track(html, "Boiling potatoes")
     end
 
     test "are deleted when the board is reset", %{conn: conn, project: project} do
@@ -484,26 +484,26 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       assert "Hitalo" in unpaired
       assert "Alicia" in unpaired
 
-      assert [] == people_in_track(html, "1. Taking the hobbits to Eisengard")
-      assert [] == people_in_track(html, "2. Boiling potatoes")
+      assert [] == people_in_track(html, "Taking the hobbits to Eisengard")
+      assert [] == people_in_track(html, "Boiling potatoes")
     end
 
     test "are updated when someone is moved between tracks", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       # send Alicia from unpaired to first track
-      html = send_person(view, at_index: 4, from: "available", to: "1. Taking the hobbits to Eisengard")
-      assert "Alicia" in people_in_track(html, "1. Taking the hobbits to Eisengard")
+      html = send_person(view, at_index: 4, from: "available", to: "Taking the hobbits to Eisengard")
+      assert "Alicia" in people_in_track(html, "Taking the hobbits to Eisengard")
 
       # send Alicia from first track to second track
-      html = send_person(view, at_index: 0, from: "1. Taking the hobbits to Eisengard", to: "2. Boiling potatoes")
-      assert [] == people_in_track(html, "1. Taking the hobbits to Eisengard")
-      assert "Alicia" in people_in_track(html, "2. Boiling potatoes")
+      html = send_person(view, at_index: 0, from: "Taking the hobbits to Eisengard", to: "Boiling potatoes")
+      assert [] == people_in_track(html, "Taking the hobbits to Eisengard")
+      assert "Alicia" in people_in_track(html, "Boiling potatoes")
 
       # reload the page
       {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
-      assert [] == people_in_track(html, "1. Taking the hobbits to Eisengard")
-      assert "Alicia" in people_in_track(html, "2. Boiling potatoes")
+      assert [] == people_in_track(html, "Taking the hobbits to Eisengard")
+      assert "Alicia" in people_in_track(html, "Boiling potatoes")
 
       unpaired = select_unpaired(html)
       assert "Alicia" not in unpaired
