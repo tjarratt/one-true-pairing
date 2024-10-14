@@ -191,9 +191,11 @@ defmodule OneTruePairingWeb.Live.PairView do
   # # # private functions
 
   defp recalculate_track_positions(tracks) do
-    Enum.map(tracks, fn %{id: id, people: people, name: name} ->
+    tracks
+    |> Enum.map(fn %{id: id, people: people, name: name} ->
       %{id: id, people: recalculate_positions(people), name: name}
     end)
+    |> Enum.sort_by(& &1.name)
   end
 
   defp recalculate_positions(list) do
