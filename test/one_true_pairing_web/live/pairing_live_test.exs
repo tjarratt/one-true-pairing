@@ -26,6 +26,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     Injector.inject(
       :project_impl,
       Mocks.HandRolled.new(%{
+        name: "Our cool project",
         unavailable: [],
         unpaired: [
           %{id: 1, name: "Andrew"},
@@ -50,7 +51,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       header = html |> HtmlQuery.find("h1") |> HtmlQuery.text()
 
-      assert header == "Let's pair today"
+      assert header == "Hey #{project.name}, let's pair today"
     end
 
     test "it renders the list of people available to pair", %{conn: conn, project: project} do

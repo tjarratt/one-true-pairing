@@ -6,13 +6,14 @@ defmodule OneTruePairing.ProjectsTest do
 
   describe "a new board-based interface" do
     test "loads the current state of the project" do
-      project = project_fixture()
+      project = project_fixture(name: "Simple team")
       [alice, bob, carol] = Enum.map(~w[Alice Bob Carol], &person_fixture(name: &1, project_id: project.id))
       track = track_fixture(title: "Making a Modest Proposal", project_id: project.id)
 
       result = Projects.load_project(project.id)
 
       assert result == %{
+               name: "Simple team",
                unavailable: [],
                unpaired: [
                  %{name: "Alice", id: alice.id, unavailable: false},
@@ -26,7 +27,7 @@ defmodule OneTruePairing.ProjectsTest do
     end
 
     test "keeps track of track allocations" do
-      project = project_fixture()
+      project = project_fixture(name: "Allocated team")
       [alice, bob, carol] = Enum.map(~w[Alice Bob Carol], &person_fixture(name: &1, project_id: project.id))
       track = track_fixture(title: "Making a Modest Proposal", project_id: project.id)
 
@@ -35,6 +36,7 @@ defmodule OneTruePairing.ProjectsTest do
       result = Projects.load_project(project.id)
 
       assert result == %{
+               name: "Allocated team",
                unavailable: [],
                unpaired: [
                  %{name: "Bob", id: bob.id, unavailable: false},
@@ -51,7 +53,7 @@ defmodule OneTruePairing.ProjectsTest do
     end
 
     test "keeps track of people's availability" do
-      project = project_fixture()
+      project = project_fixture(name: "A Team")
       [alice, bob, carol] = Enum.map(~w[Alice Bob Carol], &person_fixture(name: &1, project_id: project.id))
       track = track_fixture(title: "Making a Modest Proposal", project_id: project.id)
 
@@ -61,6 +63,7 @@ defmodule OneTruePairing.ProjectsTest do
       result = Projects.load_project(project.id)
 
       assert result == %{
+               name: "A Team",
                unavailable: [%{name: "Carol", id: carol.id, unavailable: true}],
                unpaired: [%{name: "Bob", id: bob.id, unavailable: false}],
                tracks: [

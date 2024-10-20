@@ -6,6 +6,7 @@ defmodule OneTruePairing.Projects do
     @type track_t() :: %{name: binary(), id: pos_integer(), people: list(person_t())}
 
     @callback load_project(project_id: pos_integer()) :: %{
+                name: String.t(),
                 unpaired: list(person_t()),
                 tracks: list(track_t()),
                 unavailable: list(person_t())
@@ -27,6 +28,7 @@ defmodule OneTruePairing.Projects do
 
   @impl ProjectProvider
   def load_project(project_id) do
+    project = get_project!(project_id)
     people = persons_for(project_id: project_id) |> Enum.map(&%{name: &1.name, id: &1.id, unavailable: &1.unavailable})
 
     tracks =
@@ -46,7 +48,7 @@ defmodule OneTruePairing.Projects do
     unavailable = people |> Enum.filter(fn person -> person.unavailable end)
     unpaired = people |> Enum.filter(fn person -> person.id not in all_allocated_ids and not person.unavailable end)
 
-    %{unpaired: unpaired, tracks: tracks, unavailable: unavailable}
+    %{unpaired: unpaired, tracks: tracks, unavailable: unavailable, name: project.name}
   end
 
   # # # people

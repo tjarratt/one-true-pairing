@@ -13,6 +13,7 @@ defmodule OneTruePairingWeb.Live.PairView do
     everyone = fetch_people(project_id)
 
     %{
+      name: project_name,
       unpaired: unpaired,
       tracks: tracks,
       unavailable: unavailable
@@ -21,6 +22,7 @@ defmodule OneTruePairingWeb.Live.PairView do
     {:ok,
      socket
      |> assign(project_id: project_id)
+     |> assign(project_name: project_name)
      |> assign(everyone: everyone)
      |> assign(pairing_list: unpaired |> recalculate_positions())
      |> assign(unavailable_list: unavailable |> recalculate_positions())
@@ -30,7 +32,7 @@ defmodule OneTruePairingWeb.Live.PairView do
   @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
-    <.header>Let's pair today</.header>
+    <.header>Hey <%= @project_name %>, let's pair today</.header>
 
     <div class="my-4 flex justify-between">
       <div>
