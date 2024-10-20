@@ -44,20 +44,30 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     assert list == ~w[Andrew Freja Ronaldo Hitalo Alicia]
   end
 
-  test "it has a title", %{conn: conn, project: project} do
-    {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+  describe "the page for determining who pairs with whom" do
+    test "has a title", %{conn: conn, project: project} do
+      {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-    header = html |> HtmlQuery.find("h1") |> HtmlQuery.text()
+      header = html |> HtmlQuery.find("h1") |> HtmlQuery.text()
 
-    assert header == "Let's pair today"
-  end
+      assert header == "Let's pair today"
+    end
 
-  test "it renders the list of people available to pair", %{conn: conn, project: project} do
-    {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+    test "it renders the list of people available to pair", %{conn: conn, project: project} do
+      {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-    list = html |> HtmlQuery.find!("#pairing_list #available-items") |> HtmlQuery.text() |> to_pairs()
+      list = html |> HtmlQuery.find!("#pairing_list #available-items") |> HtmlQuery.text() |> to_pairs()
 
-    assert list == ~w[Andrew Freja Ronaldo Hitalo Alicia]
+      assert list == ~w[Andrew Freja Ronaldo Hitalo Alicia]
+    end
+
+    test "has a link to the page to manage the team", %{conn: conn, project: project} do
+      {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      links = html |> HtmlQuery.all("a") |> Enum.map(&HtmlQuery.attr(&1, "href"))
+
+      assert "/projects/#{project.id}/persons" in links
+    end
   end
 
   describe "randomising pairs" do

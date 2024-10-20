@@ -32,9 +32,19 @@ defmodule OneTruePairingWeb.Live.PairView do
     ~H"""
     <.header>Let's pair today</.header>
 
-    <div class="my-4">
-      <.button phx-click="randomize_pairs">Randomize pairs</.button>
-      <.button phx-click="reset_pairs">Reset pairs</.button>
+    <div class="my-4 flex justify-between">
+      <div>
+        <.button phx-click="randomize_pairs">
+          Randomize pairs
+        </.button>
+        <.button phx-click="reset_pairs">
+          Reset pairs
+        </.button>
+      </div>
+
+      <.link navigate={~p"/projects/#{@project_id}/persons"} class="block bg-cyan-200 pt-2 px-4 rounded-lg">
+        Manage Team
+      </.link>
     </div>
 
     <div id="pairing_list" class="grid sm:grid-cols-1 md:grid-cols-4 gap-2">
