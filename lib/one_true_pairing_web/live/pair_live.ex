@@ -34,7 +34,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
     <div class="my-4 flex justify-between">
       <div>
-        <.button phx-click="randomize_pairs">
+        <.button phx-click="randomize_pairs" class="bg-emerald-500">
           Randomize pairs
         </.button>
         <.button phx-click="reset_pairs">
