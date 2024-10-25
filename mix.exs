@@ -19,8 +19,14 @@ defmodule OneTruePairing.MixProject do
   def application do
     [
       mod: {OneTruePairing.Application, []},
-      extra_applications: [:logger, :runtime_tools, :os_mon]
+      extra_applications: extra_applications(Mix.env())
     ]
+  end
+
+  defp extra_applications(:test), do: []
+
+  defp extra_applications(_) do
+    [:logger, :runtime_tools, :os_mon]
   end
 
   # Specifies which paths to compile per environment.
@@ -32,6 +38,7 @@ defmodule OneTruePairing.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:expect, "~> 0.1.0", only: [:test], runtime: false},
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
       {:phoenix, "~> 1.7.7"},
       {:phoenix_ecto, "~> 4.4"},

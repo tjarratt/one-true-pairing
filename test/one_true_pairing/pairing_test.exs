@@ -2,6 +2,8 @@ defmodule OneTruePairing.PairingTest do
   # @related [impl](lib/one_true_pairing/pairing.ex)
   use OneTruePairing.DataCase, async: true
 
+  import Expect
+  import Expect.Matchers
   import OneTruePairing.Pairing, only: [decide_pairs: 2]
 
   @folks ["Alice", "Bob", "Carol", "Dan"]
@@ -17,12 +19,9 @@ defmodule OneTruePairing.PairingTest do
       %{unpaired: unpaired, arrangements: arrangements} =
         decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks}, @shuffler)
 
-      assert arrangements == [
-               {basket_weaving, ["Alice", "Bob"]},
-               {swimming, ["Carol", "Dan"]}
-             ]
-
-      assert unpaired == []
+      expect(arrangements) |> to_contain({basket_weaving, ["Alice", "Bob"]})
+      expect(arrangements) |> to_contain({swimming, ["Carol", "Dan"]})
+      expect(unpaired) |> to_be_empty()
     end
 
     test "when there are more than 2 people per track of work" do
@@ -31,8 +30,8 @@ defmodule OneTruePairing.PairingTest do
       %{unpaired: unpaired, arrangements: arrangements} =
         decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks}, @shuffler)
 
-      assert arrangements == [{track, ["Alice", "Bob"]}]
-      assert unpaired == ["Carol", "Dan"]
+      expect(arrangements) |> to_equal([{track, ["Alice", "Bob"]}])
+      expect(unpaired) |> to_equal(["Carol", "Dan"])
     end
 
     test "when some folks are already assigned to a track" do
@@ -48,12 +47,10 @@ defmodule OneTruePairing.PairingTest do
           @shuffler
         )
 
-      assert unpaired == []
+      expect(unpaired) |> to_be_empty()
 
-      assert arrangements == [
-               {working, ["Dan", "Alice"]},
-               {sleeping, ["Bob", "Carol"]}
-             ]
+      expect(arrangements) |> to_contain({working, ["Dan", "Alice"]})
+      expect(arrangements) |> to_contain({sleeping, ["Bob", "Carol"]})
     end
 
     test "when there are not enough people for the work -- it pairs people up, leaving some tracks unassigned" do
@@ -65,12 +62,10 @@ defmodule OneTruePairing.PairingTest do
       %{unpaired: unpaired, arrangements: arrangements} =
         decide_pairs(%{unpaired: ["Alice", "Bob"], tracks: tracks, unavailable: []}, @shuffler)
 
-      assert arrangements == [
-               {allocate_me, ["Alice", "Bob"]},
-               {empty_track, []}
-             ]
+      expect(arrangements) |> to_contain({allocate_me, ["Alice", "Bob"]})
+      expect(arrangements) |> to_contain({empty_track, []})
 
-      assert unpaired == []
+      expect(unpaired) |> to_be_empty()
     end
   end
 
