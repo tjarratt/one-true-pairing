@@ -38,7 +38,7 @@ defmodule OneTruePairing.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:expect, "~> 0.1.0", only: [:test], runtime: false},
+      {:expect, "~> 0.1.2", only: [:test], runtime: false},
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
       {:phoenix, "~> 1.7.7"},
       {:phoenix_ecto, "~> 4.4"},
