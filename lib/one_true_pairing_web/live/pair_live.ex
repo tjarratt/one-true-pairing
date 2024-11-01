@@ -36,7 +36,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
     <div class="my-4 flex justify-between">
       <div>
-        <.button phx-click="randomize_pairs" background="bg-emerald-500">
+        <.button phx-click="randomize_pairs" background="bg-emerald-500" background_hover="hover:bg-emerald-400">
           Randomize pairs
         </.button>
         <.button phx-click="reset_pairs">
@@ -44,7 +44,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         </.button>
       </div>
 
-      <.link navigate={~p"/projects/#{@project_id}/persons"} class="block bg-cyan-200 pt-2 px-4 rounded-lg">
+      <.link navigate={~p"/projects/#{@project_id}/persons"} class="block bg-cyan-300 hover:bg-cyan-200 pt-2 px-4 rounded-lg">
         Manage Team
       </.link>
     </div>
