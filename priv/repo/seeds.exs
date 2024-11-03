@@ -10,17 +10,27 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-project = OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Project{name: "Fellowship"})
+fellowship = OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Project{name: "Fellowship"})
 
-OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Sam", project_id: project.id})
-OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Gandalf", project_id: project.id})
-OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Gimli", project_id: project.id})
-OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Legolas", project_id: project.id})
-OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Aragorn", project_id: project.id})
-OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Boromir", project_id: project.id})
-OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Frodo", project_id: project.id})
-OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Pippin", project_id: project.id})
-OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Merry", project_id: project.id})
+OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Sam", project_id: fellowship.id})
+OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Gandalf", project_id: fellowship.id})
+OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Gimli", project_id: fellowship.id})
+OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Legolas", project_id: fellowship.id})
+OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Aragorn", project_id: fellowship.id})
+OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Boromir", project_id: fellowship.id})
+OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Frodo", project_id: fellowship.id})
+OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Pippin", project_id: fellowship.id})
+OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Merry", project_id: fellowship.id})
 
-OneTruePairing.Projects.create_track(%{title: "Hobbit babysitting", project_id: project.id})
-OneTruePairing.Projects.create_track(%{title: "Potatoe boiling", project_id: project.id})
+OneTruePairing.Projects.create_track(%{title: "Hobbit babysitting", project_id: fellowship.id})
+OneTruePairing.Projects.create_track(%{title: "Potatoe boiling", project_id: fellowship.id})
+
+test_space = OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Project{name: "Test Space"})
+
+OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Alice", project_id: test_space.id})
+OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Bob", project_id: test_space.id})
+OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Carol", project_id: test_space.id})
+
+OneTruePairing.Projects.create_track(%{title: nil, project_id: test_space.id})
+OneTruePairing.Projects.create_track(%{title: "   ", project_id: test_space.id})
+OneTruePairing.Projects.create_track(%{title: "Mobbing", project_id: test_space.id})
