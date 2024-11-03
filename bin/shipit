@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+mix format
+
+$(git diff --quiet && git diff --cached --quiet) || (echo "Fix the formatting first" && exit 1)
+
+mix test
+mix dialyzer
+
+git push origin head
+git push --tags
