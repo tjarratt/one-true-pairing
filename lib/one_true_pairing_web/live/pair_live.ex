@@ -207,7 +207,6 @@ defmodule OneTruePairingWeb.Live.PairView do
     |> Enum.map(fn %{id: id, people: people, name: name} ->
       %{id: id, people: recalculate_positions(people), name: name}
     end)
-    |> Enum.sort_by(& &1.id)
   end
 
   defp recalculate_positions(list) do

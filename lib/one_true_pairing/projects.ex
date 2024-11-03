@@ -150,8 +150,15 @@ defmodule OneTruePairing.Projects do
   end
 
   def tracks_for(project_id: project_id) do
-    query = from(t in Track, where: t.project_id == ^project_id)
-    Repo.all(query)
+    from(t in Track, where: t.project_id == ^project_id)
+    |> Repo.all()
+    |> Enum.sort(fn first, second ->
+      cond do
+        is_nil(first.title) -> false
+        is_nil(second.title) -> true
+        true -> first.title < second.title
+      end
+    end)
   end
 
   def update_track_title!(track, new_title) do

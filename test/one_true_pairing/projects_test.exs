@@ -82,6 +82,34 @@ defmodule OneTruePairing.ProjectsTest do
         ]
       })
     end
+
+    test "sorts tracks with no name last" do
+      project = project_fixture(name: "lots of work, changing all the time")
+      Enum.map(~w[Alice], &person_fixture(name: &1, project_id: project.id))
+
+      track_fixture(title: "     ", project_id: project.id)
+      track_fixture(title: nil, project_id: project.id)
+      track_fixture(title: "Will be first", project_id: project.id)
+
+      project = Projects.load_project(project.id)
+      track_names = Enum.map(project.tracks, & &1.name)
+
+      assert ["Will be first", _, _] = track_names
+    end
+
+    test "sorts tracks by name ascending" do
+      project = project_fixture(name: "lots of work, changing all the time")
+      Enum.map(~w[Alice], &person_fixture(name: &1, project_id: project.id))
+
+      track_fixture(title: "third", project_id: project.id)
+      track_fixture(title: "second", project_id: project.id)
+      track_fixture(title: "first", project_id: project.id)
+
+      project = Projects.load_project(project.id)
+      track_names = Enum.map(project.tracks, & &1.name)
+
+      assert ["first", "second", "third"] = track_names
+    end
   end
 
   describe "projects" do
