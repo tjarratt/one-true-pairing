@@ -44,7 +44,10 @@ defmodule OneTruePairingWeb.Live.PairView do
         </.button>
       </div>
 
-      <.link navigate={~p"/projects/#{@project_id}/persons"} class="block bg-cyan-300 hover:bg-cyan-200 pt-2 px-4 rounded-lg">
+      <.link
+        navigate={~p"/projects/#{@project_id}/persons"}
+        class="block bg-cyan-300 hover:bg-cyan-200 pt-2 px-4 rounded-lg"
+      >
         Manage Team
       </.link>
     </div>
