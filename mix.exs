@@ -39,6 +39,7 @@ defmodule OneTruePairing.MixProject do
   defp deps do
     [
       {:expect, "~> 0.1.2", only: [:test], runtime: false},
+      {:error_tracker, "~> 0.5"},
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
       {:phoenix, "~> 1.7.7"},
       {:phoenix_ecto, "~> 4.4"},

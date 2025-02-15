@@ -2,6 +2,7 @@ defmodule OneTruePairingWeb.Router do
   import Plug.BasicAuth
 
   use OneTruePairingWeb, :router
+  use ErrorTracker.Web, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -41,5 +42,11 @@ defmodule OneTruePairingWeb.Router do
     pipe_through [:browser, :auth]
 
     live_dashboard "/dashboard", metrics: OneTruePairingWeb.Telemetry
+  end
+
+  scope "/error_tracker" do
+    pipe_through [:browser, :auth]
+
+    error_tracker_dashboard("/")
   end
 end

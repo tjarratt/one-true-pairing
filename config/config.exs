@@ -21,6 +21,10 @@ config :one_true_pairing, OneTruePairingWeb.Endpoint,
   pubsub_server: OneTruePairing.PubSub,
   live_view: [signing_salt: "3uYA8M/T"]
 
+config :error_tracker,
+  repo: OneTruePairing.Repo,
+  otp_app: :one_true_pairing
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails
