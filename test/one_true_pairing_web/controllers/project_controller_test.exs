@@ -45,9 +45,9 @@ defmodule OneTruePairingWeb.ProjectControllerTest do
         get(conn, ~p"/projects")
         |> html_response(200)
         |> HtmlQuery.parse()
-        |> HtmlQuery.find!(test_role: "new-project")
+        |> HtmlQuery.find!("a[href='/projects/new']")
 
-      assert "/projects/new" == HtmlQuery.attr(link, "href")
+      assert "New Project" == HtmlQuery.text(link)
     end
   end
 
