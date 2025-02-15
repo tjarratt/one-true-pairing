@@ -58,7 +58,7 @@ RUN --mount=type=secret,id=BASIC_AUTH_PASSWORD \
 
 # Compile the release
 RUN --mount=type=secret,id=BASIC_AUTH_PASSWORD \
-    BASIC_AUTH_PASSWORD="$(cat /run/secrets/BASIC_AUTH_PASSWORD)" mix compile
+    BASIC_AUTH_PASSWORD="$(cat /run/secrets/BASIC_AUTH_PASSWORD)" mix compile --warnings-as-errors
 
 # Changes to config/runtime.exs don't require recompiling the code
 COPY config/runtime.exs config/

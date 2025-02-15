@@ -61,14 +61,22 @@ jobs:
         mix deps.clean --all
         mix clean
       shell: sh
+      
     - name: Install dependencies
       run: mix deps.get
       env:
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
-    - name: Run tests
-      run: MIX_ENV=test mix test
+
+    - name: Compile
+      run: mix compile --warnings-as-errors
       env:
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+
+    - name: Run tests
+      run: MIX_ENV=test mix test --warnings-as-errors
+      env:
+        BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+
     - name: Dialyzer
       run: mix dialyzer
       env:
