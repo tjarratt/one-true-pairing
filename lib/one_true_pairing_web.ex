@@ -43,7 +43,7 @@ defmodule OneTruePairingWeb do
         layouts: [html: OneTruePairingWeb.Layouts]
 
       import Plug.Conn
-      import OneTruePairingWeb.Gettext
+      use Gettext, backend: OneTruePairingWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -85,7 +85,7 @@ defmodule OneTruePairingWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import OneTruePairingWeb.CoreComponents
-      import OneTruePairingWeb.Gettext
+      use Gettext, backend: OneTruePairingWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

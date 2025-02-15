@@ -20,5 +20,5 @@ defmodule OneTruePairingWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :one_true_pairing
+  use Gettext.Backend, otp_app: :one_true_pairing
 end
