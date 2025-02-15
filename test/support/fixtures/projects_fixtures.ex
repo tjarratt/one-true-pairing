@@ -42,7 +42,8 @@ defmodule OneTruePairing.ProjectsFixtures do
       |> Enum.into(%{
         name: "some name",
         project_id: project_fixture().id,
-        unavailable: false
+        unavailable: false,
+        has_left_project: false
       })
       |> OneTruePairing.Projects.create_person()
 

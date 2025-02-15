@@ -54,7 +54,7 @@ defmodule OneTruePairing.Projects do
   # # # people
 
   def persons_for(project_id: project_id) do
-    query = from(p in Person, where: p.project_id == ^project_id)
+    query = from(p in Person, where: p.project_id == ^project_id and p.has_left_project == false)
     Repo.all(query)
   end
 

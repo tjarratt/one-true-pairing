@@ -223,6 +223,17 @@ defmodule OneTruePairing.ProjectsTest do
       expect(people) |> to_contain(only: alice)
     end
 
+    test "once removed from the project, they are no longer returend by persons_for/1" do
+      project = project_fixture(name: "a")
+
+      alice = person_fixture(name: "Alice", project_id: project.id)
+      Projects.update_person(alice, %{has_left_project: true})
+
+      people = Projects.persons_for(project_id: project.id)
+
+      expect(people) |> to_be_empty()
+    end
+
     test "marking someone as unavailable sets the flag" do
       project = project_fixture(name: "a")
       alice = person_fixture(name: "Alice", project_id: project.id)
@@ -267,10 +278,19 @@ defmodule OneTruePairing.ProjectsTest do
       {:ok, %Person{} = person} = Projects.create_person(valid_attrs)
 
       expect(person.name) |> to_equal("some name")
+      expect(person.has_left_project) |> to_equal(nil)
     end
 
     test "create_person/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Projects.create_person(@invalid_attrs)
+    end
+
+    test "updating a person when they have left the team they were on" do
+      person = person_fixture()
+
+      {:ok, person} = Projects.update_person(person, %{has_left_project: true})
+
+      expect(person.has_left_project) |> to_equal(true)
     end
 
     test "update_person/2 with valid data updates the person" do
