@@ -229,7 +229,7 @@ defmodule OneTruePairing.ProjectsTest do
       alice = person_fixture(name: "Alice", project_id: project.id)
       Projects.update_person(alice, %{has_left_project: true})
 
-      people = Projects.persons_for(project_id: project.id)
+      people = Projects.persons_for(project_id: project.id, excluding_project_leavers: true)
 
       expect(people) |> to_be_empty()
     end

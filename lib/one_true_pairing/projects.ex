@@ -29,7 +29,10 @@ defmodule OneTruePairing.Projects do
   @impl ProjectProvider
   def load_project(project_id) do
     project = get_project!(project_id)
-    people = persons_for(project_id: project_id) |> Enum.map(&%{name: &1.name, id: &1.id, unavailable: &1.unavailable})
+
+    people =
+      persons_for(project_id: project_id, excluding_project_leavers: true)
+      |> Enum.map(&%{name: &1.name, id: &1.id, unavailable: &1.unavailable})
 
     tracks =
       tracks_for(project_id: project_id)
@@ -53,8 +56,13 @@ defmodule OneTruePairing.Projects do
 
   # # # people
 
-  def persons_for(project_id: project_id) do
+  def persons_for(project_id: project_id, excluding_project_leavers: true) do
     query = from(p in Person, where: p.project_id == ^project_id and p.has_left_project == false)
+    Repo.all(query)
+  end
+
+  def persons_for(project_id: project_id) do
+    query = from(p in Person, where: p.project_id == ^project_id)
     Repo.all(query)
   end
 

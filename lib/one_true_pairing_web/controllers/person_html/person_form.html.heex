@@ -2,7 +2,15 @@
   <.error :if={@changeset.action}>
     Oops, something went wrong! Please check the errors below.
   </.error>
-  <.input field={f[:name]} type="text" label="Name" />
+
+  <div class="my-4">
+    <.input field={f[:name]} type="text" label="Name" />
+  </div>
+
+  <div class="my-4">
+    <.input field={f[:has_left_project]} type="checkbox" label="Has left project?" />
+  </div>
+
   <:actions>
     <.button>Save Person</.button>
   </:actions>

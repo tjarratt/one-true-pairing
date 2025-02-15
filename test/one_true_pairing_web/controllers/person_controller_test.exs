@@ -1,6 +1,10 @@
 defmodule OneTruePairingWeb.PersonControllerTest do
   use OneTruePairingWeb.ConnCase, async: true
 
+  alias OneTruePairing.Projects
+
+  import Expect
+  import Expect.Matchers
   import OneTruePairing.ProjectsFixtures
 
   @create_attrs %{name: "some name"}
@@ -60,6 +64,17 @@ defmodule OneTruePairingWeb.PersonControllerTest do
 
       conn = get(conn, ~p"/projects/#{project.id}/persons/#{person}")
       assert html_response(conn, 200) =~ "some updated name"
+    end
+
+    test "edits the attributes of the person", %{conn: conn, person: person, project: project} do
+      attrs = %{name: "Charlie Murphy", unavailable: true, has_left_project: true}
+      put(conn, ~p"/projects/#{project.id}/persons/#{person}", person: attrs)
+
+      [person] = Projects.list_people()
+
+      expect(person.name) |> to_equal("Charlie Murphy")
+      expect(person.unavailable) |> to_equal(true)
+      expect(person.has_left_project) |> to_equal(true)
     end
 
     test "renders errors when data is invalid", %{conn: conn, person: person, project: project} do
