@@ -249,14 +249,14 @@ defmodule OneTruePairingWeb.Live.PairView do
   # actions that we perform on the board, so that the live view does less work
 
   defp move(_project_id,
-         person: %{id: person_id},
-         from: same,
-         to: same,
+         person: _person,
+         from: from,
+         to: to,
          tracks: tracks,
          unavailable: unavailable,
          unpaired: unpaired
        )
-       when person_id != 20 do
+       when from == to do
     # no-op when from and to are the same
     %{
       tracks: tracks,
