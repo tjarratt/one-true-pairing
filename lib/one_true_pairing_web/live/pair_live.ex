@@ -136,6 +136,16 @@ defmodule OneTruePairingWeb.Live.PairView do
   end
 
   @impl Phoenix.LiveView
+  def handle_event("delete_track", %{"id" => id}, %{assigns: %{project_id: project_id}} = socket) do
+    OneTruePairing.Projects.get_track!(id)
+    |> OneTruePairing.Projects.delete_track()
+
+    {:noreply,
+     socket
+     |> assign(tracks: fetch_tracks_with_allocations(project_id, socket.assigns.everyone))}
+  end
+
+  @impl Phoenix.LiveView
   def handle_info({:renamed, _params}, socket) do
     {:noreply, socket}
   end
@@ -223,6 +233,20 @@ defmodule OneTruePairingWeb.Live.PairView do
     |> Enum.map(fn track -> %{people: [], id: track.id, name: track.title} end)
   end
 
+  defp fetch_tracks_with_allocations(project_id, people) do
+    Projects.tracks_for(project_id: project_id)
+    |> Enum.map(fn track ->
+      allocated_ids = Projects.allocations_for_track(track.id) |> Enum.map(& &1.person_id)
+      allocated_people = Enum.filter(people, fn p -> p.id in allocated_ids end)
+
+      %{
+        people: allocated_people,
+        id: track.id,
+        name: track.title
+      }
+    end)
+  end
+
   defp fetch_people(project_id) do
     Projects.persons_for(project_id: project_id)
     |> Enum.with_index()
@@ -245,7 +269,7 @@ defmodule OneTruePairingWeb.Live.PairView do
   end
 
   # # # TODO: push these down a layer
-  # it would be nice to have a bounded context that better represents the 
+  # it would be nice to have a bounded context that better represents the
   # actions that we perform on the board, so that the live view does less work
 
   defp move(_project_id,

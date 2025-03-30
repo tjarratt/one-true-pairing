@@ -175,6 +175,10 @@ defmodule OneTruePairing.Projects do
     |> Repo.update!()
   end
 
+  def delete_track(%Track{} = track) do
+    Repo.delete(track)
+  end
+
   # # # Pairing Arrangements
 
   @shuffler Application.compile_env(:one_true_pairing, :shuffler)

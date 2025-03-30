@@ -428,6 +428,22 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       assert track_title == "Staring at the One Ring"
     end
 
+    test "can be deleted", %{conn: conn, project: project} do
+      track = track_fixture(title: "2. Boiling potatoes", project_id: project.id)
+
+      {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      no_of_tracks =
+        html |> HtmlQuery.all("[test-role=track-of-work]") |> Enum.count()
+
+      html =
+        view
+        |> element("#delete-#{track.id}")
+        |> render_click(%{"id" => track.id})
+
+      assert html |> HtmlQuery.all("[test-role=track-of-work]") |> Enum.count() == no_of_tracks - 1
+    end
+
     test "can have the same name", %{conn: conn, project: project} do
       {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
