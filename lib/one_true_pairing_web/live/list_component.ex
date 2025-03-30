@@ -10,7 +10,16 @@ defmodule OneTruePairingWeb.Live.ListComponent do
 
   def render(assigns) do
     ~H"""
-    <div class="bg-gray-100 py-4 rounded-lg select-none" test-role={@test_role} test-track-name={@list_name}>
+    <div class="relative bg-gray-100 py-4 rounded-lg select-none" test-role={@test_role} test-track-name={@list_name}>
+      <button
+        id={"delete-#{@id}"}
+        phx-click="delete_track"
+        phx-value-id={@track_id}
+        class="absolute top-1 right-1 text-gray-500 hover:text-gray-400"
+      >
+        <.icon name="hero-x-circle" />
+      </button>
+
       <div class="space-y-5 mx-auto px-4 space-y-4 h-full">
         <div class="flex justify-center">
           <%= if @custom_header do %>

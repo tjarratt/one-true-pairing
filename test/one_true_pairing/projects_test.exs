@@ -204,6 +204,15 @@ defmodule OneTruePairing.ProjectsTest do
       expect(updated.title) |> to_equal("refining vespene gas")
       expect(Projects.get_track!(track.id).title) |> to_equal("refining vespene gas")
     end
+
+    test "can be deleted" do
+      project = project_fixture()
+      {:ok, track} = Projects.create_track(%{title: "coal mining", project_id: project.id})
+
+      Projects.delete_track(track)
+
+      assert_raise(Ecto.NoResultsError, fn -> Projects.get_track!(track.id) end)
+    end
   end
 
   describe "people" do
