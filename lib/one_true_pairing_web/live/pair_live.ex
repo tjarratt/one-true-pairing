@@ -44,12 +44,18 @@ defmodule OneTruePairingWeb.Live.PairView do
         </.button>
       </div>
 
-      <.link
-        navigate={~p"/projects/#{@project_id}/persons"}
-        class="block bg-cyan-300 hover:bg-cyan-200 pt-2 px-4 rounded-lg"
-      >
-        Manage Team
-      </.link>
+      <div class="flex">
+        <.button phx-click="add_track" class="mr-4 bg-teal-500 hover:bg-teal-400">
+          Add Track
+        </.button>
+
+        <.link
+          navigate={~p"/projects/#{@project_id}/persons"}
+          class="block bg-cyan-300 hover:bg-cyan-200 pt-2 px-4 rounded-lg"
+        >
+          Manage Team
+        </.link>
+      </div>
     </div>
 
     <div id="pairing_list" class="grid sm:grid-cols-1 md:grid-cols-4 gap-2">
@@ -133,6 +139,15 @@ defmodule OneTruePairingWeb.Live.PairView do
      socket
      |> assign(pairing_list: pairing_list |> recalculate_positions())
      |> assign(tracks: fetch_tracks(project_id: project_id))}
+  end
+
+  @impl Phoenix.LiveView
+  def handle_event("add_track", _params, %{assigns: %{project_id: project_id}} = socket) do
+    Projects.create_track(%{project_id: project_id})
+
+    {:noreply,
+     socket
+     |> assign(tracks: fetch_tracks_with_allocations(project_id, socket.assigns.everyone))}
   end
 
   @impl Phoenix.LiveView
