@@ -428,8 +428,11 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       assert track_title == "Staring at the One Ring"
     end
 
-    test "can be deleted", %{conn: conn, project: project} do
+    test "can be deleted with allocation", %{conn: conn, project: project} do
       track = track_fixture(title: "2. Boiling potatoes", project_id: project.id)
+      person = person_fixture(project_id: project.id, name: "New Person")
+
+      OneTruePairing.Projects.allocate_person_to_track!(track.id, person.id)
 
       {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 

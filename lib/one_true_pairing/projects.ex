@@ -129,6 +129,14 @@ defmodule OneTruePairing.Projects do
     Repo.delete_all(query)
   end
 
+  def delete_allocations_for_a_track(track_id) do
+    today = Date.utc_today()
+    {:ok, start_of_day} = NaiveDateTime.new(today, ~T[00:00:00])
+
+    from(a in Allocation, where: a.track_id == ^track_id and a.updated_at >= ^start_of_day)
+    |> Repo.delete_all()
+  end
+
   @doc """
   Creates a person for a given project.
 
