@@ -461,6 +461,31 @@ defmodule OneTruePairing.ProjectsTest do
       assert allocation.person_id == ziggy.id
       assert allocation.track_id == track.id
     end
+
+    test "delete allocations for a track for present day" do
+      track = track_fixture(title: "Rockin out")
+      ziggy = person_fixture(name: "Ziggy")
+      lady_stardust = person_fixture(name: "Lady Stardust")
+
+      yesterday = DateTime.utc_now() |> DateTime.add(-1, :day)
+
+      %Allocation{}
+      |> Allocation.changeset(%{track_id: track.id, person_id: ziggy.id, updated_at: yesterday, inserted_at: yesterday})
+      |> Repo.insert!()
+
+      Projects.allocate_person_to_track!(track.id, ziggy.id)
+      Projects.allocate_person_to_track!(track.id, lady_stardust.id)
+
+      Projects.delete_allocations_for_a_track(track.id)
+
+      assert Projects.allocations_for_track(track.id) == []
+
+      [allocation] = Repo.all(Allocation)
+      assert dates_equal?(allocation.inserted_at, yesterday)
+      assert dates_equal?(allocation.updated_at, yesterday)
+      assert allocation.person_id == ziggy.id
+      assert allocation.track_id == track.id
+    end
   end
 
   defp dates_equal?(a, b) do
