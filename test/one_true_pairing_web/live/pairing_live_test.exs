@@ -444,6 +444,20 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       assert html |> HtmlQuery.all("[test-role=track-of-work]") |> Enum.count() == no_of_tracks - 1
     end
 
+    test "can be added", %{conn: conn, project: project} do
+      {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      no_of_tracks =
+        html |> HtmlQuery.all("[test-role=track-of-work]") |> Enum.count()
+
+      html =
+        view
+        |> element("button", "Add Track")
+        |> render_click()
+
+      assert html |> HtmlQuery.all("[test-role=track-of-work]") |> Enum.count() == no_of_tracks + 1
+    end
+
     test "can have the same name", %{conn: conn, project: project} do
       {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
