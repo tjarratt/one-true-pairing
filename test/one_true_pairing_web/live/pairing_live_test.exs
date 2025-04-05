@@ -447,6 +447,28 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       assert html |> HtmlQuery.all("[test-role=track-of-work]") |> Enum.count() == no_of_tracks - 1
     end
 
+    test "deleting track preserves allocations of previous days", %{conn: conn, project: project} do
+      track = track_fixture(title: "2. Boiling potatoes", project_id: project.id)
+      person = person_fixture(project_id: project.id, name: "New Person")
+
+      {:ok, now} = DateTime.now("Etc/UTC")
+      yesterday = DateTime.add(now, -1, :day)
+
+      previous_allocation =
+        allocation_fixture(track_id: track.id, person_id: person.id, inserted_at: yesterday, updated_at: yesterday)
+
+      _current_allocation =
+        allocation_fixture(track_id: track.id, person_id: person.id, inserted_at: now, updated_at: now)
+
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      view
+      |> element("#delete-#{track.id}")
+      |> render_click(%{"id" => track.id})
+
+      assert OneTruePairing.Projects.Allocation |> OneTruePairing.Repo.all() == [previous_allocation]
+    end
+
     test "can be added", %{conn: conn, project: project} do
       {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
