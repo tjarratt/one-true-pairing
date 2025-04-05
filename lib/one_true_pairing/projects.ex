@@ -166,7 +166,7 @@ defmodule OneTruePairing.Projects do
   end
 
   def tracks_for(project_id: project_id) do
-    from(t in Track, where: t.project_id == ^project_id)
+    from(t in Track, where: t.project_id == ^project_id and not t.is_deleted)
     |> Repo.all()
     |> Enum.sort(fn first, second ->
       cond do
@@ -184,7 +184,9 @@ defmodule OneTruePairing.Projects do
   end
 
   def delete_track(%Track{} = track) do
-    Repo.delete(track)
+    track
+    |> Track.changeset(%{"is_deleted" => true})
+    |> Repo.update!()
   end
 
   # # # Pairing Arrangements
