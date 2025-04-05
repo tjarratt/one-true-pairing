@@ -64,4 +64,20 @@ defmodule OneTruePairing.ProjectsFixtures do
 
     track
   end
+
+  @doc """
+  Generate an allocation for track.
+  """
+  def allocation_fixture(attrs \\ %{}) do
+    {:ok, allocation} =
+      attrs
+      |> Enum.into(%{
+        person_id: person_fixture().id,
+        track_id: track_fixture().id
+      })
+      |> OneTruePairing.Projects.Allocation.changeset()
+      |> OneTruePairing.Repo.insert()
+
+    allocation
+  end
 end
