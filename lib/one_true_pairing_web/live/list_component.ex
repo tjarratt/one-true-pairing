@@ -6,12 +6,14 @@ defmodule OneTruePairingWeb.Live.ListComponent do
   """
 
   attr :custom_header, :boolean, default: false
+  attr :can_be_deleted, :boolean, default: true
   slot :inner_block, required: false
 
   def render(assigns) do
     ~H"""
     <div class="relative bg-gray-100 py-4 rounded-lg select-none" test-role={@test_role} test-track-name={@list_name}>
       <button
+        :if={@can_be_deleted}
         id={"delete-#{@id}"}
         phx-click="delete_track"
         phx-value-id={@track_id}

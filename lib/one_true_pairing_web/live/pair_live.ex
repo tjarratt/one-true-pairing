@@ -63,6 +63,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         id="available"
         module={OneTruePairingWeb.Live.ListComponent}
         list={@pairing_list}
+        can_be_deleted={false}
         list_name="available"
         track_id="available"
         group="pairing"
@@ -88,6 +89,7 @@ defmodule OneTruePairingWeb.Live.PairView do
         id="unavailable"
         module={OneTruePairingWeb.Live.ListComponent}
         list={@unavailable_list}
+        can_be_deleted={false}
         list_name="unavailable"
         track_id="unavailable"
         test_role="unavailable"
