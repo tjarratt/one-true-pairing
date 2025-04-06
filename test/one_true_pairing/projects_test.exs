@@ -92,9 +92,9 @@ defmodule OneTruePairing.ProjectsTest do
       track_fixture(title: "Will be first", project_id: project.id)
 
       project = Projects.load_project(project.id)
-      track_names = Enum.map(project.tracks, & &1.name)
+      [first_track | _rest] = Enum.map(project.tracks, & &1.name)
 
-      assert ["Will be first", _, _] = track_names
+      expect(first_track) |> to_equal("Will be first")
     end
 
     test "sorts tracks by name ascending" do
@@ -108,7 +108,7 @@ defmodule OneTruePairing.ProjectsTest do
       project = Projects.load_project(project.id)
       track_names = Enum.map(project.tracks, & &1.name)
 
-      assert ["first", "second", "third"] = track_names
+      expect(track_names) |> to_equal(["first", "second", "third"])
     end
   end
 
@@ -213,10 +213,10 @@ defmodule OneTruePairing.ProjectsTest do
       Projects.delete_track(track_1)
 
       tracks = Projects.tracks_for(project_id: project.id)
-
       expect(tracks) |> to_equal([track_2])
 
-      assert Projects.get_track!(track_1.id) == %{track_1 | is_deleted: true}
+      new_track = Projects.get_track!(track_1.id)
+      expect(new_track) |> to_equal(%{track_1 | is_deleted: true})
     end
   end
 
@@ -422,10 +422,10 @@ defmodule OneTruePairing.ProjectsTest do
 
       [allocation] = Repo.all(Allocation)
 
-      assert dates_equal?(allocation.inserted_at, yesterday)
-      assert dates_equal?(allocation.updated_at, yesterday)
-      assert allocation.person_id == ziggy.id
-      assert allocation.track_id == track.id
+      expect(allocation.inserted_at) |> to_equal_date(yesterday)
+      expect(allocation.updated_at) |> to_equal_date(yesterday)
+      expect(allocation.person_id) |> to_equal(ziggy.id)
+      expect(allocation.track_id) |> to_equal(track.id)
     end
 
     test "allocating someone to a track removes them from others" do
@@ -438,7 +438,7 @@ defmodule OneTruePairing.ProjectsTest do
 
       [allocation] = Repo.all(Allocation)
 
-      assert allocation.track_id == suicide.id
+      expect(allocation.track_id) |> to_equal(suicide.id)
     end
 
     test "can be reset for the current day" do
@@ -461,10 +461,10 @@ defmodule OneTruePairing.ProjectsTest do
 
       [allocation] = Repo.all(Allocation)
 
-      assert dates_equal?(allocation.inserted_at, yesterday)
-      assert dates_equal?(allocation.updated_at, yesterday)
-      assert allocation.person_id == ziggy.id
-      assert allocation.track_id == track.id
+      expect(allocation.inserted_at) |> to_equal_date(yesterday)
+      expect(allocation.updated_at) |> to_equal_date(yesterday)
+      expect(allocation.person_id) |> to_equal(ziggy.id)
+      expect(allocation.track_id) |> to_equal(track.id)
     end
 
     test "delete allocations for a track for present day" do
@@ -482,18 +482,19 @@ defmodule OneTruePairing.ProjectsTest do
       Projects.allocate_person_to_track!(track.id, lady_stardust.id)
 
       Projects.delete_allocations_for_a_track(track.id)
+      allocations_for_track = Projects.allocations_for_track(track.id)
 
-      assert Projects.allocations_for_track(track.id) == []
+      expect(allocations_for_track) |> to_be_empty()
 
       [allocation] = Repo.all(Allocation)
-      assert dates_equal?(allocation.inserted_at, yesterday)
-      assert dates_equal?(allocation.updated_at, yesterday)
-      assert allocation.person_id == ziggy.id
-      assert allocation.track_id == track.id
+      expect(allocation.inserted_at) |> to_equal_date(yesterday)
+      expect(allocation.updated_at) |> to_equal_date(yesterday)
+      expect(allocation.person_id) |> to_equal(ziggy.id)
+      expect(allocation.track_id) |> to_equal(track.id)
     end
   end
 
-  defp dates_equal?(a, b) do
+  defp to_equal_date(%{given: a}, b) do
     a.year == b.year and
       a.month == b.month and
       a.day == b.day

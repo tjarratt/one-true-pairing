@@ -2,6 +2,8 @@ defmodule OneTruePairingWeb.ProjectControllerTest do
   use OneTruePairingWeb.ConnCase
 
   import OneTruePairing.ProjectsFixtures
+  import Expect
+  import Expect.Matchers
 
   @create_attrs %{name: "Cool project"}
   @update_attrs %{name: "Cooler project name ;)"}
@@ -10,8 +12,8 @@ defmodule OneTruePairingWeb.ProjectControllerTest do
   describe "listing all projects" do
     test "has a header", %{conn: conn} do
       conn = get(conn, ~p"/projects")
-
-      assert html_response(conn, 200) =~ "All Projects"
+      response = html_response(conn, 200)
+      expect(response) |> to_match_regex(~r"All Projects")
     end
 
     test "shows previously created projects", %{conn: conn} do
@@ -21,8 +23,8 @@ defmodule OneTruePairingWeb.ProjectControllerTest do
       conn = get(conn, ~p"/projects")
       html = html_response(conn, 200)
 
-      assert html =~ "Project A"
-      assert html =~ "Project B"
+      expect(html) |> to_match_regex(~r"Project A")
+      expect(html) |> to_match_regex(~r"Project B")
     end
 
     test "has links to manage a project", %{conn: conn} do
@@ -36,18 +38,19 @@ defmodule OneTruePairingWeb.ProjectControllerTest do
         |> HtmlQuery.all("a")
         |> Enum.map(&HtmlQuery.attr(&1, "href"))
 
-      assert "/projects/#{project.id}" in links
-      assert "/projects/#{project.id}/edit" in links
+      expect(links) |> to_contain("/projects/#{project.id}")
+      expect(links) |> to_contain("/projects/#{project.id}/edit")
     end
 
     test "can navigate to create a new project", %{conn: conn} do
-      link =
+      link_text =
         get(conn, ~p"/projects")
         |> html_response(200)
         |> HtmlQuery.parse()
         |> HtmlQuery.find!("a[href='/projects/new']")
+        |> HtmlQuery.text()
 
-      assert "New Project" == HtmlQuery.text(link)
+      expect(link_text) |> to_equal("New Project")
     end
   end
 
@@ -58,31 +61,32 @@ defmodule OneTruePairingWeb.ProjectControllerTest do
       html = response |> HtmlQuery.parse()
 
       header = html |> HtmlQuery.find!("h1") |> HtmlQuery.text()
-      assert header == "New Project"
+      expect(header) |> to_equal("New Project")
 
       {input, _attrs, _children} = html |> HtmlQuery.find!("#project_name")
-      assert input == "input"
+      expect(input) |> to_equal("input")
 
-      assert response =~ "Save Project"
-      assert response =~ "Back to projects"
+      expect(response) |> to_match_regex(~r"Save Project")
+      expect(response) |> to_match_regex(~r"Back to projects")
     end
 
     test "creating redirects to show when the data is valid", %{conn: conn} do
       conn = post(conn, ~p"/projects", project: @create_attrs)
 
-      assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == ~p"/projects/#{id}"
+      %{id: id} = redirected_params(conn)
+      url = redirected_to(conn)
+      expect(url) |> to_equal(~p"/projects/#{id}")
 
-      conn = get(conn, ~p"/projects/#{id}")
-      assert html_response(conn, 200) =~ "Project #{id}"
+      response = get(conn, ~p"/projects/#{id}") |> html_response(200)
+      expect(response) |> to_match_regex(~r"Project #{id}")
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, ~p"/projects", project: @invalid_attrs)
       html = html_response(conn, 200)
 
-      assert html =~ "New Project"
-      assert html =~ "Oops"
+      expect(html) |> to_match_regex(~r"New Project")
+      expect(html) |> to_match_regex(~r"Oops")
     end
   end
 
@@ -92,11 +96,11 @@ defmodule OneTruePairingWeb.ProjectControllerTest do
       conn = get(conn, ~p"/projects/#{project}/edit")
       response = html_response(conn, 200)
 
-      assert response =~ "Edit Project #{project.id}"
+      expect(response) |> to_match_regex(~r"Edit Project #{project.id}")
 
-      input = response |> HtmlQuery.parse() |> HtmlQuery.find!("#project_name")
+      input_value = response |> HtmlQuery.parse() |> HtmlQuery.find!("#project_name") |> HtmlQuery.attr("value")
 
-      assert HtmlQuery.attr(input, "value") == "Edit me"
+      expect(input_value) |> to_equal("Edit me")
     end
 
     test "has a back button", %{conn: conn} do
@@ -104,24 +108,25 @@ defmodule OneTruePairingWeb.ProjectControllerTest do
       conn = get(conn, ~p"/projects/#{project}/edit")
       response = html_response(conn, 200)
 
-      assert response =~ "Back to projects"
+      expect(response) |> to_match_regex(~r"Back to projects")
     end
 
     test "redirects when data is valid", %{conn: conn} do
       project = project_fixture(name: "Cool name")
 
       conn = put(conn, ~p"/projects/#{project}", project: @update_attrs)
-      assert redirected_to(conn) == ~p"/projects/#{project}"
+      url = redirected_to(conn)
+      expect(url) |> to_equal(~p"/projects/#{project}")
 
-      conn = get(conn, ~p"/projects/#{project}")
-      assert html_response(conn, 200) =~ "Cooler project name ;)"
+      response = get(conn, ~p"/projects/#{project}") |> html_response(200)
+      expect(response) |> to_match_regex(~r"Cooler project name")
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
       project = project_fixture()
-      conn = put(conn, ~p"/projects/#{project}", project: @invalid_attrs)
+      response = put(conn, ~p"/projects/#{project}", project: @invalid_attrs) |> html_response(200)
 
-      assert html_response(conn, 200) =~ "Edit Project"
+      expect(response) |> to_match_regex(~r"Edit Project")
     end
   end
 
@@ -131,7 +136,7 @@ defmodule OneTruePairingWeb.ProjectControllerTest do
       conn = get(conn, ~p"/projects/#{project}")
       response = html_response(conn, 200)
 
-      assert response =~ "/projects/#{project.id}/edit"
+      expect(response) |> to_match_regex(~r"/projects/#{project.id}/edit")
     end
 
     test "has a link to navigate back", %{conn: conn} do
@@ -139,7 +144,7 @@ defmodule OneTruePairingWeb.ProjectControllerTest do
       conn = get(conn, ~p"/projects/#{project}")
       response = html_response(conn, 200)
 
-      assert response =~ "Back to projects"
+      expect(response) |> to_match_regex(~r"Back to projects")
     end
   end
 end

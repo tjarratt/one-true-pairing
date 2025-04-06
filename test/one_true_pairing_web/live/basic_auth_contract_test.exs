@@ -3,11 +3,14 @@ defmodule BasicAuthContractTest do
 
   alias OneTruePairingWeb.Router
 
+  import Expect
+  import Expect.Matchers
+
   test "LiveView paths must all be secured behind basic auth", %{conn: conn} do
     subjects = modules() |> Enum.filter(&implementing_liveview/1)
 
     # ensure this test is actually testing at least ONE module
-    assert length(subjects) >= 1
+    expect(subjects) |> to_have_length(2)
 
     subjects
     # temporarily disable pair live view because it is a nested view

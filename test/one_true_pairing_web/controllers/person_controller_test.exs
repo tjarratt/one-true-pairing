@@ -17,15 +17,15 @@ defmodule OneTruePairingWeb.PersonControllerTest do
 
   describe "index" do
     test "lists all persons", %{conn: conn, project: project} do
-      conn = get(conn, ~p"/projects/#{project.id}/persons")
-      assert html_response(conn, 200) =~ "Listing Persons"
+      response = get(conn, ~p"/projects/#{project.id}/persons") |> html_response(200)
+      expect(response) |> to_match_regex(~r"Listing Persons")
     end
   end
 
   describe "new person" do
     test "renders form", %{conn: conn, project: project} do
-      conn = get(conn, ~p"/projects/#{project.id}/persons/new")
-      assert html_response(conn, 200) =~ "New Person"
+      response = get(conn, ~p"/projects/#{project.id}/persons/new") |> html_response(200)
+      expect(response) |> to_match_regex(~r"New Person")
     end
   end
 
@@ -33,16 +33,17 @@ defmodule OneTruePairingWeb.PersonControllerTest do
     test "redirects to show when data is valid", %{conn: conn, project: project} do
       conn = post(conn, ~p"/projects/#{project.id}/persons", person: @create_attrs)
 
-      assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == ~p"/projects/#{project.id}/persons/#{id}"
+      %{id: id} = redirected_params(conn)
+      url = redirected_to(conn)
+      expect(url) |> to_equal(~p"/projects/#{project.id}/persons/#{id}")
 
-      conn = get(conn, ~p"/projects/#{project.id}/persons/#{id}")
-      assert html_response(conn, 200) =~ "Person #{id}"
+      response = get(conn, ~p"/projects/#{project.id}/persons/#{id}") |> html_response(200)
+      expect(response) |> to_match_regex(~r"Person #{id}")
     end
 
     test "renders errors when data is invalid", %{conn: conn, project: project} do
-      conn = post(conn, ~p"/projects/#{project.id}/persons", person: @invalid_attrs)
-      assert html_response(conn, 200) =~ "New Person"
+      response = post(conn, ~p"/projects/#{project.id}/persons", person: @invalid_attrs) |> html_response(200)
+      expect(response) |> to_match_regex(~r"New Person")
     end
   end
 
@@ -50,8 +51,8 @@ defmodule OneTruePairingWeb.PersonControllerTest do
     setup [:create_person]
 
     test "renders form for editing chosen person", %{conn: conn, person: person, project: project} do
-      conn = get(conn, ~p"/projects/#{project.id}/persons/#{person}/edit")
-      assert html_response(conn, 200) =~ "Edit Person"
+      response = get(conn, ~p"/projects/#{project.id}/persons/#{person}/edit") |> html_response(200)
+      expect(response) |> to_match_regex(~r"Edit Person")
     end
   end
 
@@ -60,10 +61,11 @@ defmodule OneTruePairingWeb.PersonControllerTest do
 
     test "redirects when data is valid", %{conn: conn, person: person, project: project} do
       conn = put(conn, ~p"/projects/#{project.id}/persons/#{person}", person: @update_attrs)
-      assert redirected_to(conn) == ~p"/projects/#{project.id}/persons/#{person}"
+      url = redirected_to(conn)
+      expect(url) |> to_equal(~p"/projects/#{project.id}/persons/#{person}")
 
-      conn = get(conn, ~p"/projects/#{project.id}/persons/#{person}")
-      assert html_response(conn, 200) =~ "some updated name"
+      response = get(conn, ~p"/projects/#{project.id}/persons/#{person}") |> html_response(200)
+      expect(response) |> to_match_regex(~r"some updated name")
     end
 
     test "edits the attributes of the person", %{conn: conn, person: person, project: project} do
@@ -78,8 +80,8 @@ defmodule OneTruePairingWeb.PersonControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, person: person, project: project} do
-      conn = put(conn, ~p"/projects/#{project.id}/persons/#{person}", person: @invalid_attrs)
-      assert html_response(conn, 200) =~ "Edit Person"
+      response = put(conn, ~p"/projects/#{project.id}/persons/#{person}", person: @invalid_attrs) |> html_response(200)
+      expect(response) |> to_match_regex(~r"Edit Person")
     end
   end
 
@@ -88,7 +90,8 @@ defmodule OneTruePairingWeb.PersonControllerTest do
 
     test "deletes chosen person", %{conn: conn, person: person, project: project} do
       conn = delete(conn, ~p"/projects/#{project.id}/persons/#{person}")
-      assert redirected_to(conn) == ~p"/projects/#{project.id}/persons"
+      url = redirected_to(conn)
+      expect(url) |> to_equal(~p"/projects/#{project.id}/persons")
 
       assert_error_sent 404, fn ->
         get(conn, ~p"/projects/#{project.id}/persons/#{person}")
