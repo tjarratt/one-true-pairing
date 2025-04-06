@@ -33,7 +33,6 @@ defmodule OneTruePairingWeb.Router do
     end
 
     live "/", Live.HomeView, :index
-    live "/example", Live.ExampleView, :index
   end
 
   import Phoenix.LiveDashboard.Router
