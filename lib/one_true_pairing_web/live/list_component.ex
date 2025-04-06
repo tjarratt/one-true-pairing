@@ -17,7 +17,7 @@ defmodule OneTruePairingWeb.Live.ListComponent do
         id={"delete-#{@id}"}
         phx-click="delete_track"
         phx-value-id={@track_id}
-        class="absolute top-1 right-1 text-gray-500 hover:text-gray-400"
+        class="absolute top-2 right-2 leading-none text-gray-500 hover:text-gray-400"
       >
         <.icon name="hero-x-circle" />
       </button>
