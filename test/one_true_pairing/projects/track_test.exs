@@ -3,6 +3,8 @@ defmodule OneTruePairing.Projects.TrackTest do
   use OneTruePairing.DataCase, async: true
 
   import OneTruePairing.ProjectsFixtures
+  import Expect
+  import Expect.Matchers
 
   alias OneTruePairing.Projects.Track
 
@@ -16,6 +18,6 @@ defmodule OneTruePairing.Projects.TrackTest do
     track = track_fixture(title: "", project_id: project.id)
     changeset = Track.changeset(track, %{title: ""})
 
-    assert changeset_valid?(changeset)
+    expect(changeset_valid?(changeset)) |> to_be_truthy()
   end
 end

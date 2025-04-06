@@ -1,14 +1,16 @@
 defmodule OneTruePairingWeb.ErrorJSONTest do
-  use OneTruePairingWeb.ConnCase, async: true
+  use ExUnit.Case, async: true
+
+  import Expect
+  import Expect.Matchers
 
   test "renders 404" do
-    assert OneTruePairingWeb.ErrorJSON.render("404.json", %{}) == %{
-             errors: %{detail: "Not Found"}
-           }
+    response = OneTruePairingWeb.ErrorJSON.render("404.json", %{})
+    expect(response) |> to_equal(%{errors: %{detail: "Not Found"}})
   end
 
   test "renders 500" do
-    assert OneTruePairingWeb.ErrorJSON.render("500.json", %{}) ==
-             %{errors: %{detail: "Internal Server Error"}}
+    response = OneTruePairingWeb.ErrorJSON.render("500.json", %{})
+    expect(response) |> to_equal(%{errors: %{detail: "Internal Server Error"}})
   end
 end

@@ -3,7 +3,10 @@ defmodule OneTruePairing.Projects.AllocationTest do
 
   use OneTruePairing.DataCase, async: true
   alias OneTruePairing.Projects.Allocation
+
   import OneTruePairing.ProjectsFixtures
+  import Expect
+  import Expect.Matchers
 
   test "changeset is valid when it has everything it needs" do
     person = person_fixture()
@@ -15,20 +18,23 @@ defmodule OneTruePairing.Projects.AllocationTest do
         track_id: track.id
       })
 
-    assert changeset_valid?(changeset)
+    expect(changeset_valid?(changeset)) |> to_be_truthy()
 
-    assert Repo.insert!(changeset)
+    Repo.insert!(changeset)
+    all_allocations = Repo.all(Allocation)
+
+    expect(all_allocations) |> to_have_length(1)
   end
 
   test "changeset is invalid if it lacks a person" do
     changeset = Allocation.changeset(%{track_id: 1})
 
-    assert changeset_invalid?(changeset)
+    expect(changeset_invalid?(changeset)) |> to_be_truthy()
   end
 
   test "changeset is invalid if it lacks a track" do
     changeset = Allocation.changeset(%{person_id: 1})
 
-    assert changeset_invalid?(changeset)
+    expect(changeset_invalid?(changeset)) |> to_be_truthy()
   end
 end
