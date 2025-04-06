@@ -154,7 +154,7 @@ defmodule OneTruePairing.Projects do
 
     OneTruePairing.Projects.create_track(%{title: "Hobbit babysitting", project_id: project.id})
   """
-  @spec create_track(%{title: String.t(), project_id: pos_integer()}) :: %Track{}
+  @spec create_track(map()) :: %Track{}
   def create_track(attrs) do
     %Track{}
     |> Track.changeset(attrs)
