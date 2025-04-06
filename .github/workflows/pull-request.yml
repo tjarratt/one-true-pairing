@@ -1,0 +1,85 @@
+name: Pull Requests
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Audit and test
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: postgres:12
+        ports: ['5432:5432']
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Elixir
+      uses: erlef/setup-beam@v1.18.2
+      with:
+        elixir-version: '1.18.2'
+        otp-version: '27.2.2'     
+      env:
+        BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+
+    # caching for deps/ directory
+    - name: Restore dependencies cache
+      uses: actions/cache@v3
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-mix-
+
+    # caching for _build directory
+    - name: Restore build cache
+      id: cache-build
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-compiled-build
+        BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+      with:
+        path: _build
+        key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-mix-${{ env.cache-name }}-
+          ${{ runner.os }}-mix
+
+    # bust the cache for incremental builds (apparently a cause of bugs)
+    - name:
+      if: github.run_attempt != 1
+      run: |
+        mix deps.clean --all
+        mix clean
+      shell: sh
+      
+    - name: Install dependencies
+      run: mix deps.get
+      env:
+        BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+
+    - name: Compile
+      run: mix compile --warnings-as-errors
+      env:
+        BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+
+    - name: Run tests
+      run: MIX_ENV=test mix test --warnings-as-errors
+      env:
+        BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+
+    - name: Dialyzer
+      run: mix dialyzer
+      env:
+        BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
+
