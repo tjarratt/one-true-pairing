@@ -10,8 +10,10 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   setup do
     project = project_fixture(name: "Fellowship")
 
-    track_fixture(title: "1. Taking the hobbits to Eisengard", project_id: project.id)
-    track_fixture(title: "2. Boiling potatoes", project_id: project.id)
+    tracks = [
+      track_fixture(title: "1. Taking the hobbits to Eisengard", project_id: project.id),
+      track_fixture(title: "2. Boiling potatoes", project_id: project.id)
+    ]
 
     person_fixture(project_id: project.id, name: "Andrew")
     person_fixture(project_id: project.id, name: "Freja")
@@ -19,7 +21,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     person_fixture(project_id: project.id, name: "Hitalo")
     person_fixture(project_id: project.id, name: "Alicia")
 
-    [project: project]
+    [project: project, tracks: tracks]
   end
 
   require Mocks.HandRolled
@@ -459,24 +461,34 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       expect(track_title) |> to_equal("Staring at the One Ring")
     end
 
-    test "can be deleted with allocation", %{conn: conn, project: project} do
-      track = track_fixture(title: "2. Boiling potatoes", project_id: project.id)
-      person = person_fixture(project_id: project.id, name: "New Person")
+    test "can be deleted, moving allocated people back to available", %{
+      conn: conn,
+      project: project,
+      tracks: [to_delete, keep_me | _others]
+    } do
+      wormtongue = person_fixture(project_id: project.id, name: "Grima Wormtongue")
 
-      OneTruePairing.Projects.allocate_person_to_track!(track.id, person.id)
+      OneTruePairing.Projects.allocate_person_to_track!(to_delete.id, wormtongue.id)
 
-      {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      no_of_tracks =
-        html |> HtmlQuery.all("[test-role=track-of-work]") |> Enum.count()
+      html =
+        view
+        |> element("#delete-#{to_delete.id}")
+        |> render_click(%{"id" => to_delete.id})
 
       tracks =
-        view
-        |> element("#delete-#{track.id}")
-        |> render_click(%{"id" => track.id})
-        |> HtmlQuery.all("[test-role=track-of-work]")
+        html
+        |> HtmlQuery.all(test_role: "track-of-work")
+        |> Enum.map(fn elem -> HtmlQuery.find!(elem, test_role: "track-name") end)
+        |> Enum.map(fn elem -> HtmlQuery.attr(elem, "value") end)
 
-      expect(tracks) |> to_have_length(no_of_tracks - 1)
+      unpaired = select_unpaired(html)
+
+      expect(tracks) |> to_contain(keep_me.title)
+      expect(tracks) |> to_have_length(1)
+
+      expect(unpaired) |> to_contain("Grima Wormtongue")
     end
 
     test "deleting track preserves allocations of previous days", %{conn: conn, project: project} do

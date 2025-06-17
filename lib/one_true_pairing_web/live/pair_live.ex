@@ -154,16 +154,19 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   @impl Phoenix.LiveView
   def handle_event("delete_track", %{"id" => id}, %{assigns: %{project_id: project_id}} = socket) do
-    # Delete allocations for present day for the track
+    # Delete track, along with today's allocations
     Projects.delete_allocations_for_a_track(id)
+    Projects.get_track!(id) |> Projects.delete_track()
 
-    # Delete the track
-    Projects.get_track!(id)
-    |> Projects.delete_track()
+    %{
+      unpaired: unpaired,
+      tracks: tracks
+    } = projects_impl().load_project(project_id)
 
     {:noreply,
      socket
-     |> assign(tracks: fetch_tracks_with_allocations(project_id, socket.assigns.everyone))}
+     |> assign(pairing_list: unpaired |> recalculate_positions())
+     |> assign(tracks: tracks |> recalculate_track_positions())}
   end
 
   @impl Phoenix.LiveView
