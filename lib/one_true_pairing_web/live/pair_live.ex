@@ -160,12 +160,14 @@ defmodule OneTruePairingWeb.Live.PairView do
 
     %{
       unpaired: unpaired,
+      unavailable: unavailable,
       tracks: tracks
     } = projects_impl().load_project(project_id)
 
     {:noreply,
      socket
      |> assign(pairing_list: unpaired |> recalculate_positions())
+     |> assign(unavailable_list: unavailable |> recalculate_positions())
      |> assign(tracks: tracks |> recalculate_track_positions())}
   end
 

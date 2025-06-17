@@ -491,6 +491,24 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       expect(unpaired) |> to_contain("Grima Wormtongue")
     end
 
+    test "when deleted, previously unavailable people move back to unavailable", %{
+      conn: conn,
+      project: project,
+      tracks: [to_delete | _others]
+    } do
+      person_fixture(project_id: project.id, name: "Grima Wormtongue")
+
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+      send_person(view, at_index: 5, from: "available", to: "unavailable")
+
+      html =
+        view
+        |> element("#delete-#{to_delete.id}")
+        |> render_click(%{"id" => to_delete.id})
+
+      expect(select_unavailable(html)) |> to_contain("Grima Wormtongue")
+    end
+
     test "deleting track preserves allocations of previous days", %{conn: conn, project: project} do
       track = track_fixture(title: "2. Boiling potatoes", project_id: project.id)
       person = person_fixture(project_id: project.id, name: "New Person")
