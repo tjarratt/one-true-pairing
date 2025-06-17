@@ -8,6 +8,7 @@ defmodule OneTruePairing.MixProject do
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
+      compilers: [:yecc, :leex] ++ Mix.compilers(),
       aliases: aliases(),
       deps: deps()
     ]
