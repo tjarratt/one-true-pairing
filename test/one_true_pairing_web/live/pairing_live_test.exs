@@ -103,11 +103,9 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      # move Alicia to the first track
-      send_person(view, at_index: 4, from: "available", to: "1. Taking the hobbits to Eisengard")
+      send_person(view, named: "Alicia", from: "available", to: "1. Taking the hobbits to Eisengard")
 
-      # move Hitalo to the third track
-      html = send_person(view, at_index: 3, from: "available", to: "3. Protecting the one ring")
+      html = send_person(view, named: "Hitalo", from: "available", to: "3. Protecting the one ring")
 
       [first_pair, second_pair, third_pair] =
         html
@@ -217,8 +215,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     test "they don't get randomly assigned", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      # send Alicia from unpaired to unavailable
-      html = send_person(view, at_index: 4, from: "available", to: "unavailable")
+      html = send_person(view, named: "Alicia", from: "available", to: "unavailable")
       unavailable = select_unavailable(html)
 
       expect(unavailable) |> to_equal(["Alicia"])
@@ -247,15 +244,13 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     test "they stay unavailable until moved", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      # send alicia from unpaired to unavailable
-      send_person(view, at_index: 4, from: "available", to: "unavailable")
+      send_person(view, named: "Alicia", from: "available", to: "unavailable")
       {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
       unavailable = select_unavailable(html)
 
       expect(unavailable) |> to_contain("Alicia")
 
-      # send alicia from unavailable to unpaired
-      send_person(view, at_index: 0, from: "unavailable", to: "available")
+      send_person(view, named: "Alicia", from: "unavailable", to: "available")
       {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
       unpaired = select_unpaired(html)
 
@@ -266,8 +261,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     test "people do not get assigned twice when randomized", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      # send Andrew from unpaired to unavailable
-      html = send_person(view, at_index: 0, from: "available", to: "unavailable")
+      html = send_person(view, named: "Andrew", from: "available", to: "unavailable")
       unavailable = select_unavailable(html)
 
       expect(unavailable) |> to_equal(["Andrew"])
@@ -294,8 +288,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     test "they don't get reset", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      # send Alicia from unpaired to unavailable
-      send_person(view, at_index: 4, from: "available", to: "unavailable")
+      send_person(view, named: "Alicia", from: "available", to: "unavailable")
 
       {unavailable, unpaired} =
         view
@@ -311,8 +304,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       # if we don't recalculate indices, we'll get the incorrect index on the front-end the second time you move someone in a list
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      # send Alicia from unpaired to unavailable
-      send_person(view, at_index: 4, from: "available", to: "unavailable")
+      send_person(view, named: "Alicia", from: "available", to: "unavailable")
 
       html =
         view
@@ -341,11 +333,11 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     test "they can be moved back to 'unpaired' so they can be paired up again", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      send_person(view, at_index: 4, from: "available", to: "unavailable")
+      send_person(view, named: "Alicia", from: "available", to: "unavailable")
 
       {unavailable, unpaired} =
         view
-        |> send_person(at_index: 0, from: "unavailable", to: "available")
+        |> send_person(named: "Alicia", from: "unavailable", to: "available")
         |> (fn html -> {select_unavailable(html), select_unpaired(html)} end).()
 
       expect(unavailable) |> to_be_empty()
@@ -355,11 +347,11 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     test "they can be moved from a track to 'unavailable'", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      send_person(view, at_index: 4, from: "available", to: "2. Boiling potatoes")
+      send_person(view, named: "Alicia", from: "available", to: "2. Boiling potatoes")
 
       {unavailable, potato_boilers} =
         view
-        |> send_person(at_index: 0, from: "2. Boiling potatoes", to: "unavailable")
+        |> send_person(named: "Alicia", from: "2. Boiling potatoes", to: "unavailable")
         |> (fn html -> {select_unavailable(html), people_in_track(html, "2. Boiling potatoes")} end).()
 
       expect(unavailable) |> to_contain("Alicia")
@@ -371,14 +363,12 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     test "... between tracks of work", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      # send Alicia from unpaired to first track
-      html = send_person(view, at_index: 4, from: "available", to: "1. Taking the hobbits to Eisengard")
+      html = send_person(view, named: "Alicia", from: "available", to: "1. Taking the hobbits to Eisengard")
       hobbit_babysitters = people_in_track(html, "1. Taking the hobbits to Eisengard")
 
       expect(hobbit_babysitters) |> to_contain("Alicia")
 
-      # send Alicia from first track to second track
-      html = send_person(view, at_index: 0, from: "1. Taking the hobbits to Eisengard", to: "2. Boiling potatoes")
+      html = send_person(view, named: "Alicia", from: "1. Taking the hobbits to Eisengard", to: "2. Boiling potatoes")
       hobbit_babysitters = people_in_track(html, "1. Taking the hobbits to Eisengard")
       potato_boilers = people_in_track(html, "2. Boiling potatoes")
 
@@ -389,12 +379,12 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     test "to the same track of work is a no-op", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      send_person(view, at_index: 4, from: "available", to: "1. Taking the hobbits to Eisengard")
+      send_person(view, named: "Alicia", from: "available", to: "1. Taking the hobbits to Eisengard")
 
       hobbit_babysitters =
         view
         |> send_person(
-          at_index: 0,
+          named: "Alicia",
           from: "1. Taking the hobbits to Eisengard",
           to: "1. Taking the hobbits to Eisengard"
         )
@@ -408,7 +398,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       unpaired_people =
         view
-        |> send_person(at_index: 0, from: "available", to: "available")
+        |> send_person(named: "Andrew", from: "available", to: "available")
         |> select_unpaired()
 
       expect(unpaired_people) |> to_equal(~w[Andrew Freja Ronaldo Hitalo Alicia])
@@ -417,9 +407,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     test "back to the 'unpaired' list", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      # send Alicia from unpaired to first track
-      send_person(view, at_index: 4, from: "available", to: "1. Taking the hobbits to Eisengard")
-      html = send_person(view, at_index: 0, from: "1. Taking the hobbits to Eisengard", to: "available")
+      send_person(view, named: "Alicia", from: "available", to: "1. Taking the hobbits to Eisengard")
+      html = send_person(view, named: "Alicia", from: "1. Taking the hobbits to Eisengard", to: "available")
       unpaired = select_unpaired(html)
 
       expect(unpaired) |> to_contain("Alicia")
@@ -499,7 +488,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       person_fixture(project_id: project.id, name: "Grima Wormtongue")
 
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
-      send_person(view, at_index: 5, from: "available", to: "unavailable")
+      send_person(view, named: "Grima Wormtongue", from: "available", to: "unavailable")
 
       html =
         view
@@ -633,14 +622,12 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     test "are updated when someone is moved between tracks", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
-      # send Alicia from unpaired to first track
-      html = send_person(view, at_index: 4, from: "available", to: "1. Taking the hobbits to Eisengard")
+      html = send_person(view, named: "Alicia", from: "available", to: "1. Taking the hobbits to Eisengard")
       hobbit_babysitters = people_in_track(html, "1. Taking the hobbits to Eisengard")
 
       expect(hobbit_babysitters) |> to_contain("Alicia")
 
-      # send Alicia from first track to second track
-      html = send_person(view, at_index: 0, from: "1. Taking the hobbits to Eisengard", to: "2. Boiling potatoes")
+      html = send_person(view, named: "Alicia", from: "1. Taking the hobbits to Eisengard", to: "2. Boiling potatoes")
       hobbit_babysitters = people_in_track(html, "1. Taking the hobbits to Eisengard")
       potato_boilers = people_in_track(html, "2. Boiling potatoes")
 
@@ -660,13 +647,25 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     end
   end
 
-  defp send_person(view, at_index: index, from: old_list, to: new_list) do
-    view
-    |> render_hook(:repositioned, %{
+  defp send_person(view, named: person_name, from: old_list, to: new_list) do
+    index =
+      view
+      |> element("[data-list_name='#{old_list}']>div", person_name)
+      |> render()
+      |> HtmlQuery.attr("test-index")
+      |> as_index!()
+
+    render_hook(view, :repositioned, %{
       "old" => index,
       "from" => %{"list_name" => old_list},
       "to" => %{"list_name" => new_list}
     })
+  end
+
+  defp as_index!(string) do
+    {index, ""} = Integer.parse(string)
+
+    index
   end
 
   defp rename_nth_track(view, html, position, new_name) do
