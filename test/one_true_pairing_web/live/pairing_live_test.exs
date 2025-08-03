@@ -647,6 +647,29 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     end
   end
 
+  test "resetting pairs doesn't bring in people that are no longer in the project", %{conn: conn, project: project} do
+    person_fixture(project_id: project.id, name: "IGNORE ME", has_left_project: true)
+
+    {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+    view
+    |> element("button", "Randomize pairs")
+    |> render_click()
+
+    html =
+      view
+      |> element("button", "Reset pairs")
+      |> render_click()
+
+    available =
+      html
+      |> HtmlQuery.find!("#pairing_list #available-items")
+      |> HtmlQuery.text()
+      |> to_pairs()
+
+    expect(available) |> to_equal(~w[Andrew Freja Ronaldo Hitalo Alicia])
+  end
+
   defp send_person(view, named: person_name, from: old_list, to: new_list) do
     index =
       view

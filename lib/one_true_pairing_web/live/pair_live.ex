@@ -274,7 +274,7 @@ defmodule OneTruePairingWeb.Live.PairView do
   end
 
   defp fetch_people(project_id) do
-    Projects.persons_for(project_id: project_id)
+    Projects.persons_for(project_id: project_id, excluding_project_leavers: true)
     |> Enum.with_index()
     |> Enum.map(fn {person, index} -> %{name: person.name, id: person.id, position: index} end)
   end
