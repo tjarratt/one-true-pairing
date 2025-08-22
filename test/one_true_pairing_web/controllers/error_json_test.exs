@@ -6,11 +6,11 @@ defmodule OneTruePairingWeb.ErrorJSONTest do
 
   test "renders 404" do
     response = OneTruePairingWeb.ErrorJSON.render("404.json", %{})
-    expect(response) |> to_equal(%{errors: %{detail: "Not Found"}})
+    expect(response, to: equal(%{errors: %{detail: "Not Found"}}))
   end
 
   test "renders 500" do
     response = OneTruePairingWeb.ErrorJSON.render("500.json", %{})
-    expect(response) |> to_equal(%{errors: %{detail: "Internal Server Error"}})
+    expect(response, to: equal(%{errors: %{detail: "Internal Server Error"}}))
   end
 end

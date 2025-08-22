@@ -19,9 +19,9 @@ defmodule OneTruePairing.PairingTest do
       %{unpaired: unpaired, arrangements: arrangements} =
         decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks}, @shuffler)
 
-      expect(arrangements) |> to_contain({basket_weaving, ["Alice", "Bob"]})
-      expect(arrangements) |> to_contain({swimming, ["Carol", "Dan"]})
-      expect(unpaired) |> to_be_empty()
+      expect(arrangements, to: contain({basket_weaving, ["Alice", "Bob"]}))
+      expect(arrangements, to: contain({swimming, ["Carol", "Dan"]}))
+      expect(unpaired, to: be_empty())
     end
 
     test "when there are more than 2 people per track of work" do
@@ -30,8 +30,8 @@ defmodule OneTruePairing.PairingTest do
       %{unpaired: unpaired, arrangements: arrangements} =
         decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks}, @shuffler)
 
-      expect(arrangements) |> to_equal([{track, ["Alice", "Bob"]}])
-      expect(unpaired) |> to_equal(["Carol", "Dan"])
+      expect(arrangements, to: equal([{track, ["Alice", "Bob"]}]))
+      expect(unpaired, to: equal(["Carol", "Dan"]))
     end
 
     test "when some folks are already assigned to a track" do
@@ -47,10 +47,10 @@ defmodule OneTruePairing.PairingTest do
           @shuffler
         )
 
-      expect(unpaired) |> to_be_empty()
+      expect(unpaired, to: be_empty())
 
-      expect(arrangements) |> to_contain({working, ["Dan", "Alice"]})
-      expect(arrangements) |> to_contain({sleeping, ["Bob", "Carol"]})
+      expect(arrangements, to: contain({working, ["Dan", "Alice"]}))
+      expect(arrangements, to: contain({sleeping, ["Bob", "Carol"]}))
     end
 
     test "when there are not enough people for the work -- it pairs people up, leaving some tracks unassigned" do
@@ -62,10 +62,10 @@ defmodule OneTruePairing.PairingTest do
       %{unpaired: unpaired, arrangements: arrangements} =
         decide_pairs(%{unpaired: ["Alice", "Bob"], tracks: tracks, unavailable: []}, @shuffler)
 
-      expect(arrangements) |> to_contain({allocate_me, ["Alice", "Bob"]})
-      expect(arrangements) |> to_contain({empty_track, []})
+      expect(arrangements, to: contain({allocate_me, ["Alice", "Bob"]}))
+      expect(arrangements, to: contain({empty_track, []}))
 
-      expect(unpaired) |> to_be_empty()
+      expect(unpaired, to: be_empty())
     end
   end
 

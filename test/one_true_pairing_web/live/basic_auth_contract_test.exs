@@ -10,7 +10,7 @@ defmodule BasicAuthContractTest do
     subjects = modules() |> Enum.filter(&implementing_liveview/1)
 
     # ensure this test is actually testing at least ONE module
-    expect(subjects) |> to_have_length(2)
+    expect(subjects, to: have_length(2))
 
     subjects
     # temporarily disable pair live view because it is a nested view

@@ -18,6 +18,6 @@ defmodule OneTruePairing.Projects.TrackTest do
     track = track_fixture(title: "", project_id: project.id)
     changeset = Track.changeset(track, %{title: ""})
 
-    expect(changeset_valid?(changeset)) |> to_be_truthy()
+    expect(changeset_valid?(changeset), to: be_truthy())
   end
 end

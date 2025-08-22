@@ -8,12 +8,12 @@ defmodule OneTruePairingWeb.ErrorHTMLTest do
   test "renders 404.html" do
     rendered = render_to_string(OneTruePairingWeb.ErrorHTML, "404", "html", [])
 
-    expect(rendered) |> to_equal("Not Found")
+    expect(rendered, to: equal("Not Found"))
   end
 
   test "renders 500.html" do
     rendered = render_to_string(OneTruePairingWeb.ErrorHTML, "500", "html", [])
 
-    expect(rendered) |> to_equal("Internal Server Error")
+    expect(rendered, to: equal("Internal Server Error"))
   end
 end

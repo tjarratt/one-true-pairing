@@ -18,23 +18,23 @@ defmodule OneTruePairing.Projects.AllocationTest do
         track_id: track.id
       })
 
-    expect(changeset_valid?(changeset)) |> to_be_truthy()
+    expect(changeset_valid?(changeset), to: be_truthy())
 
     Repo.insert!(changeset)
     all_allocations = Repo.all(Allocation)
 
-    expect(all_allocations) |> to_have_length(1)
+    expect(all_allocations, to: have_length(1))
   end
 
   test "changeset is invalid if it lacks a person" do
     changeset = Allocation.changeset(%{track_id: 1})
 
-    expect(changeset_invalid?(changeset)) |> to_be_truthy()
+    expect(changeset_invalid?(changeset), to: be_truthy())
   end
 
   test "changeset is invalid if it lacks a track" do
     changeset = Allocation.changeset(%{person_id: 1})
 
-    expect(changeset_invalid?(changeset)) |> to_be_truthy()
+    expect(changeset_invalid?(changeset), to: be_truthy())
   end
 end
