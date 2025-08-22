@@ -428,8 +428,8 @@ defmodule OneTruePairing.ProjectsTest do
 
       [allocation] = Repo.all(Allocation)
 
-      expect(allocation.inserted_at, to: equal_date(yesterday))
-      expect(allocation.updated_at, to: equal_date(yesterday))
+      expect(allocation.inserted_at, to: be_equivalent_to_date(yesterday))
+      expect(allocation.updated_at, to: be_equivalent_to_date(yesterday))
       expect(allocation.person_id, to: equal(ziggy.id))
       expect(allocation.track_id, to: equal(track.id))
     end
@@ -467,8 +467,8 @@ defmodule OneTruePairing.ProjectsTest do
 
       [allocation] = Repo.all(Allocation)
 
-      expect(allocation.inserted_at, to: equal_date(yesterday))
-      expect(allocation.updated_at, to: equal_date(yesterday))
+      expect(allocation.inserted_at, to: be_equivalent_to_date(yesterday))
+      expect(allocation.updated_at, to: be_equivalent_to_date(yesterday))
       expect(allocation.person_id, to: equal(ziggy.id))
       expect(allocation.track_id, to: equal(track.id))
     end
@@ -493,8 +493,8 @@ defmodule OneTruePairing.ProjectsTest do
       expect(allocations_for_track, to: be_empty())
 
       [allocation] = Repo.all(Allocation)
-      expect(allocation.inserted_at, to: equal_date(yesterday))
-      expect(allocation.updated_at, to: equal_date(yesterday))
+      expect(allocation.inserted_at, to: be_equivalent_to_date(yesterday))
+      expect(allocation.updated_at, to: be_equivalent_to_date(yesterday))
       expect(allocation.person_id, to: equal(ziggy.id))
       expect(allocation.track_id, to: equal(track.id))
     end
@@ -502,7 +502,7 @@ defmodule OneTruePairing.ProjectsTest do
 
   # # # Matchers
 
-  defp equal_date(b) do
+  defp be_equivalent_to_date(b) do
     {"be an equivalent date to", b,
      fn a ->
        a.year == b.year and
