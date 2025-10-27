@@ -50,14 +50,6 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   end
 
   describe "the page for determining who pairs with whom" do
-    test "has a title", %{conn: conn, project: project} do
-      {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
-
-      header = html |> HtmlQuery.find("h1") |> HtmlQuery.text()
-
-      expect(header, to: equal("Hey #{project.name}, let's pair today"))
-    end
-
     test "it renders the list of people available to pair", %{conn: conn, project: project} do
       {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
@@ -72,6 +64,14 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       links = html |> HtmlQuery.all("a") |> Enum.map(&HtmlQuery.attr(&1, "href"))
 
       expect(links, to: contain("/projects/#{project.id}/persons"))
+    end
+
+    test "has a title", %{conn: conn, project: project} do
+      {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      header = html |> HtmlQuery.find("h1") |> HtmlQuery.text()
+
+      expect(header, to: equal("Hey #{project.name}, let's pair today"))
     end
   end
 
