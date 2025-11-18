@@ -503,11 +503,13 @@ defmodule OneTruePairing.ProjectsTest do
   # # # Matchers
 
   defp be_equivalent_to_date(b) do
-    {"be an equivalent date to", b,
-     fn a ->
-       a.year == b.year and
-         a.month == b.month and
-         a.day == b.day
-     end}
+    %Expect.Matchers.CustomMatcher{
+      name: "be an equivalent date to",
+      fn: fn a ->
+        a.year == b.year and
+          a.month == b.month and
+          a.day == b.day
+      end
+    }
   end
 end
