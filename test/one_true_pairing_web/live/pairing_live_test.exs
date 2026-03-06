@@ -424,6 +424,46 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       expect(unpaired, to: contain("Alicia"))
       expect(hobbit_babysitters, to_not: contain("Alicia"))
     end
+
+    test "only the targeted track gets the person when tracks share the same name", %{
+      conn: conn,
+      project: project,
+      tracks: [track1, track2 | _]
+    } do
+      {:ok, view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      rename_nth_track(view, html, 0, "")
+      rename_nth_track(view, html, 1, "")
+
+      page_html = render(view)
+
+      track1_id =
+        page_html
+        |> HtmlQuery.find!("[data-list_id='#{track1.id}']")
+        |> HtmlQuery.attr("data-list_id")
+
+      track2_id =
+        page_html
+        |> HtmlQuery.find!("[data-list_id='#{track2.id}']")
+        |> HtmlQuery.attr("data-list_id")
+
+      alicia_index =
+        view
+        |> element("[data-list_id='available']>div", "Alicia")
+        |> render()
+        |> HtmlQuery.attr("test-index")
+        |> as_index!()
+
+      html =
+        render_hook(view, :repositioned, %{
+          "old" => alicia_index,
+          "from" => %{"list_id" => "available"},
+          "to" => %{"list_id" => track1_id}
+        })
+
+      expect(people_in_track_by_id(html, track1_id), to: contain("Alicia"))
+      expect(people_in_track_by_id(html, track2_id), to_not: contain("Alicia"))
+    end
   end
 
   describe "the tracks of work" do
@@ -675,6 +715,18 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   end
 
   defp send_person(view, named: person_name, from: old_list, to: new_list) do
+    page_html = render(view)
+
+    from_id =
+      page_html
+      |> HtmlQuery.find!("[data-list_name='#{old_list}']")
+      |> HtmlQuery.attr("data-list_id")
+
+    to_id =
+      page_html
+      |> HtmlQuery.find!("[data-list_name='#{new_list}']")
+      |> HtmlQuery.attr("data-list_id")
+
     index =
       view
       |> element("[data-list_name='#{old_list}']>div", person_name)
@@ -684,8 +736,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
     render_hook(view, :repositioned, %{
       "old" => index,
-      "from" => %{"list_name" => old_list},
-      "to" => %{"list_name" => new_list}
+      "from" => %{"list_id" => from_id},
+      "to" => %{"list_id" => to_id}
     })
   end
 
@@ -730,6 +782,15 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     html
     |> HtmlQuery.find!(test_track_name: track_name)
     |> HtmlQuery.find!(test_role: "list")
+    |> HtmlQuery.text()
+    |> String.split("\n", trim: true)
+    |> Enum.map(&String.trim(&1))
+    |> Enum.reject(fn str -> String.length(str) == 0 end)
+  end
+
+  defp people_in_track_by_id(html, track_id) do
+    html
+    |> HtmlQuery.find!("[data-list_id='#{track_id}']")
     |> HtmlQuery.text()
     |> String.split("\n", trim: true)
     |> Enum.map(&String.trim(&1))
