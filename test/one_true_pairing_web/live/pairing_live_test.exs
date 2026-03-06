@@ -4,8 +4,29 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
   import Expect
   import Expect.Matchers
-  import Phoenix.LiveViewTest
-  import OneTruePairing.ProjectsFixtures
+
+  import Phoenix.LiveViewTest,
+    only: [
+      element: 2,
+      element: 3,
+      live: 2,
+      render: 1,
+      render_change: 3,
+      render_click: 1,
+      render_click: 2,
+      render_hook: 3
+    ]
+
+  import OneTruePairing.ProjectsFixtures,
+    only: [
+      allocation_fixture: 1,
+      person_fixture: 0,
+      person_fixture: 1,
+      project_fixture: 0,
+      project_fixture: 1,
+      track_fixture: 0,
+      track_fixture: 1
+    ]
 
   setup do
     project = project_fixture(name: "Fellowship")

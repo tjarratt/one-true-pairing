@@ -1,6 +1,6 @@
 defmodule OneTruePairing.Projects.Person do
   use Ecto.Schema
-  import Ecto.Changeset
+  import Ecto.Changeset, only: [cast: 3, validate_required: 2]
 
   schema "people" do
     field :name, :string

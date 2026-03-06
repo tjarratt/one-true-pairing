@@ -6,7 +6,16 @@ defmodule OneTruePairing.ProjectsTest do
 
   import Expect
   import Expect.Matchers
-  import OneTruePairing.ProjectsFixtures
+
+  import OneTruePairing.ProjectsFixtures,
+    only: [
+      person_fixture: 0,
+      person_fixture: 1,
+      project_fixture: 0,
+      project_fixture: 1,
+      track_fixture: 0,
+      track_fixture: 1
+    ]
 
   describe "a new board-based interface" do
     test "loads the current state of the project" do

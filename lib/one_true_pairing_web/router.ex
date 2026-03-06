@@ -1,5 +1,5 @@
 defmodule OneTruePairingWeb.Router do
-  import Plug.BasicAuth
+  import Plug.BasicAuth, only: [basic_auth: 2]
 
   use OneTruePairingWeb, :router
   use ErrorTracker.Web, :router
@@ -35,7 +35,7 @@ defmodule OneTruePairingWeb.Router do
     live "/", Live.HomeView, :index
   end
 
-  import Phoenix.LiveDashboard.Router
+  import Phoenix.LiveDashboard.Router, only: [live_dashboard: 2]
 
   scope "/dev" do
     pipe_through [:browser, :auth]

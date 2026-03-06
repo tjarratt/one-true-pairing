@@ -4,7 +4,9 @@ defmodule OneTruePairing.Projects.AllocationTest do
   use OneTruePairing.DataCase, async: true
   alias OneTruePairing.Projects.Allocation
 
-  import OneTruePairing.ProjectsFixtures
+  import OneTruePairing.ProjectsFixtures,
+    only: [person_fixture: 0, person_fixture: 1, track_fixture: 0, track_fixture: 1]
+
   import Expect
   import Expect.Matchers
 

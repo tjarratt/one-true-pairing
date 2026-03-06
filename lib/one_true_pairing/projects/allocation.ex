@@ -9,7 +9,7 @@ defmodule OneTruePairing.Projects.Allocation do
   """
 
   use Ecto.Schema
-  import Ecto.Changeset
+  import Ecto.Changeset, only: [cast: 3, validate_required: 2]
 
   schema "track_allocations" do
     field :person_id, :id

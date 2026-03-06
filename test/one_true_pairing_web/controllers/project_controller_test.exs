@@ -1,7 +1,7 @@
 defmodule OneTruePairingWeb.ProjectControllerTest do
   use OneTruePairingWeb.ConnCase
 
-  import OneTruePairing.ProjectsFixtures
+  import OneTruePairing.ProjectsFixtures, only: [project_fixture: 0, project_fixture: 1]
   import Expect
   import Expect.Matchers
 

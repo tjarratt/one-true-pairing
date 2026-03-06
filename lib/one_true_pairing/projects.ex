@@ -15,7 +15,7 @@ defmodule OneTruePairing.Projects do
 
   @behaviour ProjectProvider
 
-  import Ecto.Query, warn: false
+  import Ecto.Query, warn: false, only: [from: 2, order_by: 2]
 
   alias OneTruePairing.Repo
   alias OneTruePairing.Pairing
