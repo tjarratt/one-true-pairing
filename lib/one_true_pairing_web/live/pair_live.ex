@@ -58,7 +58,7 @@ defmodule OneTruePairingWeb.Live.PairView do
       </div>
     </div>
 
-    <div id="pairing_list" class="flex gap-4">
+    <div id="pairing_list" class="flex gap-8">
       <div class="flex flex-col gap-2 w-64 shrink-0">
         <.live_component
           id="available"
