@@ -67,6 +67,21 @@ defmodule OneTruePairing.PairingTest do
       expect(allocated_tracks, to: equal(["First track", "Second track"]))
     end
 
+    test "tracks with empty names appear last in the sort order" do
+      tracks = [
+        track_fixture(id: 3, name: "Second track"),
+        track_fixture(id: 2, name: "First track"),
+        track_fixture(id: 1, name: "")
+      ]
+
+      %{arrangements: arrangements} =
+        decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks}, @shuffler)
+
+      allocated_tracks = arrangements |> Enum.map(fn {track, _pairs} -> track.name end)
+
+      expect(allocated_tracks, to: equal(["First track", "Second track", ""]))
+    end
+
     test "when there are not enough people for the work -- it pairs people up, leaving some tracks unassigned" do
       tracks = [
         allocate_me = track_fixture(name: "Important"),

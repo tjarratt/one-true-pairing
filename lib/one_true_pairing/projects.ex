@@ -167,6 +167,7 @@ defmodule OneTruePairing.Projects do
 
   def tracks_for(project_id: project_id) do
     from(t in Track, where: t.project_id == ^project_id and not t.is_deleted)
+    |> order_by(:id)
     |> Repo.all()
     |> Enum.sort(fn first, second ->
       cond do

@@ -25,7 +25,16 @@ defmodule OneTruePairing.Pairing do
     tracks = tracks |> shuffler.()
 
     {assignments, unpaired} = decide_recursively(tracks, unpaired)
-    assignments = Enum.sort_by(assignments, fn {track, _people} -> track.id end)
+
+    assignments =
+      assignments
+      |> Enum.sort(fn {a, _}, {b, _} ->
+        cond do
+          is_nil(a.name) or a.name == "" -> false
+          is_nil(b.name) or b.name == "" -> true
+          true -> a.id < b.id
+        end
+      end)
 
     state
     |> Map.put(:arrangements, assignments)

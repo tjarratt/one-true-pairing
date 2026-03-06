@@ -103,13 +103,13 @@ defmodule OneTruePairing.ProjectsTest do
       expect(first_track, to: equal("Will be first"))
     end
 
-    test "sorts tracks by name ascending" do
+    test "sorts tracks by id ascending" do
       project = project_fixture(name: "lots of work, changing all the time")
       Enum.map(~w[Alice], &person_fixture(name: &1, project_id: project.id))
 
-      track_fixture(title: "third", project_id: project.id)
-      track_fixture(title: "second", project_id: project.id)
       track_fixture(title: "first", project_id: project.id)
+      track_fixture(title: "second", project_id: project.id)
+      track_fixture(title: "third", project_id: project.id)
 
       project = Projects.load_project(project.id)
       track_names = Enum.map(project.tracks, & &1.name)
