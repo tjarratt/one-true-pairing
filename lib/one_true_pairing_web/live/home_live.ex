@@ -1,20 +1,32 @@
 defmodule OneTruePairingWeb.Live.HomeView do
+  # @related [test](test/one_true_pairing_web/live/home_live_test.exs)
   use OneTruePairingWeb, :live_view
+
+  alias OneTruePairing.Projects
 
   def render(assigns) do
     ~H"""
-    <.header>Who's pairing today?</.header>
+    <.header>
+      Who's pairing today?
+      <:actions>
+        <.link href={~p"/projects/new"}>
+          <.button>New Project</.button>
+        </.link>
+      </:actions>
+    </.header>
 
-    <p>🚧 Under construction 🚧</p>
-    <p>🚧 Under construction 🚧</p>
-    <p>🚧 Under construction 🚧</p>
-    <p>🚧 Under construction 🚧</p>
+    <.table id="projects" rows={@projects} row_click={&JS.navigate(~p"/projects/#{&1}/pairing")}>
+      <:col :let={project} label="Project"><%= project.name %></:col>
 
-    <p class="absolute bottom-5 left -5">Better go ask Tim how to use this thing until he builds the homepage¯\_(ツ)_/¯</p>
+      <:action :let={project}>
+        <.link navigate={~p"/projects/#{project}/pairing"}>Pair</.link>
+        <.link navigate={~p"/projects/#{project}/edit"}>Edit</.link>
+      </:action>
+    </.table>
     """
   end
 
   def mount(_params, _session, socket) do
-    {:ok, socket}
+    {:ok, assign(socket, projects: Projects.list_projects())}
   end
 end
