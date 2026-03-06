@@ -20,10 +20,7 @@ defmodule OneTruePairing.DataCase do
     quote do
       alias OneTruePairing.Repo
 
-      import Ecto
-      import Ecto.Changeset
-      import Ecto.Query
-      import OneTruePairing.DataCase
+      import OneTruePairing.DataCase, only: [changeset_invalid?: 1, changeset_valid?: 1, errors_on: 1]
     end
   end
 

@@ -1,8 +1,8 @@
 defmodule OneTruePairingWeb.ErrorJSONTest do
   use ExUnit.Case, async: true
 
-  import Expect
-  import Expect.Matchers
+  import Expect, only: [expect: 2]
+  import Expect.Matchers, only: [equal: 1]
 
   test "renders 404" do
     response = OneTruePairingWeb.ErrorJSON.render("404.json", %{})

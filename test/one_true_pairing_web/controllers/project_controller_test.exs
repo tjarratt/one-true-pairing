@@ -1,9 +1,9 @@
 defmodule OneTruePairingWeb.ProjectControllerTest do
   use OneTruePairingWeb.ConnCase
 
-  import OneTruePairing.ProjectsFixtures
-  import Expect
-  import Expect.Matchers
+  import OneTruePairing.ProjectsFixtures, only: [project_fixture: 0, project_fixture: 1]
+  import Expect, only: [expect: 2]
+  import Expect.Matchers, only: [contain: 1, equal: 1, match_regex: 1]
 
   @create_attrs %{name: "Cool project"}
   @update_attrs %{name: "Cooler project name ;)"}
