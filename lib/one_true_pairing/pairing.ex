@@ -25,6 +25,7 @@ defmodule OneTruePairing.Pairing do
     tracks = tracks |> shuffler.()
 
     {assignments, unpaired} = decide_recursively(tracks, unpaired)
+    assignments = Enum.sort_by(assignments, fn {track, _people} -> track.id end)
 
     state
     |> Map.put(:arrangements, assignments)
