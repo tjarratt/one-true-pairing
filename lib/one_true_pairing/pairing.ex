@@ -4,11 +4,15 @@ defmodule OneTruePairing.Pairing do
   @doc """
     Decides pairs for the given tracks.
 
-    A track may have as many people as you like it in (this is mobbing).
+    A track may have as many people as you like it in (also known as mobbing).
     This algorithm will attempt to place at most 2 people per track.
 
-    First it shuffles the people, to inject some randomness.
+    First it shuffles the people and tracks, to inject a level of randomness.
+    This ensures that we won't always pair the same people together,
+    and that the first tracks aren't always privileged to be assigned a pair.
+
     Then, for each track, assign up to two people to work on it.
+    Finally, the arrangements are sorted by track id so the display order is stable.
 
     If a track has one person already in it, it assigns one more.
     If a track has two or more already in it, it assigns none.
@@ -73,7 +77,7 @@ defmodule OneTruePairing.Pairing do
     {other_allocations, unpaired} = decide_recursively(other_tracks, not_yet_paired)
 
     # nb: this could be converted into a tail recursive function
-    # if we could turn this into a reduce, accumulating the 
+    # if we could turn this into a reduce, accumulating the
     # allocations and unpaired people as we go
     # but for the size of our current use case this is fine
     {[{track, allocation} | other_allocations], unpaired}
