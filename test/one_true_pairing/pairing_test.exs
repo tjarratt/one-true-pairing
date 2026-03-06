@@ -53,6 +53,20 @@ defmodule OneTruePairing.PairingTest do
       expect(arrangements, to: contain({sleeping, ["Bob", "Carol"]}))
     end
 
+    test "tracks maintain their original order regardless of how people are shuffled" do
+      tracks = [
+        first = track_fixture(name: "First track"),
+        second = track_fixture(name: "Second track")
+      ]
+
+      reversal_shuffler = &Enum.reverse/1
+
+      %{arrangements: arrangements} =
+        decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks}, reversal_shuffler)
+
+      expect(arrangements, to: equal([{first, ["Dan", "Carol"]}, {second, ["Bob", "Alice"]}]))
+    end
+
     test "when there are not enough people for the work -- it pairs people up, leaving some tracks unassigned" do
       tracks = [
         allocate_me = track_fixture(name: "Important"),

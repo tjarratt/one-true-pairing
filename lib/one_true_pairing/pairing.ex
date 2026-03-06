@@ -8,6 +8,7 @@ defmodule OneTruePairing.Pairing do
     This algorithm will attempt to place at most 2 people per track.
 
     First it shuffles the people, to inject some randomness.
+    The tracks are not shuffled, so they maintain a consistent order.
     Then, for each track, assign up to two people to work on it.
 
     If a track has one person already in it, it assigns one more.
@@ -18,7 +19,6 @@ defmodule OneTruePairing.Pairing do
 
   def decide_pairs(%{unpaired: unpaired, tracks: tracks} = state, shuffler) do
     unpaired = unpaired |> shuffler.()
-    tracks = tracks |> shuffler.()
 
     {assignments, unpaired} = decide_recursively(tracks, unpaired)
 
