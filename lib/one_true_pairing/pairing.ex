@@ -7,9 +7,9 @@ defmodule OneTruePairing.Pairing do
     A track may have as many people as you like it in (this is mobbing).
     This algorithm will attempt to place at most 2 people per track.
 
-    First it shuffles the people, to inject some randomness.
-    The tracks are not shuffled, so they maintain a consistent order.
+    First it shuffles the people and tracks, to inject some randomness.
     Then, for each track, assign up to two people to work on it.
+    Finally, the arrangements are sorted by track id so the display order is stable.
 
     If a track has one person already in it, it assigns one more.
     If a track has two or more already in it, it assigns none.
@@ -19,8 +19,10 @@ defmodule OneTruePairing.Pairing do
 
   def decide_pairs(%{unpaired: unpaired, tracks: tracks} = state, shuffler) do
     unpaired = unpaired |> shuffler.()
+    tracks = tracks |> shuffler.()
 
     {assignments, unpaired} = decide_recursively(tracks, unpaired)
+    assignments = Enum.sort_by(assignments, fn {track, _people} -> track.id end)
 
     state
     |> Map.put(:arrangements, assignments)

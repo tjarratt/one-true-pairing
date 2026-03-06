@@ -53,18 +53,23 @@ defmodule OneTruePairing.PairingTest do
       expect(arrangements, to: contain({sleeping, ["Bob", "Carol"]}))
     end
 
-    test "tracks maintain their original order regardless of how people are shuffled" do
+    test "arrangements are sorted by track id so the display order is stable even when tracks are shuffled" do
       tracks = [
-        first = track_fixture(name: "First track"),
-        second = track_fixture(name: "Second track")
+        first = track_fixture(id: 1, name: "First track"),
+        second = track_fixture(id: 2, name: "Second track")
       ]
 
+      # reversal_shuffler reverses both people and tracks:
+      # - people become: ["Dan", "Carol", "Bob", "Alice"]
+      # - tracks become: [second(id:2), first(id:1)]
+      # so second(id:2) is assigned ["Dan", "Carol"] and first(id:1) is assigned ["Bob", "Alice"]
+      # but after sorting by id, first(id:1) appears before second(id:2) in the output
       reversal_shuffler = &Enum.reverse/1
 
       %{arrangements: arrangements} =
         decide_pairs(%{unpaired: @folks, unavailable: [], tracks: tracks}, reversal_shuffler)
 
-      expect(arrangements, to: equal([{first, ["Dan", "Carol"]}, {second, ["Bob", "Alice"]}]))
+      expect(arrangements, to: equal([{first, ["Bob", "Alice"]}, {second, ["Dan", "Carol"]}]))
     end
 
     test "when there are not enough people for the work -- it pairs people up, leaving some tracks unassigned" do
@@ -86,7 +91,8 @@ defmodule OneTruePairing.PairingTest do
   defp track_fixture(opts) do
     given_name = Keyword.fetch!(opts, :name)
     people = Keyword.get(opts, :people, [])
+    id = Keyword.get(opts, :id, nil)
 
-    %{name: given_name, people: people}
+    %{id: id, name: given_name, people: people}
   end
 end
