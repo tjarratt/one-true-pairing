@@ -1,6 +1,6 @@
 defmodule OneTruePairingWeb.Telemetry do
   use Supervisor
-  import Telemetry.Metrics
+  import Telemetry.Metrics, only: [summary: 2]
 
   def start_link(arg) do
     Supervisor.start_link(__MODULE__, arg, name: __MODULE__)

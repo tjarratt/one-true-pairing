@@ -2,9 +2,9 @@ defmodule OneTruePairing.Projects.TrackTest do
   # @related [test](lib/one_true_pairing/projects/track.ex)
   use OneTruePairing.DataCase, async: true
 
-  import OneTruePairing.ProjectsFixtures
-  import Expect
-  import Expect.Matchers
+  import OneTruePairing.ProjectsFixtures, only: [project_fixture: 0, project_fixture: 1, track_fixture: 0, track_fixture: 1]
+  import Expect, only: [expect: 2]
+  import Expect.Matchers, only: [be_truthy: 0]
 
   alias OneTruePairing.Projects.Track
 

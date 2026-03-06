@@ -42,6 +42,7 @@ defmodule OneTruePairing.MixProject do
       {:error_tracker, "~> 0.5"},
       {:expect, "~> 2.0", only: [:test], runtime: false},
       {:ex_check, "~> 0.16", only: [:dev], runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
       {:phoenix, "~> 1.7.7"},
       {:phoenix_ecto, "~> 4.4"},

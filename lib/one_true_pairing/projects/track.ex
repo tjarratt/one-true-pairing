@@ -1,7 +1,7 @@
 defmodule OneTruePairing.Projects.Track do
   # @related [test](test/one_true_pairing/projects/track_test.exs)
   use Ecto.Schema
-  import Ecto.Changeset
+  import Ecto.Changeset, only: [cast: 3, validate_required: 2]
 
   schema "tracks" do
     field :title, :string

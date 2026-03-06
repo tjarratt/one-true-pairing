@@ -24,9 +24,9 @@ defmodule OneTruePairingWeb do
       use Phoenix.Router, helpers: true
 
       # Import common connection and controller functions to use in pipelines
-      import Plug.Conn
-      import Phoenix.Controller
-      import Phoenix.LiveView.Router
+      import Plug.Conn, only: [fetch_session: 2]
+      import Phoenix.Controller, only: [accepts: 2, protect_from_forgery: 2, put_root_layout: 2, put_secure_browser_headers: 2]
+      import Phoenix.LiveView.Router, only: [fetch_live_flash: 2, live: 3]
     end
   end
 
@@ -42,7 +42,6 @@ defmodule OneTruePairingWeb do
         formats: [:html, :json],
         layouts: [html: OneTruePairingWeb.Layouts]
 
-      import Plug.Conn
       use Gettext, backend: OneTruePairingWeb.Gettext
 
       unquote(verified_routes())
@@ -81,10 +80,11 @@ defmodule OneTruePairingWeb do
 
   defp html_helpers do
     quote do
-      # HTML escaping functionality
-      import Phoenix.HTML
+      # HTML escaping functionality (none needed directly; Phoenix.Component provides ~H,
+      # and raw/html_escape are not used in this project's templates)
       # Core UI components and translation
-      import OneTruePairingWeb.CoreComponents
+      import OneTruePairingWeb.CoreComponents,
+        only: [back: 1, button: 1, error: 1, flash_group: 1, header: 1, icon: 1, input: 1, list: 1, simple_form: 1, sub_header: 1, table: 1]
       use Gettext, backend: OneTruePairingWeb.Gettext
 
       # Shortcut for generating JS commands

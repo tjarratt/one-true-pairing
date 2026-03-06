@@ -3,8 +3,8 @@ defmodule BasicAuthContractTest do
 
   alias OneTruePairingWeb.Router
 
-  import Expect
-  import Expect.Matchers
+  import Expect, only: [expect: 2]
+  import Expect.Matchers, only: [have_length: 1]
 
   test "LiveView paths must all be secured behind basic auth", %{conn: conn} do
     subjects = modules() |> Enum.filter(&implementing_liveview/1)

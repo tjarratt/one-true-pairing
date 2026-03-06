@@ -2,10 +2,10 @@ defmodule OneTruePairingWeb.HomeLiveTest do
   # @related [impl](lib/one_true_pairing_web/live/home_live.ex)
   use OneTruePairingWeb.ConnCase, async: true
 
-  import Expect
-  import Expect.Matchers
-  import Phoenix.LiveViewTest
-  import OneTruePairing.ProjectsFixtures
+  import Expect, only: [expect: 2]
+  import Expect.Matchers, only: [contain: 1, equal: 1, match_regex: 1]
+  import Phoenix.LiveViewTest, only: [element: 3, live: 2, render: 1]
+  import OneTruePairing.ProjectsFixtures, only: [person_fixture: 0, person_fixture: 1, project_fixture: 0, project_fixture: 1, track_fixture: 0, track_fixture: 1]
 
   describe "the homepage" do
     test "shows a list of previously created projects", %{conn: conn} do

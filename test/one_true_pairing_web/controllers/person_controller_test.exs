@@ -3,9 +3,9 @@ defmodule OneTruePairingWeb.PersonControllerTest do
 
   alias OneTruePairing.Projects
 
-  import Expect
-  import Expect.Matchers
-  import OneTruePairing.ProjectsFixtures
+  import Expect, only: [expect: 2]
+  import Expect.Matchers, only: [contain: 1, equal: 1, match_regex: 1]
+  import OneTruePairing.ProjectsFixtures, only: [person_fixture: 0, person_fixture: 1, project_fixture: 0, project_fixture: 1]
 
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}

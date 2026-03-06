@@ -27,9 +27,19 @@ defmodule OneTruePairingWeb.ConnCase do
       use OneTruePairingWeb, :verified_routes
 
       # Import conveniences for testing with connections
-      import Plug.Conn
-      import Phoenix.ConnTest
-      import OneTruePairingWeb.ConnCase
+      import Plug.Conn, only: [delete_req_header: 2]
+      import Phoenix.ConnTest,
+        only: [
+          assert_error_sent: 2,
+          delete: 2,
+          get: 2,
+          html_response: 2,
+          post: 3,
+          put: 3,
+          redirected_params: 1,
+          redirected_to: 1,
+          response: 2
+        ]
     end
   end
 
