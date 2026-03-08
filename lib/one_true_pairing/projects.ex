@@ -190,6 +190,32 @@ defmodule OneTruePairing.Projects do
     |> Repo.update!()
   end
 
+  @doc """
+  Ensures there are enough tracks for the project based on available team members.
+
+  For a team of N available people (not marked as unavailable), ensures there are at
+  least ceil(N / 2) tracks. Unavailable people are excluded because they may still
+  be unavailable today (e.g. someone on a week-long vacation).
+
+  Raises if a new track cannot be persisted.
+  """
+  def ensure_enough_tracks(project_id) do
+    available_count =
+      persons_for(project_id: project_id, excluding_project_leavers: true)
+      |> Enum.count(fn person -> not person.unavailable end)
+
+    required = ceil(available_count / 2)
+    current = tracks_for(project_id: project_id) |> length()
+
+    if current < required do
+      Enum.each(1..(required - current), fn _ ->
+        {:ok, _} = create_track(%{project_id: project_id})
+      end)
+    end
+
+    :ok
+  end
+
   # # # Pairing Arrangements
 
   @shuffler Application.compile_env(:one_true_pairing, :shuffler)

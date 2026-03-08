@@ -10,9 +10,9 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   @impl Phoenix.LiveView
   def mount(%{"project_id" => project_id}, _session, socket) do
-    everyone = fetch_people(project_id)
+    Projects.ensure_enough_tracks(project_id)
 
-    ensure_enough_tracks(project_id, length(everyone))
+    everyone = fetch_people(project_id)
 
     %{
       name: project_name,
@@ -283,17 +283,6 @@ defmodule OneTruePairingWeb.Live.PairView do
     Projects.persons_for(project_id: project_id, excluding_project_leavers: true)
     |> Enum.with_index()
     |> Enum.map(fn {person, index} -> %{name: person.name, id: person.id, position: index} end)
-  end
-
-  defp ensure_enough_tracks(project_id, people_count) do
-    required = ceil(people_count / 2)
-    current = Projects.tracks_for(project_id: project_id) |> length()
-
-    if current < required do
-      Enum.each(1..(required - current), fn _ ->
-        {:ok, _} = Projects.create_track(%{project_id: project_id})
-      end)
-    end
   end
 
   # finds a person at a given index within the named track

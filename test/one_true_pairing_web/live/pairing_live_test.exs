@@ -452,6 +452,23 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       expect(tracks, to: have_length(3))
     end
 
+    test "are not created for unavailable people", %{conn: conn, project: project} do
+      # mark one person as unavailable before the page loads
+      # 4 available → ceil(4 / 2) = 2 tracks needed; setup already has 2 tracks
+      alicia =
+        OneTruePairing.Projects.persons_for(project_id: project.id, excluding_project_leavers: true)
+        |> Enum.find(&(&1.name == "Alicia"))
+
+      OneTruePairing.Projects.mark_unavailable_to_pair(alicia.id)
+
+      {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      tracks = html |> HtmlQuery.all(test_role: "track-of-work")
+
+      # no extra track should be created for the unavailable person
+      expect(tracks, to: have_length(2))
+    end
+
     test "are rendered as separate lists", %{conn: conn, project: project} do
       {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
 

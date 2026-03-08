@@ -118,6 +118,55 @@ defmodule OneTruePairing.ProjectsTest do
     end
   end
 
+  describe "ensure_enough_tracks" do
+    test "creates tracks when there are not enough for the available people" do
+      project = project_fixture()
+      person_fixture(name: "Alice", project_id: project.id)
+      person_fixture(name: "Bob", project_id: project.id)
+      person_fixture(name: "Carol", project_id: project.id)
+
+      Projects.ensure_enough_tracks(project.id)
+
+      tracks = Projects.tracks_for(project_id: project.id)
+      expect(tracks, to: have_length(2))
+    end
+
+    test "does not create more tracks when there are already enough" do
+      project = project_fixture()
+      person_fixture(name: "Alice", project_id: project.id)
+      track_fixture(title: "Existing track", project_id: project.id)
+
+      Projects.ensure_enough_tracks(project.id)
+
+      tracks = Projects.tracks_for(project_id: project.id)
+      expect(tracks, to: have_length(1))
+    end
+
+    test "does not count unavailable people when determining how many tracks to create" do
+      project = project_fixture()
+      person_fixture(name: "Alice", project_id: project.id)
+      bob = person_fixture(name: "Bob", project_id: project.id)
+      Projects.mark_unavailable_to_pair(bob.id)
+
+      Projects.ensure_enough_tracks(project.id)
+
+      tracks = Projects.tracks_for(project_id: project.id)
+      # only Alice is available: ceil(1 / 2) = 1 track needed
+      expect(tracks, to: have_length(1))
+    end
+
+    test "creates no tracks when all people are unavailable" do
+      project = project_fixture()
+      alice = person_fixture(name: "Alice", project_id: project.id)
+      Projects.mark_unavailable_to_pair(alice.id)
+
+      Projects.ensure_enough_tracks(project.id)
+
+      tracks = Projects.tracks_for(project_id: project.id)
+      expect(tracks, to: be_empty())
+    end
+  end
+
   describe "projects" do
     alias OneTruePairing.Projects.Project
     @invalid_attrs %{name: nil}
