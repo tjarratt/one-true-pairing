@@ -33,7 +33,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
     tracks = [
       track_fixture(title: "1. Taking the hobbits to Eisengard", project_id: project.id),
-      track_fixture(title: "2. Boiling potatoes", project_id: project.id)
+      track_fixture(title: "2. Boiling potatoes", project_id: project.id),
+      track_fixture(title: "3. Smoking pipeweed", project_id: project.id)
     ]
 
     person_fixture(project_id: project.id, name: "Andrew")
@@ -97,8 +98,17 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   end
 
   describe "randomising pairs" do
-    test "puts two people in each track of work, and the rest remain unpaired", %{conn: conn, project: project} do
+    test "puts two people in each track of work, and the rest remain unpaired", %{
+      conn: conn,
+      project: project,
+      tracks: [_good, _still_good, to_delete]
+    } do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      # delete a track, so that we don't have enough for everyone
+      view
+      |> element("#delete-#{to_delete.id}")
+      |> render_click(%{"id" => to_delete.id})
 
       html =
         view
@@ -112,7 +122,6 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> Enum.map(&to_pairs/1)
 
       expect(first_pair, to: equal(~w[Andrew Freja]))
-
       expect(second_pair, to: equal(~w[Ronaldo Hitalo]))
 
       unpaired_folks = select_unpaired(html)
@@ -120,15 +129,15 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     end
 
     test "fills in gaps left when someone is pre-assigned to a track", %{conn: conn, project: project} do
-      track_fixture(title: "3. Protecting the one ring", project_id: project.id)
+      track_fixture(title: "4. Protecting the one ring", project_id: project.id)
 
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       send_person(view, named: "Alicia", from: "available", to: "1. Taking the hobbits to Eisengard")
 
-      html = send_person(view, named: "Hitalo", from: "available", to: "3. Protecting the one ring")
+      html = send_person(view, named: "Hitalo", from: "available", to: "4. Protecting the one ring")
 
-      [first_pair, second_pair, third_pair] =
+      [first_pair, second_pair, third_pair, fourth_pair] =
         html
         |> HtmlQuery.all(test_role: "track-of-work")
         |> Enum.map(&HtmlQuery.text/1)
@@ -136,14 +145,15 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       expect(first_pair, to: equal(["Alicia"]))
       expect(second_pair, to: equal([]))
-      expect(third_pair, to: equal(["Hitalo"]))
+      expect(third_pair, to: equal([]))
+      expect(fourth_pair, to: equal(["Hitalo"]))
 
       html =
         view
         |> element("button", "Randomize pairs")
         |> render_click()
 
-      [first_pair, second_pair, third_pair] =
+      [first_pair, second_pair, third_pair, fourth_pair] =
         html
         |> HtmlQuery.all(test_role: "track-of-work")
         |> Enum.map(&HtmlQuery.text/1)
@@ -151,7 +161,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       expect(first_pair, to: equal(["Alicia", "Andrew"]))
       expect(second_pair, to: equal(["Freja", "Ronaldo"]))
-      expect(third_pair, to: equal(["Hitalo"]))
+      expect(third_pair, to: equal([]))
+      expect(fourth_pair, to: equal(["Hitalo"]))
 
       unpaired_folks = select_unpaired(html)
       expect(unpaired_folks, to: be_empty())
@@ -207,11 +218,12 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       expect(available, to: equal(~w[Andrew Freja Ronaldo Hitalo Alicia]))
 
-      [first_pair, second_pair] =
+      [first_pair, second_pair, third_pair] =
         html |> HtmlQuery.all(test_role: "track-of-work") |> Enum.map(&HtmlQuery.text/1)
 
       expect(first_pair, to: equal(""))
       expect(second_pair, to: equal(""))
+      expect(third_pair, to: equal(""))
     end
 
     test "are persistent once set", %{conn: conn, project: project} do
@@ -252,7 +264,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       expect(unavailable, to: equal(["Alicia"]))
       expect(unpaired, to_not: contain("Alicia"))
 
-      [first_pair, second_pair] =
+      [first_pair, second_pair, third_pair] =
         html
         |> HtmlQuery.all(test_role: "track-of-work")
         |> Enum.map(&HtmlQuery.text/1)
@@ -260,6 +272,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       expect(first_pair, to_not: contain("Alicia"))
       expect(second_pair, to_not: contain("Alicia"))
+      expect(third_pair, to_not: contain("Alicia"))
     end
 
     test "they stay unavailable until moved", %{conn: conn, project: project} do
@@ -298,7 +311,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       unavailable = select_unavailable(html)
       expect(unavailable, to: equal(["Andrew"]))
 
-      [first_pair, second_pair] =
+      [first_pair, second_pair, third_pair] =
         html
         |> HtmlQuery.all(test_role: "track-of-work")
         |> Enum.map(&HtmlQuery.text/1)
@@ -306,6 +319,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       expect(first_pair, to_not: contain("Andrew"))
       expect(second_pair, to_not: contain("Andrew"))
+      expect(third_pair, to_not: contain("Andrew"))
     end
 
     test "they don't get reset", %{conn: conn, project: project} do
@@ -524,8 +538,6 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       unpaired = select_unpaired(html)
 
       expect(tracks, to: contain(keep_me.title))
-      expect(tracks, to: have_length(1))
-
       expect(unpaired, to: contain("Grima Wormtongue"))
     end
 
@@ -597,7 +609,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         |> Enum.map(fn elem -> HtmlQuery.find!(elem, test_role: "track-name") end)
         |> Enum.map(fn elem -> HtmlQuery.attr(elem, "value") end)
 
-      expect(tracks, to: equal(["2. Boiling potatoes", "2. Boiling potatoes"]))
+      expect(tracks, to: equal(["2. Boiling potatoes", "2. Boiling potatoes", "3. Smoking pipeweed"]))
     end
 
     test "can be named 'unavailable'", %{conn: conn, project: project} do

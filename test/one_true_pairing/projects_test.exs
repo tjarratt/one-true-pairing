@@ -20,7 +20,7 @@ defmodule OneTruePairing.ProjectsTest do
   describe "a new board-based interface" do
     test "loads the current state of the project" do
       project = project_fixture(name: "Simple team")
-      [alice, bob, carol] = Enum.map(~w[Alice Bob Carol], &person_fixture(name: &1, project_id: project.id))
+      [alice, bob] = Enum.map(~w[Alice Bob], &person_fixture(name: &1, project_id: project.id))
       track = track_fixture(title: "Making a Modest Proposal", project_id: project.id)
 
       project = Projects.load_project(project.id)
@@ -32,8 +32,7 @@ defmodule OneTruePairing.ProjectsTest do
             unavailable: [],
             unpaired: [
               %{name: "Alice", id: alice.id, unavailable: false},
-              %{name: "Bob", id: bob.id, unavailable: false},
-              %{name: "Carol", id: carol.id, unavailable: false}
+              %{name: "Bob", id: bob.id, unavailable: false}
             ],
             tracks: [
               %{id: track.id, name: "Making a Modest Proposal", people: []}
@@ -44,30 +43,32 @@ defmodule OneTruePairing.ProjectsTest do
 
     test "keeps track of track allocations" do
       project = project_fixture(name: "Allocated team")
-      [alice, bob, carol] = Enum.map(~w[Alice Bob Carol], &person_fixture(name: &1, project_id: project.id))
+      [alice, bob] = Enum.map(~w[Alice Bob], &person_fixture(name: &1, project_id: project.id))
       track = track_fixture(title: "Making a Modest Proposal", project_id: project.id)
 
       Projects.allocate_person_to_track!(track.id, alice.id)
 
       project = Projects.load_project(project.id)
 
-      expect(project,
+      expect(project.name, to: equal("Allocated team"))
+      expect(project.unavailable, to: be_empty())
+
+      expect(project.unpaired,
         to:
-          equal(%{
-            name: "Allocated team",
-            unavailable: [],
-            unpaired: [
-              %{name: "Bob", id: bob.id, unavailable: false},
-              %{name: "Carol", id: carol.id, unavailable: false}
-            ],
-            tracks: [
-              %{
-                id: track.id,
-                name: "Making a Modest Proposal",
-                people: [%{name: "Alice", id: alice.id, unavailable: false}]
-              }
-            ]
-          })
+          equal([
+            %{name: "Bob", id: bob.id, unavailable: false}
+          ])
+      )
+
+      expect(project.tracks,
+        to:
+          equal([
+            %{
+              id: track.id,
+              name: "Making a Modest Proposal",
+              people: [%{name: "Alice", id: alice.id, unavailable: false}]
+            }
+          ])
       )
     end
 
@@ -124,6 +125,43 @@ defmodule OneTruePairing.ProjectsTest do
       track_names = Enum.map(project.tracks, & &1.name)
 
       expect(track_names, to: equal(["first", "second", "third"]))
+    end
+  end
+
+  describe "ensure_enough_tracks" do
+    test "creates tracks when there are not enough for the available people" do
+      project = project_fixture()
+      person_fixture(name: "Alice", project_id: project.id)
+      person_fixture(name: "Bob", project_id: project.id)
+      person_fixture(name: "Carol", project_id: project.id)
+
+      Projects.ensure_enough_tracks(project.id)
+
+      tracks = Projects.tracks_for(project_id: project.id)
+      expect(tracks, to: have_length(2))
+    end
+
+    test "does not create more tracks when there are already enough" do
+      project = project_fixture()
+      person_fixture(name: "Alice", project_id: project.id)
+      track_fixture(title: "Existing track", project_id: project.id)
+
+      Projects.ensure_enough_tracks(project.id)
+
+      tracks = Projects.tracks_for(project_id: project.id)
+      expect(tracks, to: have_length(1))
+    end
+
+    test "does not consider unavailable people or those that left the project" do
+      project = project_fixture()
+      person_fixture(name: "Alice", project_id: project.id)
+      person_fixture(name: "Bob", project_id: project.id, unavailable: true)
+      person_fixture(name: "Carol", project_id: project.id, has_left_project: true)
+
+      Projects.ensure_enough_tracks(project.id)
+
+      tracks = Projects.tracks_for(project_id: project.id)
+      expect(tracks, to: have_length(1))
     end
   end
 

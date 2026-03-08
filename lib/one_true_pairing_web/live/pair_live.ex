@@ -12,6 +12,8 @@ defmodule OneTruePairingWeb.Live.PairView do
   def mount(%{"project_id" => project_id}, _session, socket) do
     everyone = fetch_people(project_id)
 
+    Projects.ensure_enough_tracks(project_id)
+
     %{
       name: project_name,
       unpaired: unpaired,
