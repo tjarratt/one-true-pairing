@@ -58,46 +58,50 @@ defmodule OneTruePairingWeb.Live.PairView do
       </div>
     </div>
 
-    <div id="pairing_list" class="grid sm:grid-cols-1 md:grid-cols-4 gap-2">
-      <.live_component
-        id="available"
-        module={OneTruePairingWeb.Live.ListComponent}
-        list={@pairing_list}
-        can_be_deleted={false}
-        list_name="available"
-        track_id="available"
-        group="pairing"
-        test_role="unpaired"
-        custom_header
-      >
-        <.sub_header>Unpaired</.sub_header>
-      </.live_component>
-
-      <%= for track <- @tracks do %>
+    <div id="pairing_list" class="flex gap-4">
+      <div class="flex flex-col gap-2 w-64 shrink-0">
         <.live_component
-          id={track.id}
+          id="available"
           module={OneTruePairingWeb.Live.ListComponent}
-          track_id={track.id}
-          list={track.people}
-          list_name={track.name}
+          list={@pairing_list}
+          can_be_deleted={false}
+          list_name="available"
+          track_id="available"
           group="pairing"
-          test_role="track-of-work"
-        />
-      <% end %>
+          test_role="unpaired"
+          custom_header
+        >
+          <.sub_header>Unpaired</.sub_header>
+        </.live_component>
 
-      <.live_component
-        id="unavailable"
-        module={OneTruePairingWeb.Live.ListComponent}
-        list={@unavailable_list}
-        can_be_deleted={false}
-        list_name="unavailable"
-        track_id="unavailable"
-        test_role="unavailable"
-        group="pairing"
-        custom_header
-      >
-        <.sub_header>Unavailable</.sub_header>
-      </.live_component>
+        <.live_component
+          id="unavailable"
+          module={OneTruePairingWeb.Live.ListComponent}
+          list={@unavailable_list}
+          can_be_deleted={false}
+          list_name="unavailable"
+          track_id="unavailable"
+          test_role="unavailable"
+          group="pairing"
+          custom_header
+        >
+          <.sub_header>Unavailable</.sub_header>
+        </.live_component>
+      </div>
+
+      <div class="flex-1 grid sm:grid-cols-1 md:grid-cols-3 gap-2">
+        <%= for track <- @tracks do %>
+          <.live_component
+            id={track.id}
+            module={OneTruePairingWeb.Live.ListComponent}
+            track_id={track.id}
+            list={track.people}
+            list_name={track.name}
+            group="pairing"
+            test_role="track-of-work"
+          />
+        <% end %>
+      </div>
     </div>
     """
   end
