@@ -28,6 +28,7 @@ defmodule OneTruePairingWeb.ConnCase do
 
       # Import conveniences for testing with connections
       import Plug.Conn, only: [delete_req_header: 2]
+
       import Phoenix.ConnTest,
         only: [
           assert_error_sent: 2,
