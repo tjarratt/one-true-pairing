@@ -22,8 +22,8 @@ OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Frodo", proje
 OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Pippin", project_id: fellowship.id})
 OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Merry", project_id: fellowship.id})
 
-OneTruePairing.Projects.create_track(%{title: "Hobbit babysitting", project_id: fellowship.id})
-OneTruePairing.Projects.create_track(%{title: "Potatoe boiling", project_id: fellowship.id})
+OneTruePairing.Projects.create_track!(%{title: "Hobbit babysitting", project_id: fellowship.id})
+OneTruePairing.Projects.create_track!(%{title: "Potatoe boiling", project_id: fellowship.id})
 
 test_space = OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Project{name: "Test Space"})
 
@@ -31,6 +31,6 @@ OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Alice", proje
 OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Bob", project_id: test_space.id})
 OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Person{name: "Carol", project_id: test_space.id})
 
-OneTruePairing.Projects.create_track(%{title: nil, project_id: test_space.id})
-OneTruePairing.Projects.create_track(%{title: "   ", project_id: test_space.id})
-OneTruePairing.Projects.create_track(%{title: "Mobbing", project_id: test_space.id})
+OneTruePairing.Projects.create_track!(%{title: nil, project_id: test_space.id})
+OneTruePairing.Projects.create_track!(%{title: "   ", project_id: test_space.id})
+OneTruePairing.Projects.create_track!(%{title: "Mobbing", project_id: test_space.id})

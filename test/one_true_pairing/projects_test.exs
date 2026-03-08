@@ -230,7 +230,7 @@ defmodule OneTruePairing.ProjectsTest do
       project = project_fixture()
       valid_attrs = %{title: "coal mining", project_id: project.id}
 
-      {:ok, %Track{} = track} = Projects.create_track(valid_attrs)
+      track = Projects.create_track!(valid_attrs)
 
       expect(track.title, to: equal("coal mining"))
       expect(track.project_id, to: equal(project.id))
@@ -250,7 +250,7 @@ defmodule OneTruePairing.ProjectsTest do
 
     test "can have their title updated" do
       project = project_fixture()
-      {:ok, track} = Projects.create_track(%{title: "coal mining", project_id: project.id})
+      track = Projects.create_track!(%{title: "coal mining", project_id: project.id})
 
       updated = Projects.update_track_title!(track, "refining vespene gas")
 

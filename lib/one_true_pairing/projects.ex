@@ -152,13 +152,13 @@ defmodule OneTruePairing.Projects do
   @doc """
     Create a track. Requires a `title` and `project_id`
 
-    OneTruePairing.Projects.create_track(%{title: "Hobbit babysitting", project_id: project.id})
+    OneTruePairing.Projects.create_track!(%{title: "Hobbit babysitting", project_id: project.id})
   """
-  @spec create_track(map()) :: %Track{}
-  def create_track(attrs) do
+  @spec create_track!(map()) :: %Track{}
+  def create_track!(attrs) do
     %Track{}
     |> Track.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert!()
   end
 
   def get_track!(id) do
@@ -207,7 +207,7 @@ defmodule OneTruePairing.Projects do
 
     if current < required do
       Enum.each(1..(required - current), fn _ ->
-        {:ok, _} = create_track(%{project_id: project_id})
+        create_track!(%{project_id: project_id})
       end)
     end
 

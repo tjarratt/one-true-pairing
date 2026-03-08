@@ -151,7 +151,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   @impl Phoenix.LiveView
   def handle_event("add_track", _params, %{assigns: %{project_id: project_id}} = socket) do
-    Projects.create_track(%{project_id: project_id})
+    Projects.create_track!(%{project_id: project_id})
 
     {:noreply,
      socket
