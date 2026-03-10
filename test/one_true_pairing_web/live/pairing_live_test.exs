@@ -331,14 +331,17 @@ defmodule OneTruePairingWeb.PairingLiveTest do
         view
         |> element("button", "Reset pairs")
         |> render_click()
-        |> (fn html -> {select_unavailable(html), select_unpaired(html)} end).()
+        |> then(fn html -> {select_unavailable(html), select_unpaired(html)} end)
 
       expect(unavailable, to: equal(["Alicia"]))
       expect(unpaired, to_not: contain("Alicia"))
     end
 
     test "the indices of people in the lists are recalculated", %{conn: conn, project: project} do
-      # if we don't recalculate indices, we'll get the incorrect index on the front-end the second time you move someone in a list
+      # if we don't recalculate indices, things go sideways
+      # if you move someone on the front-end, and we don't recalculate indices
+      # we'll get the incorrect index on the front-end the second time you move someone in a list
+      # and if you tried to move them again, you'd end up dragging someone unrelated
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       send_person(view, named: "Alicia", from: "available", to: "unavailable")
@@ -375,7 +378,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       {unavailable, unpaired} =
         view
         |> send_person(named: "Alicia", from: "unavailable", to: "available")
-        |> (fn html -> {select_unavailable(html), select_unpaired(html)} end).()
+        |> then(fn html -> {select_unavailable(html), select_unpaired(html)} end)
 
       expect(unavailable, to: be_empty())
       expect(unpaired, to: contain("Alicia"))
@@ -389,7 +392,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       {unavailable, potato_boilers} =
         view
         |> send_person(named: "Alicia", from: "2. Boiling potatoes", to: "unavailable")
-        |> (fn html -> {select_unavailable(html), people_in_track(html, by_name: "2. Boiling potatoes")} end).()
+        |> then(fn html -> {select_unavailable(html), people_in_track(html, by_name: "2. Boiling potatoes")} end)
 
       expect(unavailable, to: contain("Alicia"))
       expect(potato_boilers, to_not: contain("Alicia"))

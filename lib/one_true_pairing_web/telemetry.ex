@@ -19,7 +19,7 @@ defmodule OneTruePairingWeb.Telemetry do
     Supervisor.init(children, strategy: :one_for_one)
   end
 
-  def metrics do
+  def metrics() do
     [
       # Phoenix Metrics
       summary("phoenix.endpoint.start.system_time",
@@ -81,7 +81,7 @@ defmodule OneTruePairingWeb.Telemetry do
     ]
   end
 
-  defp periodic_measurements do
+  defp periodic_measurements() do
     [
       # A module, function and arguments to be invoked periodically.
       # This function must call :telemetry.execute/3 and a metric must be added above.

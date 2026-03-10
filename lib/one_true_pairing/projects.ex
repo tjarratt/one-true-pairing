@@ -17,12 +17,12 @@ defmodule OneTruePairing.Projects do
 
   import Ecto.Query, warn: false, only: [from: 2, order_by: 2]
 
-  alias OneTruePairing.Repo
   alias OneTruePairing.Pairing
-  alias OneTruePairing.Projects.Track
+  alias OneTruePairing.Projects.Allocation
   alias OneTruePairing.Projects.Person
   alias OneTruePairing.Projects.Project
-  alias OneTruePairing.Projects.Allocation
+  alias OneTruePairing.Projects.Track
+  alias OneTruePairing.Repo
 
   # # # new interface
 
@@ -154,7 +154,7 @@ defmodule OneTruePairing.Projects do
 
     OneTruePairing.Projects.create_track!(%{title: "Hobbit babysitting", project_id: project.id})
   """
-  @spec create_track!(map()) :: %Track{}
+  @spec create_track!(map()) :: Track.t()
   def create_track!(attrs) do
     %Track{}
     |> Track.changeset(attrs)
@@ -233,7 +233,7 @@ defmodule OneTruePairing.Projects do
       [%Project{}, ...]
 
   """
-  def list_projects do
+  def list_projects() do
     Repo.all(Project)
   end
 
@@ -329,7 +329,7 @@ defmodule OneTruePairing.Projects do
       [%Person{}, ...]
 
   """
-  def list_people do
+  def list_people() do
     Repo.all(Person)
   end
 

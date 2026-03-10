@@ -39,9 +39,9 @@ defmodule BasicAuthContractTest do
       |> Module.split()
       |> List.last()
       |> Macro.underscore()
-      |> (fn name -> name <> "_path" end).()
+      |> then(fn name -> name <> "_path" end)
       |> String.to_atom()
-      |> (fn atom -> apply(Router.Helpers, atom, [conn, :index]) end).()
+      |> then(fn atom -> apply(Router.Helpers, atom, [conn, :index]) end)
 
     conn = delete_req_header(conn, "authorization") |> get(path)
 

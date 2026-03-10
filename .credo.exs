@@ -15,6 +15,10 @@
       parse_timeout: 5000,
       color: true,
       checks: %{
+        extra: [
+          {Credo.Check.Readability.ParenthesesOnZeroArityDefs, [parens: true]}
+          # {CredoPreferExplicitOverImplicit.Imports, []}
+        ],
         disabled: [
           # The following checks are disabled because they produce too many issues for
           # the existing codebase. Consider enabling them incrementally.

@@ -4,7 +4,7 @@ defmodule OneTruePairingWeb.Live.PairView do
 
   alias OneTruePairing.Projects
 
-  defp projects_impl do
+  defp projects_impl() do
     Provider.provide(:project_impl, default: Projects)
   end
 

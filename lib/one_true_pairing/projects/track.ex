@@ -3,6 +3,12 @@ defmodule OneTruePairing.Projects.Track do
   use Ecto.Schema
   import Ecto.Changeset, only: [cast: 3, validate_required: 2]
 
+  @type t() :: %__MODULE__{
+          title: String.t(),
+          project_id: pos_integer(),
+          is_deleted: boolean()
+        }
+
   schema "tracks" do
     field :title, :string
     field :project_id, :id
