@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+$(git diff --quiet && git diff --cached --quiet) || (echo "Cannot shipit with unstaged changes - commit or stash first" && exit 1)
+
 mix format
 
 $(git diff --quiet && git diff --cached --quiet) || (echo "Fix the formatting first" && exit 1)
