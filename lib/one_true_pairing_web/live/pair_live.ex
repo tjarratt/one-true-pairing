@@ -212,13 +212,10 @@ defmodule OneTruePairingWeb.Live.PairView do
   def handle_info({:repositioned, params}, socket) do
     project_id = socket.assigns.project_id
     index = params["old"]
+
     tracks = socket.assigns.tracks
     track_ids = tracks |> Enum.map(fn t -> to_string(t.id) end)
 
-    # TODO: would be nice to have an equivalent of String.to_integer but for tracks
-    # so that we could say Track.id_from_string() and have it either coerce
-    # the string id to an integer
-    # or have it treat available and unavailable as known special case ids
     moving_from = params["from"]["list_id"]
     moving_to = params["to"]["list_id"]
 
@@ -305,10 +302,6 @@ defmodule OneTruePairingWeb.Live.PairView do
     Map.put(track, :name, new_title)
   end
 
-  # # # TODO: push these down a layer
-  # it would be nice to have a bounded context that better represents the
-  # actions that we perform on the board, so that the live view does less work
-
   defp move(_project_id,
          person: _person,
          from: from,
@@ -375,9 +368,6 @@ defmodule OneTruePairingWeb.Live.PairView do
     end)
   end
 
-  # TODO: move this into OTP.Pairing module and test it there
-  # live view should no longer need to assert on state of db for allocations
-  # or across page loads
   defp decide_pairs(state) do
     %{arrangements: track_assignments} = state = Projects.decide_pairs(state)
     new_tracks = place_in_tracks(track_assignments)

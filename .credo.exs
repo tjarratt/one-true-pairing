@@ -16,6 +16,7 @@
       color: true,
       checks: %{
         extra: [
+          {Credo.Check.Design.AliasUsage, [priority: :low, if_nested_deeper_than: 3, if_called_more_often_than: 3]},
           {Credo.Check.Readability.ParenthesesOnZeroArityDefs, [parens: true]},
           {CredoExplicitOverImplicit.Imports, []}
         ],
