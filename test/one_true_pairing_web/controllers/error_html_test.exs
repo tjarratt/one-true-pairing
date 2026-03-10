@@ -1,8 +1,7 @@
 defmodule OneTruePairingWeb.ErrorHTMLTest do
   use OneTruePairingWeb.ConnCase, async: true
+  use Expect
 
-  import Expect
-  import Expect.Matchers
   import Phoenix.Template, only: [render_to_string: 4]
 
   test "renders 404.html" do

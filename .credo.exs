@@ -16,8 +16,8 @@
       color: true,
       checks: %{
         extra: [
-          {Credo.Check.Readability.ParenthesesOnZeroArityDefs, [parens: true]}
-          # {CredoPreferExplicitOverImplicit.Imports, []}
+          {Credo.Check.Readability.ParenthesesOnZeroArityDefs, [parens: true]},
+          {CredoExplicitOverImplicit.Imports, []}
         ],
         disabled: [
           # The following checks are disabled because they produce too many issues for

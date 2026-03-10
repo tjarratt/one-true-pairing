@@ -1,9 +1,8 @@
 defmodule OneTruePairing.PairingTest do
   # @related [impl](lib/one_true_pairing/pairing.ex)
   use OneTruePairing.DataCase, async: true
+  use Expect
 
-  import Expect
-  import Expect.Matchers
   import OneTruePairing.Pairing, only: [decide_pairs: 2]
 
   @folks ["Alice", "Bob", "Carol", "Dan"]

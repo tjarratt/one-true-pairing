@@ -24,14 +24,12 @@ defmodule OneTruePairingWeb do
       use Phoenix.Router, helpers: true
 
       # Import common connection and controller functions to use in pipelines
-      # , only: [fetch_session: 2]
-      import Plug.Conn
+      import Plug.Conn, only: [fetch_session: 2, merge_private: 2]
 
-      import Phoenix.Controller
-      # only: [accepts: 2, protect_from_forgery: 2, put_root_layout: 2, put_secure_browser_headers: 2]
+      import Phoenix.Controller,
+        only: [accepts: 2, protect_from_forgery: 2, put_root_layout: 2, put_secure_browser_headers: 2]
 
-      # , only: [fetch_live_flash: 2, live: 3]
-      import Phoenix.LiveView.Router
+      import Phoenix.LiveView.Router, only: [fetch_live_flash: 2, live: 3]
     end
   end
 

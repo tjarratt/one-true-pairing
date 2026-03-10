@@ -2,13 +2,12 @@ defmodule OneTruePairing.Projects.AllocationTest do
   # @related [impl](lib/one_true_pairing/projects/allocation.ex)
 
   use OneTruePairing.DataCase, async: true
+  use Expect
+
   alias OneTruePairing.Projects.Allocation
 
   import OneTruePairing.ProjectsFixtures,
     only: [person_fixture: 0, person_fixture: 1, track_fixture: 0, track_fixture: 1]
-
-  import Expect
-  import Expect.Matchers
 
   test "changeset is valid when it has everything it needs" do
     person = person_fixture()

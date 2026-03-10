@@ -1,9 +1,8 @@
 defmodule OneTruePairingWeb.HomeLiveTest do
   # @related [impl](lib/one_true_pairing_web/live/home_live.ex)
   use OneTruePairingWeb.ConnCase, async: true
+  use Expect
 
-  import Expect
-  import Expect.Matchers
   import Phoenix.LiveViewTest, only: [element: 3, live: 2, render: 1]
 
   import OneTruePairing.ProjectsFixtures,

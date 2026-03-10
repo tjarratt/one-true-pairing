@@ -1,10 +1,8 @@
 defmodule OneTruePairingWeb.PersonControllerTest do
   use OneTruePairingWeb.ConnCase, async: true
+  use Expect
 
   alias OneTruePairing.Projects
-
-  import Expect
-  import Expect.Matchers
 
   import OneTruePairing.ProjectsFixtures,
     only: [person_fixture: 0, person_fixture: 1, project_fixture: 0, project_fixture: 1]

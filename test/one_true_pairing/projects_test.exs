@@ -1,11 +1,9 @@
 defmodule OneTruePairing.ProjectsTest do
   # @related [impl](lib/one_true_pairing/projects.ex)
   use OneTruePairing.DataCase
+  use Expect
 
   alias OneTruePairing.Projects
-
-  import Expect
-  import Expect.Matchers
 
   import OneTruePairing.ProjectsFixtures,
     only: [
