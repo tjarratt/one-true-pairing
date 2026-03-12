@@ -6,8 +6,7 @@ defmodule OneTruePairing.Projects.AllocationTest do
 
   alias OneTruePairing.Projects.Allocation
 
-  import OneTruePairing.ProjectsFixtures,
-    only: [person_fixture: 0, person_fixture: 1, track_fixture: 0, track_fixture: 1]
+  import OneTruePairing.ProjectsFixtures, only: [person_fixture: 0, track_fixture: 0]
 
   test "changeset is valid when it has everything it needs" do
     person = person_fixture()

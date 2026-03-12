@@ -18,11 +18,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   import OneTruePairing.ProjectsFixtures,
     only: [
       allocation_fixture: 1,
-      person_fixture: 0,
       person_fixture: 1,
-      project_fixture: 0,
       project_fixture: 1,
-      track_fixture: 0,
       track_fixture: 1
     ]
 

@@ -11,7 +11,6 @@ defmodule OneTruePairing.ProjectsTest do
       person_fixture: 1,
       project_fixture: 0,
       project_fixture: 1,
-      track_fixture: 0,
       track_fixture: 1
     ]
 
@@ -222,8 +221,6 @@ defmodule OneTruePairing.ProjectsTest do
   end
 
   describe "tracks" do
-    alias OneTruePairing.Projects.Track
-
     test "can be created" do
       project = project_fixture()
       valid_attrs = %{title: "coal mining", project_id: project.id}

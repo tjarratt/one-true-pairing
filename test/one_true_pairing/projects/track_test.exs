@@ -4,7 +4,11 @@ defmodule OneTruePairing.Projects.TrackTest do
   use Expect
 
   import OneTruePairing.ProjectsFixtures,
-    only: [project_fixture: 0, project_fixture: 1, track_fixture: 0, track_fixture: 1]
+    only: [
+      project_fixture: 0,
+      project_fixture: 1,
+      track_fixture: 1
+    ]
 
   alias OneTruePairing.Projects.Track
 
