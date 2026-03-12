@@ -31,7 +31,7 @@ jobs:
       uses: erlef/setup-beam@v1.18.2
       with:
         elixir-version: '1.18.2'
-        otp-version: '27.2.2'     
+        otp-version: '27.2.2'
       env:
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
     # caching for deps/ directory
@@ -61,7 +61,7 @@ jobs:
         mix deps.clean --all
         mix clean
       shell: sh
-      
+
     - name: Install dependencies
       run: mix deps.get
       env:
