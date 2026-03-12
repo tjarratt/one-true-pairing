@@ -73,7 +73,7 @@ jobs:
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
 
     - name: Run tests
-      run: MIX_ENV=test mix test 
+      run: MIX_ENV=test mix test
       env:
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
 
