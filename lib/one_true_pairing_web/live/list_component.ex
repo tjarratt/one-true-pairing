@@ -2,7 +2,8 @@ defmodule OneTruePairingWeb.Live.ListComponent do
   use OneTruePairingWeb, :live_component
 
   @doc """
-  Renders a list of items that can be dragged from one list to another
+  Renders a list of items that can be dragged from one list to another,
+  styled as a classic Mac OS window.
   """
 
   attr :custom_header, :boolean, default: false
@@ -11,39 +12,46 @@ defmodule OneTruePairingWeb.Live.ListComponent do
 
   def render(assigns) do
     ~H"""
-    <div class="relative bg-gray-100 py-4 rounded-lg select-none" test-role={@test_role} test-track-name={@list_name}>
-      <button
-        :if={@can_be_deleted}
-        id={"delete-#{@id}"}
-        phx-click="delete_track"
-        phx-value-id={@track_id}
-        class="absolute top-2 right-2 leading-none text-gray-500 hover:text-gray-400"
-      >
-        <.icon name="hero-x-circle" />
-      </button>
+    <div class="mac-window" test-role={@test_role} test-track-name={@list_name}>
+      <!-- Classic Mac OS title bar -->
+      <div class="mac-titlebar">
+        <!-- Close box (left) -->
+        <%= if @can_be_deleted do %>
+          <button
+            id={"delete-#{@id}"}
+            phx-click="delete_track"
+            phx-value-id={@track_id}
+            class="mac-close-box"
+            title="Close"
+          />
+        <% else %>
+          <div class="mac-close-box-inert" />
+        <% end %>
 
-      <div class="space-y-5 mx-auto px-4 space-y-4 h-full">
-        <div class="flex justify-center">
+        <!-- Title centered in title bar -->
+        <div class="mac-titlebar-center">
           <%= if @custom_header do %>
-            <div class="mb-1">
-              <%= render_slot(@inner_block) %>
-            </div>
+            <span class="mac-titlebar-label"><%= render_slot(@inner_block) %></span>
           <% else %>
-            <header>
-              <.simple_form for={nil} phx-change="save" phx-submit="save" phx-target={@myself}>
-                <.input
-                  type="text"
-                  test-role="track-name"
-                  name={"track_id_#{@track_id}"}
-                  value={@list_name}
-                  class="text-2xl"
-                  phx-debounce
-                />
-              </.simple_form>
-            </header>
+            <.simple_form for={nil} phx-change="save" phx-submit="save" phx-target={@myself} class="mac-titlebar-form">
+              <input
+                type="text"
+                test-role="track-name"
+                name={"track_id_#{@track_id}"}
+                value={@list_name}
+                class="mac-titlebar-input"
+                phx-debounce
+              />
+            </.simple_form>
           <% end %>
         </div>
 
+        <!-- Right spacer to balance close box -->
+        <div class="mac-titlebar-spacer" />
+      </div>
+
+      <!-- Window body -->
+      <div class="mac-window-body">
         <div
           id={"#{@id}-items"}
           phx-hook="Sortable"
@@ -51,21 +59,17 @@ defmodule OneTruePairingWeb.Live.ListComponent do
           data-list_name={@list_name}
           test-role="list"
           data-group={@group}
-          class="min-h-40 h-full"
+          class="mac-drop-zone"
         >
           <div
             :for={item <- @list}
             id={"#{@id}-#{item.id}"}
-            class="drag-item:focus-within:ring-0 drag-item:focus-within:ring-offset-0 drag-ghost:bg-zinc-300 drag-ghost:border-0 drag-ghost:ring-0 m-2 border-2 border-dashed border-slate-300"
+            class="drag-item:focus-within:ring-0 drag-item:focus-within:ring-offset-0 drag-ghost:opacity-40 mac-person-item"
             data-id={item.id}
             test-index={item.position}
           >
-            <div class="flex drag-ghost:opacity-0 min-h-10 align-bottom">
-              <.icon name="hero-user-circle" class="w-10 h-10 bg-gray-300 mr-2" />
-              <div class="flex-auto block text-sm leading-10 text-zinc-900 text-xl">
-                <%= item.name %>
-              </div>
-            </div>
+            <.icon name="hero-user-circle" class="w-5 h-5 flex-shrink-0" />
+            <span class="text-xs leading-none truncate"><%= item.name %></span>
           </div>
         </div>
       </div>
