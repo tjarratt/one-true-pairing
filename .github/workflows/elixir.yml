@@ -30,8 +30,8 @@ jobs:
     - name: Set up Elixir
       uses: erlef/setup-beam@v1.18.2
       with:
-        elixir-version: '1.18.2'
-        otp-version: '27.2.2'
+        elixir-version: '1.19.5'
+        otp-version: '28.3.1'
       env:
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
     # caching for deps/ directory
