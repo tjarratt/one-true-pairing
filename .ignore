@@ -1,0 +1,7 @@
+# files to be ignored by ripgrep and other tools for a more civilized age
+
+# do not ignore the github workflow files, gitignore, or this file
+!/.github/
+!.gitignore
+!.ignore
+
