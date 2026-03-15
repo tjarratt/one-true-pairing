@@ -40,7 +40,7 @@ defmodule OneTruePairing.MixProject do
   defp deps do
     [
       {:error_tracker, "~> 0.5"},
-      {:expect, "~> 2.2", only: [:test], runtime: false},
+      {:expect, "3.0.0-rc", only: [:test], runtime: false},
       {:ex_check, "~> 0.16", only: [:dev], runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:credo_explicit_over_implicit, "~> 1.3", only: [:dev, :test], runtime: false},

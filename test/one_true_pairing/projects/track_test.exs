@@ -5,7 +5,6 @@ defmodule OneTruePairing.Projects.TrackTest do
 
   import OneTruePairing.ProjectsFixtures,
     only: [
-      project_fixture: 0,
       project_fixture: 1,
       track_fixture: 1
     ]

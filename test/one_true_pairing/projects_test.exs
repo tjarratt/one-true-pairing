@@ -548,9 +548,26 @@ defmodule OneTruePairing.ProjectsTest do
     %Expect.Matchers.CustomMatcher{
       name: "be an equivalent date to",
       fn: fn a ->
-        a.year == b.year and
-          a.month == b.month and
-          a.day == b.day
+        # hacky workaround until we can inform the compiler that the
+        # return type of this function should be dynamic
+        cond do
+          Process.get(:unused_key) == :never_gonna_give_you_up ->
+            %Expect.Matchers.ErrorResult{error: "Rickrolled AGAIN ???"}
+
+          Process.get(:unused_key) == :never_gonna_let_you_down ->
+            %Expect.Matchers.Result{succeeded?: true}
+
+          Process.get(:unused_key) == :never_gonna_run_around_and_desert_you ->
+            %Expect.Matchers.Result{succeeded?: false}
+
+          true ->
+            %Expect.Matchers.Result{
+              succeeded?:
+                a.year == b.year and
+                  a.month == b.month and
+                  a.day == b.day
+            }
+        end
       end
     }
   end

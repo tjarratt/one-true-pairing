@@ -4,15 +4,16 @@ defmodule OneTruePairingWeb.PersonControllerTest do
 
   alias OneTruePairing.Projects
 
-  import OneTruePairing.ProjectsFixtures,
-    only: [person_fixture: 0, person_fixture: 1, project_fixture: 0, project_fixture: 1]
-
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
 
   setup do
-    [project: OneTruePairing.Repo.insert!(%OneTruePairing.Projects.Project{name: "Fellowship"})]
+    project =
+      %OneTruePairing.Projects.Project{name: "Fellowship"}
+      |> OneTruePairing.Repo.insert!()
+
+    [project: project]
   end
 
   describe "index" do
@@ -101,7 +102,7 @@ defmodule OneTruePairingWeb.PersonControllerTest do
   end
 
   defp create_person(_) do
-    person = person_fixture()
+    person = OneTruePairing.ProjectsFixtures.person_fixture()
     %{person: person}
   end
 end
