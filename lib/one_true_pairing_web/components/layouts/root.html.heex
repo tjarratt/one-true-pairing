@@ -46,7 +46,7 @@
             <div class="win95-titlebar-buttons">
               <button class="win95-titlebar-btn" aria-hidden="true" tabindex="-1">_</button>
               <button class="win95-titlebar-btn" aria-hidden="true" tabindex="-1">□</button>
-              <button class="win95-titlebar-btn" aria-hidden="true" tabindex="-1">✕</button>
+              <button id="clippy-close" class="win95-titlebar-btn" aria-hidden="true" tabindex="-1">✕</button>
             </div>
           </div>
           <div class="win95-window-body">
@@ -54,6 +54,13 @@
           </div>
         </div>
       </div>
+      <img
+        id="clippy"
+        src="/images/clippy.png"
+        width="800"
+        height="400"
+        class="absolute z-40 hidden top-16 right-24"
+      />
     </div>
 
     <!-- Start menu popup -->
@@ -75,6 +82,8 @@
       (function () {
         var popup = document.getElementById('start-popup');
         var startBtn = document.getElementById('win95-start-btn');
+        var clippy = document.getElementById('clippy');
+        var closeButton = document.getElementById('clippy-close');
 
         startBtn.addEventListener('click', function (e) {
           e.stopPropagation();
@@ -84,7 +93,13 @@
         document.addEventListener('click', function (e) {
           if (!popup.contains(e.target) && !startBtn.contains(e.target)) {
             popup.classList.add('hidden');
+            clippy.classList.add('hidden');
           }
+        });
+
+        closeButton.addEventListener('click', function(e) {
+          e.stopPropagation();
+          clippy.classList.toggle('hidden');
         });
 
         function updateClock() {
