@@ -51,12 +51,11 @@ defmodule OneTruePairingWeb.Live.PairView do
           Add Track
         </.button>
 
-        <.link
-          navigate={~p"/projects/#{@project_id}/persons"}
-          class="block bg-cyan-300 hover:bg-cyan-200 pt-2 px-4 rounded-lg"
-        >
-          Manage Team
-        </.link>
+        <a href={~p"/projects/#{@project_id}/persons"}>
+          <.button class="phx-button mr-4 bg-teal-500 hover:bg-teal-400">
+            Manage Team
+          </.button>
+        </a>
       </div>
     </div>
 
