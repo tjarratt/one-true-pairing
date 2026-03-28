@@ -14,7 +14,8 @@
   min-height: 100vh;
   font-family: "MS Sans Serif", "Microsoft Sans Serif", Arial, sans-serif;
   font-size: 12px;
-  padding-bottom: 44px; /* space for taskbar */
+  padding-bottom: 44px;
+  /* space for taskbar */
 }
 
 /* --- Desktop layout (icons left, content right) --- */
@@ -149,7 +150,7 @@
   border-color: #ffffff;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: 3px 6px;
   gap: 6px;
   z-index: 1000;
@@ -196,7 +197,7 @@
 .start-popup {
   position: fixed;
   bottom: 44px;
-  right: 6px;
+  left: 6px;
   background-color: #ff0000;
   border: 2px solid;
   border-color: #ffffff #808080 #808080 #ffffff;
@@ -290,7 +291,7 @@ body.win95-desktop .win95-window-body button[type="button"]:not(.win95-btn):not(
 }
 
 .win95-window-body tr:hover td {
-  background-color: #000080;
+  background-color: #ff0000;
   color: #ffffff;
   cursor: pointer;
 }
