@@ -57,7 +57,7 @@
   box-shadow:
     1px 1px 0 0 #000,
     -1px -1px 0 0 #000,
-    0 4px 8px rgba(0,0,0,0.4);
+    0 4px 8px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -65,13 +65,11 @@
 
 /* Title bar with classic pinstripe pattern */
 .mac-titlebar {
-  background: repeating-linear-gradient(
-    180deg,
-    #d8d8d8 0px,
-    #d8d8d8 1px,
-    #999999 1px,
-    #999999 2px
-  );
+  background: repeating-linear-gradient(180deg,
+      #d8d8d8 0px,
+      #d8d8d8 1px,
+      #999999 1px,
+      #999999 2px);
   height: 20px;
   display: flex;
   align-items: center;
@@ -115,7 +113,7 @@
 /* Editable title input within the title bar */
 .mac-titlebar-input {
   text-align: center;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: bold;
   color: #000000;
   background: transparent;
@@ -125,11 +123,6 @@
   max-width: 100%;
   box-sizing: border-box;
   font-family: 'Chicago', 'Geneva', 'Arial', sans-serif;
-}
-
-.mac-titlebar-input:focus {
-  background: #ffffff;
-  outline: none;
 }
 
 /* Title bar center section */
@@ -142,7 +135,7 @@
 }
 
 .mac-titlebar-label {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: bold;
   color: #000000;
   white-space: nowrap;
@@ -270,7 +263,7 @@
 /* Header text on desktop */
 .mac-desktop-header {
   color: #ffffff;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 12px;
