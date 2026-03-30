@@ -27,7 +27,6 @@ defmodule OneTruePairingWeb.Live.ListComponent do
         <% else %>
           <div class="mac-close-box-inert" />
         <% end %>
-
         <!-- Title centered in title bar -->
         <div class="mac-titlebar-center">
           <%= if @custom_header do %>
@@ -45,11 +44,9 @@ defmodule OneTruePairingWeb.Live.ListComponent do
             </.simple_form>
           <% end %>
         </div>
-
         <!-- Right spacer to balance close box -->
         <div class="mac-titlebar-spacer" />
       </div>
-
       <!-- Window body -->
       <div class="mac-window-body">
         <div
