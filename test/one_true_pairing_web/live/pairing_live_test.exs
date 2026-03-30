@@ -88,7 +88,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       header = html |> HtmlQuery.find("h1") |> HtmlQuery.text()
 
-      expect(header, to: contain(project.name))
+      expect(header, to: have_substring("Hey Fellowship, let's pair today"))
     end
   end
 
@@ -107,7 +107,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       html =
         view
-        |> element("button", "Randomize pairs")
+        |> element("button", "✦ Randomize Pairs")
         |> render_click()
 
       [first_pair, second_pair] =
@@ -145,7 +145,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       html =
         view
-        |> element("button", "Randomize pairs")
+        |> element("button", "✦ Randomize Pairs")
         |> render_click()
 
       [first_pair, second_pair, third_pair, fourth_pair] =
@@ -167,12 +167,12 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       view
-      |> element("button", "Randomize pairs")
+      |> element("button", "✦ Randomize Pairs")
       |> render_click()
 
       html =
         view
-        |> element("button", "Randomize pairs")
+        |> element("button", "✦ Randomize Pairs")
         |> render_click()
 
       hobbit_babysitters = people_in_track(html, by_name: "1. Taking the hobbits to Eisengard")
@@ -189,7 +189,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       track_titles =
         view
-        |> element("button", "Randomize pairs")
+        |> element("button", "✦ Randomize Pairs")
         |> render_click()
         |> HtmlQuery.all("[test-role=track-of-work] input")
         |> Enum.map(&HtmlQuery.attr(&1, "value"))
@@ -201,12 +201,12 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       view
-      |> element("button", "Randomize pairs")
+      |> element("button", "✦ Randomize Pairs")
       |> render_click()
 
       html =
         view
-        |> element("button", "Reset pairs")
+        |> element("button", "↺ Reset")
         |> render_click()
 
       available = html |> HtmlQuery.find!("#pairing_list #available-items") |> HtmlQuery.text() |> to_pairs()
@@ -226,7 +226,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       html =
         view
-        |> element("button", "Randomize pairs")
+        |> element("button", "✦ Randomize Pairs")
         |> render_click()
 
       hobbit_babysitters = people_in_track(html, by_name: "1. Taking the hobbits to Eisengard")
@@ -250,7 +250,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       html =
         view
-        |> element("button", "Randomize pairs")
+        |> element("button", "✦ Randomize Pairs")
         |> render_click()
 
       unavailable = select_unavailable(html)
@@ -300,7 +300,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       html =
         view
-        |> element("button", "Randomize pairs")
+        |> element("button", "✦ Randomize Pairs")
         |> render_click()
 
       unavailable = select_unavailable(html)
@@ -324,7 +324,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       {unavailable, unpaired} =
         view
-        |> element("button", "Reset pairs")
+        |> element("button", "↺ Reset")
         |> render_click()
         |> then(fn html -> {select_unavailable(html), select_unpaired(html)} end)
 
@@ -343,7 +343,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       html =
         view
-        |> element("button", "Reset pairs")
+        |> element("button", "↺ Reset")
         |> render_click()
 
       unavailable_indices =
@@ -634,7 +634,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       html =
         view
-        |> element("button", "Randomize pairs")
+        |> element("button", "✦ Randomize Pairs")
         |> render_click()
 
       hobbit_babysitters = people_in_track(html, by_name: "1. Taking the hobbits to Eisengard")
@@ -655,11 +655,11 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
       view
-      |> element("button", "Randomize pairs")
+      |> element("button", "✦ Randomize Pairs")
       |> render_click()
 
       view
-      |> element("button", "Reset pairs")
+      |> element("button", "↺ Reset")
       |> render_click()
 
       {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
@@ -712,12 +712,12 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 
     view
-    |> element("button", "Randomize pairs")
+    |> element("button", "✦ Randomize Pairs")
     |> render_click()
 
     html =
       view
-      |> element("button", "Reset pairs")
+      |> element("button", "↺ Reset")
       |> render_click()
 
     available =
@@ -778,9 +778,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   defp select_unpaired(html) do
     html
     |> HtmlQuery.find!(test_role: "unpaired")
-    |> HtmlQuery.find!(test_role: "list")
-    |> HtmlQuery.text()
-    |> String.split("\n", trim: true)
+    |> HtmlQuery.all(".mac-person-item")
+    |> Enum.map(&HtmlQuery.text/1)
     |> Enum.map(&String.trim(&1))
     |> Enum.reject(fn str -> String.length(str) == 0 end)
   end
@@ -788,9 +787,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   def select_unavailable(html) do
     html
     |> HtmlQuery.find!(test_role: "unavailable")
-    |> HtmlQuery.find!(test_role: "list")
-    |> HtmlQuery.text()
-    |> String.split("\n", trim: true)
+    |> HtmlQuery.all(".mac-person-item")
+    |> Enum.map(&HtmlQuery.text/1)
     |> Enum.map(&String.trim(&1))
     |> Enum.reject(fn str -> String.length(str) == 0 end)
   end
@@ -798,9 +796,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   defp people_in_track(html, by_name: track_name) do
     html
     |> HtmlQuery.find!(test_track_name: track_name)
-    |> HtmlQuery.find!(test_role: "list")
-    |> HtmlQuery.text()
-    |> String.split("\n", trim: true)
+    |> HtmlQuery.all(".mac-person-item")
+    |> Enum.map(&HtmlQuery.text/1)
     |> Enum.map(&String.trim(&1))
     |> Enum.reject(fn str -> String.length(str) == 0 end)
   end
@@ -808,8 +805,8 @@ defmodule OneTruePairingWeb.PairingLiveTest do
   defp people_in_track(html, by_id: track_id) do
     html
     |> HtmlQuery.find!("[data-list_id='#{track_id}']")
-    |> HtmlQuery.text()
-    |> String.split("\n", trim: true)
+    |> HtmlQuery.all(".mac-person-item")
+    |> Enum.map(&HtmlQuery.text/1)
     |> Enum.map(&String.trim(&1))
     |> Enum.reject(fn str -> String.length(str) == 0 end)
   end
@@ -818,5 +815,32 @@ defmodule OneTruePairingWeb.PairingLiveTest do
     track_of_work_innertext
     |> String.split(~r[\s+])
     |> Enum.reject(&(String.length(&1) == 0))
+  end
+
+  # # # Matchers
+
+  defp have_substring(substring) do
+    %Expect.Matchers.CustomMatcher{
+      name: "have substring",
+      fn: fn string ->
+        # hacky workaround until we can inform the compiler that the
+        # return type of this function should be dynamic
+        cond do
+          Process.get(:unused_key) == :never_gonna_give_you_up ->
+            %Expect.Matchers.ErrorResult{error: "Rickrolled AGAIN ???"}
+
+          Process.get(:unused_key) == :never_gonna_let_you_down ->
+            %Expect.Matchers.Result{succeeded?: true}
+
+          Process.get(:unused_key) == :never_gonna_run_around_and_desert_you ->
+            %Expect.Matchers.Result{succeeded?: false}
+
+          true ->
+            %Expect.Matchers.Result{
+              succeeded?: String.contains?(string, substring)
+            }
+        end
+      end
+    }
   end
 end

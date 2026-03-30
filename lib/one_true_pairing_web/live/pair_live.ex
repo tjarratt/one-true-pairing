@@ -34,8 +34,7 @@ defmodule OneTruePairingWeb.Live.PairView do
   @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
-    <h1 class="mac-desktop-header">&#128421; <%= @project_name %> — Pairing Today</h1>
-
+    <h1 class="mac-desktop-header">&#128421; Hey <%= @project_name %>, let's pair today</h1>
     <!-- Toolbar with Mac OS style buttons -->
     <div class="mac-toolbar">
       <div class="mac-toolbar-group">
@@ -51,15 +50,11 @@ defmodule OneTruePairingWeb.Live.PairView do
         <button phx-click="add_track" class="mac-button">
           + Add Track
         </button>
-        <.link
-          navigate={~p"/projects/#{@project_id}/persons"}
-          class="mac-button"
-        >
+        <.link navigate={~p"/projects/#{@project_id}/persons"} class="mac-button">
           &#128101; Manage Team
         </.link>
       </div>
     </div>
-
     <!-- Desktop: sidebar + tracks -->
     <div id="pairing_list" class="mac-pairing-layout">
       <!-- Sidebar: Unpaired + Unavailable -->
@@ -92,7 +87,6 @@ defmodule OneTruePairingWeb.Live.PairView do
           Unavailable
         </.live_component>
       </div>
-
       <!-- Track windows grid -->
       <div class="mac-tracks-area">
         <%= for track <- @tracks do %>
