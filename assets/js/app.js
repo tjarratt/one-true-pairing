@@ -29,7 +29,6 @@ console.log("AHOY HOY");;
 // SortableListComponent Ahoy hoy
 let Hooks = {};
 Hooks.Sortable = {
-
 	mounted() {
 		const group = this.el.dataset.group ? this.el.dataset.group : undefined;
 		let sorter = new Sortable(this.el, {
@@ -69,4 +68,18 @@ liveSocket.connect();
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket;
 
+// poisson d'avril !
+let appleMenu = document.getElementById("menu-apple");
+let applePopup = document.getElementById("mac-menubar-popup");
+let closePopup = document.getElementById("mac-popup-close");
+
+appleMenu.addEventListener("click", function(e) {
+  e.stopPropagation();
+  applePopup.classList.toggle("hidden");
+});
+
+closePopup.addEventListener("click", function(e) {
+  e.stopPropagation();
+  applePopup.classList.toggle("hidden");
+});
 

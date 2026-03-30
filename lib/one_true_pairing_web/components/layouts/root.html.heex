@@ -12,6 +12,35 @@
     </script>
   </head>
   <body class="mac-body antialiased">
+    <!-- Classic Mac OS menu bar -->
+    <div class="mac-menubar">
+      <span id="menu-apple" class="mac-menubar-title">&#63743;</span>
+      <a href="/"><span class="mac-menubar-item unused">File</span></a>
+      <a href="/"><span class="mac-menubar-item unused">Edit</span></a>
+      <a href="/"><span class="mac-menubar-item unused">View</span></a>
+
+      <a href="https://github.com/tjarratt/one-true-pairing" target="_blank">
+        <span class="mac-menubar-item">Special</span>
+      </a>
+      <a
+        href="https://teams.microsoft.com/l/chat/48:notes/conversations?context=%7B%22contextType%22%3A%22chat%22%7D"
+        target="_blank"
+      >
+        <span class="mac-menubar-item">Help</span>
+      </a>
+    </div>
+
+    <div id="mac-menubar-popup" class="hidden mac-window" role="dialog">
+      <div class="mac-titlebar">
+        <button id="mac-popup-close" class="mac-close-box" />
+      </div>
+      <div class="mac-window-body">
+        <div class="mac-popup-title">it's always april 1st somewhere ...</div>
+        <div class="mac-popup-hotdogs">🌭🌭🌭</div>
+        <div class="mac-popup-condiments">🍅💛🍅</div>
+      </div>
+    </div>
+
     <%= @inner_content %>
   </body>
 </html>

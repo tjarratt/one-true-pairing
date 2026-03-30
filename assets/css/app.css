@@ -30,13 +30,14 @@
   font-weight: bold;
   padding: 0 8px;
   line-height: 20px;
+  cursor: pointer;
 }
 
 .mac-menubar-item {
   font-size: 14px;
   padding: 0 8px;
   line-height: 20px;
-  cursor: default;
+  cursor: pointer;
 }
 
 .mac-menubar-item:hover {
@@ -306,4 +307,47 @@
 .mac-body {
   margin: 0;
   padding: 0;
+}
+
+/* poisson d'avril ! */
+#mac-menubar-popup.hidden {
+  display: none;
+}
+
+#mac-menubar-popup {
+  position: absolute;
+  top: 44px;
+  left: 6px;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  box-shadow: 2px 2px 0 #000000;
+  padding: 20px 24px;
+  text-align: center;
+  z-index: 1001;
+  min-width: 220px;
+  margin: 0;
+  padding: 0;
+}
+
+#mac-menubar-popup>.mac-window-body {
+
+  background-color: #ff0000;
+}
+
+.mac-popup-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffff00;
+  margin-bottom: 12px;
+  font-family: 'Chicago', 'Geneva', 'Arial', sans-serif;
+}
+
+.mac-popup-hotdogs {
+  font-size: 52px;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.mac-popup-condiments {
+  font-size: 36px;
 }
