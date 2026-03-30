@@ -38,7 +38,7 @@ defmodule OneTruePairingWeb.Live.ListComponent do
                 test-role="track-name"
                 name={"track_id_#{@track_id}"}
                 value={@list_name}
-                class="mac-titlebar-input bg-transparent"
+                class="mac-titlebar-input"
                 phx-debounce
               />
             </.simple_form>
