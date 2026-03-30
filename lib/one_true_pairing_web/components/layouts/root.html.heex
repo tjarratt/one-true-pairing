@@ -4,99 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title suffix=" · OneTruePairing">
+    <.live_title suffix=" · Phoenix Framework">
       <%= assigns[:page_title] || "OneTruePairing" %>
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
   </head>
-  <body class="win95-desktop">
-    <div class="desktop-layout">
-      <!-- Desktop icons -->
-      <div class="desktop-left">
-        <a
-          href="https://blog.codinghorror.com/a-tribute-to-the-windows-31-hot-dog-stand-color-scheme/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="desktop-icon"
-        >
-          <div class="icon-img">💻</div>
-          <div class="icon-label">Computer</div>
-        </a>
-        <a
-          href="https://en.wikipedia.org/wiki/April_Fools%27_Day"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="desktop-icon"
-        >
-          <div class="icon-img">🖥️</div>
-          <div class="icon-label">Control Panel</div>
-        </a>
-      </div>
-
-      <!-- Main content window -->
-      <div class="desktop-main">
-        <div class="win95-window">
-          <div class="win95-titlebar">
-            <div class="win95-titlebar-title">
-              <span class="win95-titlebar-icon">🌭</span>
-              <span>OneTruePairing</span>
-            </div>
-            <div class="win95-titlebar-buttons">
-              <button class="win95-titlebar-btn" aria-hidden="true" tabindex="-1">_</button>
-              <button class="win95-titlebar-btn" aria-hidden="true" tabindex="-1">□</button>
-              <button class="win95-titlebar-btn" aria-hidden="true" tabindex="-1">✕</button>
-            </div>
-          </div>
-          <div class="win95-window-body">
-            <%= @inner_content %>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Start menu popup -->
-    <div id="start-popup" class="start-popup hidden" role="dialog" aria-label="Start menu">
-      <div class="start-popup-title">happy april fools !</div>
-      <div class="start-popup-hotdogs">🌭🌭🌭</div>
-      <div class="start-popup-condiments">🍅💛🍅</div>
-    </div>
-
-    <!-- Taskbar -->
-    <div class="win95-taskbar" role="toolbar">
-      <div class="win95-clock" id="win95-clock">12:00</div>
-      <button class="win95-btn win95-start-btn" id="win95-start-btn" type="button">
-        <span class="win95-start-icon">🌭</span>
-        Start
-      </button>
-    </div>
-
-    <script>
-      (function () {
-        var popup = document.getElementById('start-popup');
-        var startBtn = document.getElementById('win95-start-btn');
-
-        startBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          popup.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', function (e) {
-          if (!popup.contains(e.target) && !startBtn.contains(e.target)) {
-            popup.classList.add('hidden');
-          }
-        });
-
-        function updateClock() {
-          var now = new Date();
-          var h = now.getHours().toString().padStart(2, '0');
-          var m = now.getMinutes().toString().padStart(2, '0');
-          document.getElementById('win95-clock').textContent = h + ':' + m;
-        }
-        updateClock();
-        setInterval(updateClock, 60000);
-      })();
-    </script>
+  <body class="bg-white antialiased">
+    <%= @inner_content %>
   </body>
 </html>
