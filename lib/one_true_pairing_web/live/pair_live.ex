@@ -34,34 +34,36 @@ defmodule OneTruePairingWeb.Live.PairView do
   @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
-    <.header>Hey <%= @project_name %>, let's pair today</.header>
+    <h1 class="mac-desktop-header">&#128421; <%= @project_name %> — Pairing Today</h1>
 
-    <div class="my-4 flex justify-between">
-      <div>
-        <.button phx-click="randomize_pairs" background="bg-emerald-500" background_hover="hover:bg-emerald-400">
-          Randomize pairs
-        </.button>
-        <.button phx-click="reset_pairs">
-          Reset pairs
-        </.button>
+    <!-- Toolbar with Mac OS style buttons -->
+    <div class="mac-toolbar">
+      <div class="mac-toolbar-group">
+        <button phx-click="randomize_pairs" class="mac-button mac-button-default">
+          ✦ Randomize Pairs
+        </button>
+        <button phx-click="reset_pairs" class="mac-button">
+          ↺ Reset
+        </button>
       </div>
 
-      <div class="flex">
-        <.button phx-click="add_track" class="mr-4 bg-teal-500 hover:bg-teal-400">
-          Add Track
-        </.button>
-
+      <div class="mac-toolbar-group">
+        <button phx-click="add_track" class="mac-button">
+          + Add Track
+        </button>
         <.link
           navigate={~p"/projects/#{@project_id}/persons"}
-          class="block bg-cyan-300 hover:bg-cyan-200 pt-2 px-4 rounded-lg"
+          class="mac-button"
         >
-          Manage Team
+          &#128101; Manage Team
         </.link>
       </div>
     </div>
 
-    <div id="pairing_list" class="flex gap-8">
-      <div class="flex flex-col gap-2 w-64 shrink-0">
+    <!-- Desktop: sidebar + tracks -->
+    <div id="pairing_list" class="mac-pairing-layout">
+      <!-- Sidebar: Unpaired + Unavailable -->
+      <div class="mac-sidebar">
         <.live_component
           id="available"
           module={OneTruePairingWeb.Live.ListComponent}
@@ -73,7 +75,7 @@ defmodule OneTruePairingWeb.Live.PairView do
           test_role="unpaired"
           custom_header
         >
-          <.sub_header>Unpaired</.sub_header>
+          Unpaired
         </.live_component>
 
         <.live_component
@@ -87,11 +89,12 @@ defmodule OneTruePairingWeb.Live.PairView do
           group="pairing"
           custom_header
         >
-          <.sub_header>Unavailable</.sub_header>
+          Unavailable
         </.live_component>
       </div>
 
-      <div class="flex-1 grid sm:grid-cols-1 md:grid-cols-3 gap-2">
+      <!-- Track windows grid -->
+      <div class="mac-tracks-area">
         <%= for track <- @tracks do %>
           <.live_component
             id={track.id}

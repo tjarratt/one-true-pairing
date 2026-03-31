@@ -88,7 +88,7 @@ defmodule OneTruePairingWeb.PairingLiveTest do
 
       header = html |> HtmlQuery.find("h1") |> HtmlQuery.text()
 
-      expect(header, to: equal("Hey #{project.name}, let's pair today"))
+      expect(header, to: contain(project.name))
     end
   end
 

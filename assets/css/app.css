@@ -2,4 +2,319 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* This file is for your main application CSS */
+/* =========================================================
+   Classic Mac OS UI Theme
+   ========================================================= */
+
+/* Desktop background — Mac OS 8 teal */
+.mac-desktop {
+  background-color: #2f7e7e;
+  background-image:
+    radial-gradient(ellipse at 30% 20%, rgba(60, 120, 120, 0.5) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 80%, rgba(20, 60, 60, 0.4) 0%, transparent 60%);
+  min-height: 100vh;
+  padding: 16px;
+  font-family: 'Chicago', 'Geneva', 'Arial', sans-serif;
+}
+
+/* Classic Mac OS menu bar */
+.mac-menubar {
+  background-color: #dddddd;
+  border-bottom: 1px solid #888;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  height: 20px;
+  box-shadow: inset 0 -1px 0 #aaa;
+}
+
+.mac-menubar-title {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 0 8px;
+  line-height: 20px;
+}
+
+.mac-menubar-item {
+  font-size: 12px;
+  padding: 0 8px;
+  line-height: 20px;
+  cursor: default;
+}
+
+.mac-menubar-item:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+/* Mac OS classic window chrome */
+.mac-window {
+  background-color: #c8c8c8;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #555555;
+  border-bottom: 2px solid #555555;
+  box-shadow:
+    1px 1px 0 0 #000,
+    -1px -1px 0 0 #000,
+    0 4px 8px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Title bar with classic pinstripe pattern */
+.mac-titlebar {
+  background: repeating-linear-gradient(
+    180deg,
+    #d8d8d8 0px,
+    #d8d8d8 1px,
+    #999999 1px,
+    #999999 2px
+  );
+  height: 20px;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  gap: 4px;
+  cursor: default;
+  user-select: none;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Close box — classic Mac square button top-left */
+.mac-close-box {
+  width: 13px;
+  height: 13px;
+  background-color: #d4d0c8;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #555555;
+  border-bottom: 1px solid #555555;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+
+.mac-close-box:hover {
+  background-color: #e8e8e8;
+}
+
+.mac-close-box:active {
+  border-top: 1px solid #555555;
+  border-left: 1px solid #555555;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+}
+
+/* Editable title input within the title bar */
+.mac-titlebar-input {
+  text-align: center;
+  font-size: 11px;
+  font-weight: bold;
+  color: #000000;
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  font-family: 'Chicago', 'Geneva', 'Arial', sans-serif;
+}
+
+.mac-titlebar-input:focus {
+  background: #ffffff;
+  outline: none;
+}
+
+/* Title bar center section */
+.mac-titlebar-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.mac-titlebar-label {
+  font-size: 11px;
+  font-weight: bold;
+  color: #000000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Form wrapper inside title bar */
+.mac-titlebar-form {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Window scroll bar separator */
+.mac-window-scrollbar-line {
+  border-right: 1px solid #888;
+}
+
+/* Window content area */
+.mac-window-body {
+  background-color: #f0f0f0;
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  border-top: 1px solid #999;
+}
+
+/* Person item inside a Mac window */
+.mac-person-item {
+  background-color: #ffffff;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #888888;
+  border-bottom: 1px solid #888888;
+  padding: 4px 6px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  cursor: default;
+  user-select: none;
+}
+
+.mac-person-item:hover {
+  background-color: #000080;
+  color: #ffffff;
+}
+
+/* Drop zone inside a Mac window */
+.mac-drop-zone {
+  min-height: 80px;
+}
+
+/* Classic Mac OS button */
+.mac-button {
+  background-color: #d4d0c8;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #555555;
+  border-bottom: 2px solid #555555;
+  padding: 3px 14px;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: 'Chicago', 'Geneva', 'Arial', sans-serif;
+  cursor: pointer;
+  color: #000000;
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.mac-button:hover {
+  background-color: #e4e0d8;
+}
+
+.mac-button:active {
+  border-top: 2px solid #555555;
+  border-left: 2px solid #555555;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+}
+
+/* Default button variant (has double border) */
+.mac-button-default {
+  box-shadow: 0 0 0 2px #000000;
+}
+
+/* Sidebar panel (Unpaired / Unavailable) */
+.mac-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 200px;
+  flex-shrink: 0;
+}
+
+/* Toolbar strip at top of desktop */
+.mac-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mac-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Tracks grid area */
+.mac-tracks-area {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+/* Header text on desktop */
+.mac-desktop-header {
+  color: #ffffff;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  font-family: 'Chicago', 'Geneva', 'Arial', sans-serif;
+}
+
+/* Sub-header inside a window */
+.mac-sub-header {
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  color: #000;
+  padding: 4px 0;
+}
+
+/* Spacer to balance the close box in the title bar */
+.mac-titlebar-spacer {
+  width: 17px;
+  flex-shrink: 0;
+}
+
+/* Inert close box (non-deletable windows) */
+.mac-close-box-inert {
+  width: 13px;
+  height: 13px;
+  background-color: #d4d0c8;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #555555;
+  border-bottom: 1px solid #555555;
+  flex-shrink: 0;
+  cursor: default;
+}
+
+/* Pairing list desktop layout */
+.mac-pairing-layout {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+/* Body / page root */
+.mac-body {
+  background-color: #2f7e7e;
+  margin: 0;
+  padding: 0;
+}
