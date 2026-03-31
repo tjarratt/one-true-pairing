@@ -55,7 +55,7 @@ jobs:
           ${{ runner.os }}-mix-${{ env.cache-name }}-
           ${{ runner.os }}-mix
     # bust the cache for incremental builds (apparently a cause of bugs)
-    - name:
+    - name: "(optional) bust cache for incremental builds"
       if: github.run_attempt != 1
       run: |
         mix deps.clean --all
