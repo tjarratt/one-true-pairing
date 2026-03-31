@@ -26,7 +26,7 @@ jobs:
           --health-retries 5
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Elixir
       uses: erlef/setup-beam@v1.18.2
       with:
@@ -36,7 +36,7 @@ jobs:
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
     # caching for deps/ directory
     - name: Restore dependencies cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: deps
         key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
@@ -44,7 +44,7 @@ jobs:
     # caching for _build directory
     - name: Restore build cache
       id: cache-build
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       env:
         cache-name: cache-compiled-build
         BASIC_AUTH_PASSWORD: ${{ secrets.BASIC_AUTH_PASSWORD }}
@@ -87,7 +87,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: superfly/flyctl-actions/setup-flyctl@master
     - run: flyctl deploy --remote-only --build-secret BASIC_AUTH_PASSWORD=$BASIC_AUTH_PASSWORD
       env:
