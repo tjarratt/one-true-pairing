@@ -379,6 +379,18 @@ defmodule OneTruePairingWeb.PairingLiveTest do
       expect(unpaired, to: contain("Alicia"))
     end
 
+    test "moving someone from 'unavailable' to a track clears their unavailable flag", %{conn: conn, project: project} do
+      {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      send_person(view, named: "Alicia", from: "available", to: "unavailable")
+      send_person(view, named: "Alicia", from: "unavailable", to: "1. Taking the hobbits to Eisengard")
+
+      {:ok, _view, html} = live(conn, ~p"/projects/#{project.id}/pairing")
+
+      expect(select_unavailable(html), to_not: contain("Alicia"))
+      expect(people_in_track(html, by_name: "1. Taking the hobbits to Eisengard"), to: contain("Alicia"))
+    end
+
     test "they can be moved from a track to 'unavailable'", %{conn: conn, project: project} do
       {:ok, view, _html} = live(conn, ~p"/projects/#{project.id}/pairing")
 

@@ -351,6 +351,8 @@ defmodule OneTruePairingWeb.Live.PairView do
         }
 
       to in track_ids ->
+        Projects.mark_available_to_pair(person.id)
+
         %{
           tracks: move_person_to(tracks, to, person),
           unavailable: without(unavailable, [person]),
